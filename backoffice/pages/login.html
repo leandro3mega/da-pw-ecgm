@@ -1,34 +1,3 @@
-<?php
-
-session_start();
-
-// verifica se existe login/sessão
-if (isset($_SESSION['username'])) {
-    header("location:index.php");
-    session_write_close();
-
-    exit();
-}
-
-// se não existir continua no codido
-
-?>
-<!--
-
-<body>
-    <div>
-        <form id="formlogin" action="login.php" method="post">
-            <input type="text" name="username" id="iusername" placeholder="Username...">
-            <br>
-            <input type="text" name="password" id="ipassword" placeholder="Password...">
-            <br>
-            
-            <input type="submit" value="Iniciar Sessão">
-        </form>
-    </div>
-</body>
-
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,16 +12,16 @@ if (isset($_SESSION['username'])) {
     <title>SB Admin 2 - Bootstrap Admin Theme</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -70,16 +39,16 @@ if (isset($_SESSION['username'])) {
             <div class="col-md-4 col-md-offset-4">
                 <div class="login-panel panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Iniciar Sessão</h3>
+                        <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-                        <form role="form" id="formlogin" action="login.php" method="post">
+                        <form role="form">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Nome de utilizador" required="required" name="username" type="text" autofocus>
+                                    <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" required="required" name="password" type="password" value="">
+                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
                                 </div>
                                 <div class="checkbox">
                                     <label>
@@ -87,9 +56,7 @@ if (isset($_SESSION['username'])) {
                                     </label>
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
-                                <!--<a href="index.html" class="btn btn-lg btn-success btn-block">Login</a>-->
-                                <input type="submit" class="btn btn-lg btn-success btn-block" value="Iniciar Sessão">
-                                <a class="d-block small mt-3" href="register.html">Register an Account</a>
+                                <a href="index.html" class="btn btn-lg btn-success btn-block">Login</a>
                             </fieldset>
                         </form>
                     </div>
@@ -99,16 +66,16 @@ if (isset($_SESSION['username'])) {
     </div>
 
     <!-- jQuery -->
-    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="vendor/metisMenu/metisMenu.min.js"></script>
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="dist/js/sb-admin-2.js"></script>
+    <script src="../dist/js/sb-admin-2.js"></script>
 
 </body>
 
