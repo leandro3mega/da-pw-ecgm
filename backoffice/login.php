@@ -1,15 +1,12 @@
 <?php
 session_start();
 
-require_once("dbconnect.php");
-
+require_once("connectdb.php");
 
 //-- query para obter utilizadores
 $usersQuery = "select * from utilizador";
 
 $usersResult = $connectDB->query($usersQuery);
-
-//-------------------
 
 // check for errors
 if ($connectDB->errno) {
@@ -30,37 +27,20 @@ if ($connectDB->errno) {
         $PASS = $user->username;
         $USER = $user->password;
         if (isset($_SESSION['username'])) {
-            header("location:index.php");
+            header("location:loginpage.php");
         } else if (!(isset($_POST['username']) || !(isset($_POST['password'])))) {
-            header("location:index.php");
+            header("location:loginpage.php");
         } else if ($_POST['username'] !== $USER || $_POST['password'] !== $PASS) {
-            header("location:index.php");
+            header("location:loginpage.php");
         } else {
             $_SESSION['username'] = $_POST['username'];
-            header("location:index.php");
+            header("location:loginpage.php");
         }
     }
 }
 
-//-------------------
-
-/*
-//-- convert the result into json
-$listOfUsers = array();
-
-while ($user = $usersResult->fetch_object()) {
-    $listOfUsers[] = $user;
-}
-
-//var_dump($listOfProducts);
-
-$listOfUsers_json = json_encode($listOfUsers);
-echo $listOfUsers_json;
- */
-
-
-//echo ($users_json);
-
 session_write_close();
+// Close connection
+mysqli_close($connectDB);
 exit();
 ?>

@@ -30,86 +30,77 @@ if (isset($_SESSION['username'])) {
 
 -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 
-<head>
+  <head>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+    <title>Iniciar Sessão</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS-->
+    <link href="vendor2/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- MetisMenu CSS -->
-    <link href="vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <!-- Custom fonts for this template-->
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
-    <!-- Custom CSS -->
-    <link href="dist/css/sb-admin-2.css" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin.css" rel="stylesheet">
 
-    <!-- Custom Fonts -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- estilos desenvolvidos -->
+    <link rel="stylesheet" href="css/stylesheet.css"
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  </head>
 
-</head>
-
-<body>
+  <body>
 
     <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <div class="login-panel panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Iniciar Sessão</h3>
-                    </div>
-                    <div class="panel-body">
-                        <form role="form" id="formlogin" action="login.php" method="post">
-                            <fieldset>
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="Nome de utilizador" required="required" name="username" type="text" autofocus>
-                                </div>
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="Password" required="required" name="password" type="password" value="">
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="remember" type="checkbox" value="Remember Me">Remember Me
-                                    </label>
-                                </div>
-                                <!-- Change this to a button or input when using this as a form -->
-                                <!--<a href="index.html" class="btn btn-lg btn-success btn-block">Login</a>-->
-                                <input type="submit" class="btn btn-lg btn-success btn-block" value="Iniciar Sessão">
-                                <a class="d-block small mt-3" href="register.html">Register an Account</a>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
+      <div class="card card-login mx-auto mt-5">
+        <div class="card-header">Iniciar Sessão</div>
+        <div class="card-body">
+          <form id="formlogin" action="login.php" method="post">
+            <div class="form-group">
+              <div class="form-label-group">
+                <input  type="text" id="iusername" class="form-control" name="username" placeholder="Nome de utilizador" required="required" autofocus="autofocus">
+                <label for="iusername">Nome de utilizador</label>
+              </div>
             </div>
+            <div class="form-group">
+              <div class="form-label-group">
+                <input type="password" id="ipassword" class="form-control" name="password" placeholder="Palavra Passe" required="required">
+                <label for="ipassword">Palavra Passe</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" value="remember-me"> Lembrar Palavra Passe</label>
+              </div>
+            </div>
+            <input type="submit" class="btn btn-lg btn-success btn-block" value="Iniciar Sessão">
+            <!--
+            <a class="btn btn-primary btn-block" href="index.html">Login</a>
+            -->
+          </form>
+          <div class="text-center">
+            <a class="d-block small mt-3" href="registerpage.php">Registar</a>
+            <a class="d-block small" href="">Esqueceu-se da palavra passe?</a>
+          </div>
         </div>
+      </div>
     </div>
 
-    <!-- jQuery -->
-    <script src="vendor/jquery/jquery.min.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor2/jquery/jquery.min.js"></script>
+    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="vendor/metisMenu/metisMenu.min.js"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="dist/js/sb-admin-2.js"></script>
-
-</body>
+  </body>
 
 </html>
