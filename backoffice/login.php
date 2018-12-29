@@ -3,6 +3,9 @@ session_start();
 
 require_once("connectdb.php");
 
+// -- if user was found or not
+$found = false;
+
 //-- query para obter utilizadores
 $usersQuery = "select * from utilizador";
 
@@ -20,12 +23,13 @@ if ($connectDB->errno) {
      */
     // fetch results as object
     $usersResult->data_seek(0);
-    while ($user = $usersResult->fetch_object()) {
+    while (!$found && $user = $usersResult->fetch_object()) {
         echo "<li>" . $user->idutilizador . " | " . $user->username . " | " . $user->password . " | " . $user->tipo . "</li>";
 
+        $USER = $user->username;
+        $PASS = $user->password;
 
-        $PASS = $user->username;
-        $USER = $user->password;
+
         if (isset($_SESSION['username'])) {
             header("location:loginpage.php");
         } else if (!(isset($_POST['username']) || !(isset($_POST['password'])))) {
@@ -34,6 +38,8 @@ if ($connectDB->errno) {
             header("location:loginpage.php");
         } else {
             $_SESSION['username'] = $_POST['username'];
+            //echo "</br><li>" . $USER . " | " . $PASS . "</li>";
+            $found = true;
             header("location:loginpage.php");
         }
     }
