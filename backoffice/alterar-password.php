@@ -11,6 +11,13 @@ if (!isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
     $nome;
     $email;
+    $tipo = $_SESSION['tipo'];
+    $cargo;
+
+    //-- Converte int em string para mostrar o cargo do user no menu superior
+    if ($tipo == 0) $cargo = "Administrador";
+    else if ($tipo == 1) $cargo = "Aluno";
+    else $cargo = "Professor";
     
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
     $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
@@ -80,8 +87,8 @@ if (!isset($_SESSION['username'])) {
 
             <ul class="nav navbar-top-links navbar-right">
 
-                <li><a><i class="fa fa-user fa-fw"></i>
-                        <?php echo $username; ?> </a>
+                <li> <?php echo $cargo; ?> </li>
+                <li><a><i class="fa fa-user fa-fw"></i> <?php echo $username; ?> </a>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
 
             </ul>
@@ -96,18 +103,18 @@ if (!isset($_SESSION['username'])) {
                         </li>
 
                         <li>
-                            <a href="trabalhospage.php"><i class="fa fa-th-list fa-fw"></i> Todos Trabalhos</a>
+                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Todos Trabalhos</a>
                         </li>
 
                         <li>
-                            <a href="novotrabalhopage.php"><i class="fa fa-file-o fa-fw"></i> Novo Trabalho</a>
+                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Trabalho</a>
                         </li>
 
                         <li>
                             <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="alterarpasswordpage.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
+                                    <a href="alterar-password.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
                                         Passe</a>
                                 </li>
                                 <li>

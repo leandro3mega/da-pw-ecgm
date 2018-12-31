@@ -1,10 +1,33 @@
 <?php
 session_start();
+
+require_once("connectdb.php");
+
 if (!isset($_SESSION['username'])) {
     header("location:index.php");
     exit();
+} else {
+    $id = $_SESSION['id'];
+    $username = $_SESSION['username'];
+    $nome;
+    $email;
+    $tipo = $_SESSION['tipo'];
+    $cargo;
+
+    //-- Converte int em string para mostrar o cargo do user no menu superior
+    if ($tipo == 0) $cargo = "Administrador";
+    else if ($tipo == 1) $cargo = "Aluno";
+    else $cargo = "Professor";
+    
+    //-- vai buscar o nome do utilizador que corresponde ao id da sessão
+    $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
+    if (mysqli_num_rows($result) == 1) {
+        $row = $result->fetch_assoc();
+        $nome = ($row['nome']);
+        $email = ($row['email']);
+    }
+
 }
-$username = $_SESSION['username'];
 
 ?>
 
@@ -19,7 +42,7 @@ $username = $_SESSION['username'];
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+    <title>Novo Projeto</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -60,7 +83,8 @@ $username = $_SESSION['username'];
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                
+
+                <li> <?php echo $cargo; ?> </li>
                 <li><a><i class="fa fa-user fa-fw"></i> <?php echo $username; ?> </a>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
 
@@ -76,18 +100,18 @@ $username = $_SESSION['username'];
                         </li>
                         
                         <li>
-                            <a href="trabalhospage.php"><i class="fa fa-th-list fa-fw"></i> Todos Trabalhos</a>
+                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Meus Projetos</a>
                         </li>
 
                         <li>
-                            <a href="novotrabalhopage.php"><i class="fa fa-file-o fa-fw"></i> Novo Trabalho</a>
+                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Projetos</a>
                         </li>
                         
                         <li>
                             <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="alterarpasswordpage.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra Passe</a>
+                                    <a href="alterar-password.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra Passe</a>
                                 </li>
                                 <li>
                                     <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados Pessoais</a>

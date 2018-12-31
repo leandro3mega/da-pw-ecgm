@@ -4,7 +4,7 @@ if (!isset($_SESSION['username'])) {
     header("location:loginpage.php");
     exit();
 } else {
-    header("location:trabalhospage.php");
+    header("location:meus-projetos.php");
 
 }
 $username = $_SESSION['username'];
