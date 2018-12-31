@@ -44,10 +44,10 @@ input[type=radio] {
     cursor: pointer;
 }
 
+/*
 .dropbtn {
     background-color: #fff;
     color: white;
-    /*padding: 16px;*/
     font-size: 16px;
     border: none;
     cursor: pointer;
@@ -71,4 +71,16 @@ input[type=radio] {
     color: #495057;
     border: 1px solid transparent;
     border-radius: 0.25rem;
+}*/
+
+.div-margin-separa {
+    margin-top: 3rem !important;
+}
+
+.btn-backoffice-size {
+    padding: 8px 30px;
+}
+
+.hidden {
+    display: none;
 }

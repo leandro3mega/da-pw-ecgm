@@ -1,11 +1,8 @@
 <?php
 session_start();
 if (!isset($_SESSION['username'])) {
-    header("location:loginpage.php");
+    header("location:index.php");
     exit();
-} else {
-    header("location:trabalhospage.php");
-
 }
 $username = $_SESSION['username'];
 
@@ -111,7 +108,7 @@ $username = $_SESSION['username'];
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Página Vazia</h1>
+                        <h1 class="page-header">Criar Novo Projeto</h1>
                     </div>
                     <!-- /.col-lg-12 -->
                 </div>

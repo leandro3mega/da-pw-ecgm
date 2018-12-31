@@ -10,9 +10,9 @@ $connectDB = new mysqli($hostDB, $userDB, $passDB, $nameDB);
 
 //teste for connection errors
 if ($connectDB->connect_errno) {
-    die ("error : ". $connectDB->connect_error);
+    die("error : " . $connectDB->connect_error);
 }
-echo "Connected";
+//echo "Connected";
 
 $connectDB->set_charset("utf8");
 

@@ -33,7 +33,6 @@ if ($usersResult = mysqli_query($connectDB, $selectUserQuery)) {
     while (!$encontrado && $row = mysqli_fetch_array($usersResult)) {
       if ($username === $row['username']) {
         $encontrado = true;
-
       } else {
         $encontrado = false;
       }
@@ -45,8 +44,8 @@ if ($usersResult = mysqli_query($connectDB, $selectUserQuery)) {
   if (!$encontrado) {
     //-- 2º: Insert user in DB
     $result .= "</br>(1) User " . $username . " não existe na DB";
-
     insertUtilizador($username, $connectDB, $result);
+
   } else {
     $result .= "</br>(1) User " . $username . " existe na DB";
   }
