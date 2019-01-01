@@ -11,13 +11,13 @@ if (!isset($_SESSION['username'])) {
     $nome;
     $email;
     $tipo = $_SESSION['tipo'];
-    $cargo;
-
+    $cargo = $_SESSION['cargo'];
+    /*
     //-- Converte int em string para mostrar o cargo do user no menu superior
     if ($tipo == 0) $cargo = "Administrador";
     else if ($tipo == 1) $cargo = "Aluno";
     else $cargo = "Professor";
-    
+     */
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
     $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
     if (mysqli_num_rows($result) == 1) {
@@ -43,7 +43,16 @@ if (!isset($_SESSION['username'])) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Meus Projetos</title>
+    <title>
+    <?php 
+    if ($tipo == 0) echo ("Projetos");
+    else if ($tipo == 1) echo ("Meus Projetos");
+    else echo ("Projetos");
+    ?>
+    </title>
+
+    <!-- Browser image -->
+    <link rel="icon" href="images/website/logotipo_transparente.png">
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -140,7 +149,13 @@ if (!isset($_SESSION['username'])) {
                 <!-- /.row -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Os Meus Projetos</h1>
+                        <h1 class="page-header">
+                            <?php 
+                            if ($tipo == 0) echo ("Projetos");
+                            else if ($tipo == 1) echo ("Meus Projetos");
+                            else echo ("Projetos");
+                            ?>
+                        </h1>
                     </div>
                     <!-- /.col-lg-12 -->
                 </div>
@@ -154,67 +169,261 @@ if (!isset($_SESSION['username'])) {
                             <!-- /.panel-heading -->
                             <div class="panel-body">
                                 <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <!--
                                     <thead>
                                         <tr>
                                             <th>Imagem</th>
-                                            <th>Titulo</th>
-                                            <th>Ano Letivo</th>
-                                            <th>Semestre</th>
+                                            <th>Título</th>
+                                            <th>Data</th>
                                             <th>Unidade Curricular</th>
+                                            <th>Ações</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody>-->
                                         <?php 
                                         //require_once("connectdb.php");
+                                        if ($tipo == 0) {
+                                            selectProjetoAdmin($connectDB);
+                                        } else if ($tipo == 1) {
+                                            selectProjetoAluno($connectDB, $id);
 
-                                        $sql = mysqli_query($connectDB, "SELECT idprojeto, titulo, descricao, data, ano, semestre, tipo FROM projeto");
-
-                                        //$i = 0;
-
-                                        while ($row = $sql->fetch_assoc()) {
-                                            //$i++;
-                                                    //  echo " < option value = '$i' > " . $row['nome'] . " < / option > ";
-                                                    //$idPadrinho=$row['PK_idPadrinho'];
-                                                    //echo $row['id_categoria'];
-
-                                            echo
-                                                "<tr class='odd gradeX'>" .
-                                                "<td><img class=' img-fluid img-thumbnail' src='http://placehold.it/400x300' alt=''></td>" .
-                                                "<td>" . $row['titulo'] . "</td>" .
-                                                "<td>" . $row['descricao'] . "</td>" .
-                                                "<td>" . $row['data'] . "</td>" .
-                                                "<td>" . $row['ano'] . "</td>" .
-                                                "</tr>";
-                                        }
-                                        //-------------
-                                        /*
-                                        $sql = "select * from projeto";
-
-                                        $result = $connectDB->query($sql);
-    
-                                        // check for errors
-                                        if ($connectDB->errno) {
-                                            exit("query error");
                                         } else {
-                                            $result->data_seek(0);
-                                            while ($row = $result->fetch_object()) {
+                                            selectProjetoDocente($connectDB, $id);
 
+                                        }
+
+                                        //-- Seleciona todos os projetos existentes na DB
+                                        function selectProjetoAdmin($connectDB)
+                                        {
+                                            echo
+                                                "<thead>
+                                                    <tr>
+                                                        <th style='max-width:150px'>Imagem</th>
+                                                        <th>Título</th>
+                                                        <th style='max-width:60px'>Data</th>
+                                                        <th>Autor(es)</th>
+                                                        <th>Unidade Curricular</th>
+                                                        <th style='max-width:100px'>Ações</th>
+                                                   </tr>
+                                                </thead>";
+
+                                            $sql = mysqli_query($connectDB, "SELECT idprojeto, titulo, descricao, data, ano, semestre, tipo, fk_iduc FROM projeto");
+
+                                            while ($row = $sql->fetch_assoc()) {
+                                                $idUC = $row['fk_iduc'];
+
+                                                $nomeUC;
+                                                selectUC($connectDB, $idUC, $nomeUC);   //-- Obtem o nome da UC
+
+                                                //-- Identifier do projeto
+                                                $idProjeto = $row['idprojeto'];
+                                                $autoresProjeto = "";
+                                                selectAlunoProjeto($connectDB, $idProjeto, $autoresProjeto);   //-- Obtem os autores do projeto
+
+                                                //-- Descrição do projeto
+                                                $descricaoProjeto = $row['descricao'];
+                                                $descricaoProjetostr = substr($descricaoProjeto, 0, 30) . "...";    //-- substring que limita o tamanho da descrição
+
+                                                //-- Data que o projeto foi finalizado
+                                                $dataProjeto = $row['data'];
+                                                $diaProjetostr = substr($dataProjeto, 0, -6);    //-- substring que limita o tamanho da descrição
+                                                $mesProjetostr = substr($dataProjeto, -6, -4);    //-- substring que limita o tamanho da descrição
+                                                $anoProjetostr = substr($dataProjeto, -4);    //-- substring que limita o tamanho da descrição
+                                                $dataProjetostr = $diaProjetostr . "/" . $mesProjetostr . "/" . $anoProjetostr;
+
+                                                //-- 1ª imagem do projeto
+                                                $imageURL = "images/projetos/";
+                                                $imageName = "";
+                                                selectProjetoImage($connectDB, $idProjeto, $imageName);
+
+                                                //-- Print a new table line
                                                 echo
-                                                    "
-                                                <tr class='odd gradeX'>
-                                                    <td>" . $row['titulo'] . "</td>
-                                                    <td>" . $row['descricao'] . "</td>
-                                                    <td>" . $row['data'] . "</td>
-                                                    <td>" . $row['ano'] . "</td>
-                                                    <td>" . $row['semestre'] . "</td>
-                                                </tr>
-                                                ";
+                                                    "<tbody>" .
+                                                    "<tr class='odd gradeX'>" .
+                                                    "<td style='vertical-align: middle'><img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt=''></td>" .
+                                                    "<td style='vertical-align: middle'>" . $row['titulo'] . "</td>" .
+                                                    "<td style='vertical-align: middle'>" . $dataProjetostr . "</td>" .
+                                                    "<td style='vertical-align: middle'>" . $autoresProjeto . "</td>" .
+                                                    "<td style='vertical-align: middle'>" . $nomeUC . "</td>" .
+                                                    "<td style='vertical-align: middle'>" .
+                                                    "<ul class='nav navbar-top-links navbar-right' style='float: inherit; vertical-align: middle'>" .
+                                                    "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
+                                                    "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
+                                                    "</ul>" .
+                                                    "</td>" .
+                                                    "</tr>" .
+                                                    "</tbody>";
                                             }
                                         }
-                                         */
-                                        // Close connection
-                                        //$connectDB->close();
+
+                                        //-- Seleciona apenas os projetos do utilizador da sessão
+                                        function selectProjetoAluno($connectDB, $id)
+                                        {
+                                            echo
+                                                "<thead>
+                                                    <tr>
+                                                        <th style='max-width:150px'>Imagem</th>
+                                                        <th>Título</th>
+                                                        <th style='max-width:60px'>Data</th>
+                                                        <th>Unidade Curricular</th>
+                                                        <th style='max-width:100px'>Ações</th>
+                                                    </tr>
+                                                </thead>";
+                                            $sql = mysqli_query($connectDB, "SELECT p.idprojeto, p.titulo, p.descricao, p.data, p.ano, p.semestre, p.tipo, p.fk_iduc FROM projeto p, aluno_projeto ap WHERE fk_aluno=$id AND p.idprojeto=ap.fk_projeto");
+
+                                            while ($row = $sql->fetch_assoc()) {
+                                                $idUC = $row['fk_iduc'];    //-- Identifier do projeto
+                                                $idProjeto = $row['idprojeto'];
+                                                $nomeUC;
+                                                selectUC($connectDB, $idUC, $nomeUC);   //-- Obtem o nome da UC
+
+                                                //-- Descrição do projeto
+                                                $descricaoProjeto = $row['descricao'];
+                                                $descricaoProjetostr = substr($descricaoProjeto, 0, 30) . "...";    //-- substring que limita o tamanho da descrição
+
+                                                //-- Data que o projeto foi finalizado
+                                                $dataProjeto = $row['data'];
+                                                $diaProjetostr = substr($dataProjeto, 0, -6);    //-- substring que limita o tamanho da descrição
+                                                $mesProjetostr = substr($dataProjeto, -6, -4);    //-- substring que limita o tamanho da descrição
+                                                $anoProjetostr = substr($dataProjeto, -4);    //-- substring que limita o tamanho da descrição
+                                                $dataProjetostr = $diaProjetostr . "/" . $mesProjetostr . "/" . $anoProjetostr;
+
+                                                //-- 1ª imagem do projeto
+                                                $imageURL = "images/projetos/";
+                                                $imageName = "";
+                                                selectProjetoImage($connectDB, $idProjeto, $imageName);
+
+                                                //-- Print a new table line
+                                                echo
+                                                    "<tbody>" .
+                                                    "<tr class='odd gradeX'>" .
+                                                    "<td style='vertical-align: middle'><img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt=''></td>" .
+                                                    "<td style='vertical-align: middle'>" . $row['titulo'] . "</td>" .
+                                                    "<td style='vertical-align: middle'>" . $dataProjetostr . "</td>" .
+                                                    "<td style='vertical-align: middle'>" . $nomeUC . "</td>" .
+                                                    "<td style='vertical-align: middle'>" .
+                                                    "<ul class='nav navbar-top-links navbar-right' style='float: inherit; vertical-align: middle'>" .
+                                                    "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
+                                                    "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
+                                                    "</ul>" .
+                                                    "</td>" .
+                                                    "</tr>" .
+                                                    "</tbody>";
+                                            }
+                                        }
+
+                                        //-- Seleciona os projetos para as UC do docente na sessão
+                                        function selectProjetoDocente($connectDB, $id)
+                                        {
+                                            echo
+                                                "<thead>
+                                                    <tr>
+                                                        <th style='max-width:150px'>Imagem</th>
+                                                        <th>Título</th>
+                                                        <th style='max-width:60px'>Data</th>
+                                                        <th>Tipo</th>
+                                                        <th>Unidade Curricular</th>
+                                                        <th style='max-width:100px'>Ações</th>
+                                                    </tr>
+                                                </thead>";
+
+                                            $sql = mysqli_query($connectDB, "SELECT p.idprojeto, p.titulo, p.descricao, p.data, p.ano, p.semestre, p.tipo, p.fk_iduc 
+                                                                            FROM projeto p, docente_projeto dp, unidade_curricular uc
+                                                                            WHERE dp.fk_docente=$id AND p.idprojeto=dp.fk_projeto AND uc.fk_idutilizador=$id
+                                                                            GROUP BY p.idprojeto");
+
+                                            while ($row = $sql->fetch_assoc()) {
+                                                $idUC = $row['fk_iduc'];
+                                                $idProjeto = $row['idprojeto'];
+
+                                                $nomeUC;
+                                                selectUC($connectDB, $idUC, $nomeUC);   //-- Obtem o nome da UC
+
+                                                //$autoresProjeto = "";
+                                                //selectAlunoProjeto($connectDB, $idProjeto, $autoresProjeto);   //-- Obtem os autores do projeto
+
+                                                $descricaoProjeto = $row['descricao'];
+                                                $descricaoProjetostr = substr($descricaoProjeto, 0, 30) . "...";    //-- substring que limita o tamanho da descrição
+
+                                                $dataProjeto = $row['data'];
+                                                $diaProjetostr = substr($dataProjeto, 0, -6);    //-- substring que limita o tamanho da descrição
+                                                $mesProjetostr = substr($dataProjeto, -6, -4);    //-- substring que limita o tamanho da descrição
+                                                $anoProjetostr = substr($dataProjeto, -4);    //-- substring que limita o tamanho da descrição
+                                                $dataProjetostr = $diaProjetostr . "/" . $mesProjetostr . "/" . $anoProjetostr;
+
+                                                //-- Tipo de projeto
+                                                //####
+                                                $tProjeto = $row['tipo'];
+                                                if ($tProjeto == 1) $tipoProjeto = "Teórico";
+                                                else $tipoProjeto = "Prático";
+
+                                                //-- 1ª imagem do projeto
+                                                $imageURL = "images/projetos/";
+                                                $imageName = "";
+                                                selectProjetoImage($connectDB, $idProjeto, $imageName);
+
+                                                //echo (alert($row['titulo'] . " | " . $dataProjetostr . " | " . $tipo . " | " . $nomeUC));
+                                            //-- Print a new table line
+                                                echo
+                                                    "<tbody>" .
+                                                    "<tr class='odd gradeX'>" .
+                                                    "<td style='vertical-align: middle'><img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt=''></td>" .
+                                                    "<td style='vertical-align: middle'>" . $row['titulo'] . "</td>" .
+                                                    "<td style='vertical-align: middle'>" . $dataProjetostr . "</td>" .
+                                                    "<td style='vertical-align: middle'>" . $tipoProjeto . "</td>" .
+                                                    "<td style='vertical-align: middle'>" . $nomeUC . "</td>" .
+                                                    "<td style='vertical-align: middle'>" .
+                                                    "<ul class='nav navbar-top-links navbar-right' style='float: inherit; vertical-align: middle'>" .
+                                                    "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
+                                                    "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
+                                                    "</ul>" .
+                                                    "</td>" .
+                                                    "</tr>" .
+                                                    "</tbody>";
+                                            }
+                                        }
+
+                                        //-- Select do nome da UC associada a um projeto pelo id da UC
+                                        function selectUC($connectDB, $idUC, &$nomeUC)
+                                        {
+                                            $resultUC = mysqli_query($connectDB, "SELECT nome FROM unidade_curricular WHERE idunidade_curricular=$idUC");
+                                            if (mysqli_num_rows($resultUC) == 1) {
+                                                $row = $resultUC->fetch_assoc();
+                                                $nomeUC = ($row['nome']);
+                                            }
+                                        }
+                                        
+                                        //-- Select do nome dos autores do projeto (com formatação dos nomes)
+                                        function selectAlunoProjeto($connectDB, $idProjeto, &$autoresProjeto)
+                                        {
+                                            $count = 0;
+                                            $resultQuery = mysqli_query($connectDB, "SELECT a.nome FROM aluno a, aluno_projeto ap WHERE ap.fk_projeto=$idProjeto AND a.fk_idutilizador=ap.fk_aluno ORDER BY a.nome");
+                                            if (mysqli_num_rows($resultQuery) > 0) {    // se existerem resultados
+                                                while ($row = $resultQuery->fetch_assoc()) { // enquanto houverem resultados
+                                                    if ($count == 0) $autoresProjeto .= $row['nome'];
+                                                    else $autoresProjeto .= ",\n" . $row['nome'];
+
+                                                    $count++;
+                                                }
+                                                $autoresProjeto .= ".";
+                                            }
+                                        }
+
+                                        //-- Select da 1ª imagem associada a um projeto pelo id do projeto
+                                        function selectProjetoImage($connectDB, $idProjeto, &$imageName)
+                                        {
+                                            $resultImage = mysqli_query($connectDB, "SELECT nome FROM imagem WHERE fk_idprojeto=$idProjeto ORDER BY nome");
+                                            if (mysqli_num_rows($resultImage) > 0) {
+                                                $row = $resultImage->fetch_assoc();
+                                                $imageName = ($row['nome']);
+                                            }
+                                        }
+
+                                        $connectDB->close();    // Close connection
+
+                                        //###### End of script ######//
                                         ?>
+                                        <!--
                                         <tr class="odd gradeX">
                                             <td>Trident</td>
                                             <td>Internet Explorer 4.0</td>
@@ -223,55 +432,14 @@ if (!isset($_SESSION['username'])) {
                                             <td class="center">X</td>
                                         </tr>
                                         <tr class="even gradeC">
-                                                <td>Trident</td>
-                                                <td>Internet Explorer 5.0</td>
-                                                <td>Win 95+</td>
-                                                <td class="center">5</td>
-                                                <td class="center">C</td>
-                                        </tr>
-                                        <tr class="odd gradeA">
-                                                <td>Trident</td>
-                                                <td>Internet Explorer 5.5</td>
-                                                <td>Win 95+</td>
-                                                <td class="center">5.5</td>
-                                                <td class="center">A</td>
-                                        </tr>
-                                        <tr class="gradeX">
-                                            <td>Misc</td>
-                                            <td>Dillo 0.8</td>
-                                            <td>Embedded devices</td>
-                                            <td class="center">-</td>
-                                            <td class="center">X</td>
-                                        </tr>
-                                        <tr class="gradeX">
-                                            <td>Misc</td>
-                                            <td>Links</td>
-                                            <td>Text only</td>
-                                            <td class="center">-</td>
-                                            <td class="center">X</td>
-                                        </tr>
-                                        <tr class="gradeX">
-                                            <td>Misc</td>
-                                            <td>Lynx</td>
-                                            <td>Text only</td>
-                                            <td class="center">-</td>
-                                            <td class="center">X</td>
-                                        </tr>
-                                        <tr class="gradeC">
-                                            <td>Misc</td>
-                                            <td>IE Mobile</td>
-                                            <td>Windows Mobile 6</td>
-                                            <td class="center">-</td>
-                                            <td class="center">C</td>
-                                        </tr>
-                                        <tr class="gradeC">
-                                            <td>Misc</td>
-                                            <td>PSP browser</td>
-                                            <td>PSP</td>
-                                            <td class="center">-</td>
+                                            <td>Trident</td>
+                                            <td>Internet Explorer 5.0</td>
+                                            <td>Win 95+</td>
+                                            <td class="center">5</td>
                                             <td class="center">C</td>
                                         </tr>
                                     </tbody>
+                                    -->
                                 </table>
                                 <!-- /.table-responsive -->
                             </div>

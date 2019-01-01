@@ -13,13 +13,13 @@ if (!isset($_SESSION['username'])) {
     $nome;
     $email;
     $tipo = $_SESSION['tipo'];
-    $cargo;
-
+    $cargo = $_SESSION['cargo'];
+    /*
     //-- Converte int em string para mostrar o cargo do user no menu superior
     if ($tipo == 0) $cargo = "Administrador";
     else if ($tipo == 1) $cargo = "Aluno";
     else $cargo = "Professor";
-    
+     */
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
     $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
     if (mysqli_num_rows($result) == 1) {
@@ -43,6 +43,9 @@ if (!isset($_SESSION['username'])) {
     <meta name="author" content="">
 
     <title>Alterar Dados Pessoais</title>
+
+    <!-- Browser image -->
+    <link rel="icon" href="images/website/logotipo_transparente.png">
 
     <script src="js/jquery-3.1.1.js"></script>
 
@@ -150,8 +153,22 @@ if (!isset($_SESSION['username'])) {
                             <div class="row">
                                 <div class="col-lg-6">
                                     
-                                    <!--Nome-->
-                                    <div class="form-group" id="iDivLabelNome" style="display:block">
+                                    <!--Fotografia-->
+                                    <div class="form-group" id="iDivLabelNome" style="display:block;">
+                                        <label>Fotografia</label>
+                                        
+                                        <div class="form-control-static" style="width:50%; heigth:auto; background-color: rgb(175, 175, 175)">
+                                            <img class=' img-fluid img-thumbnail' src='http://placehold.it/400x300' alt=''>
+                                        </div>
+                                    </div>
+
+                                    <button id="iBtnAlterarNome" onclick="showhideNome()" class="btn btn-default btn-backoffice-size">
+                                        Alterar
+                                    </button>
+                                    <!-- End Fotografia -->
+
+                                    <!-- Nome -->
+                                    <div class="form-group div-margin-separa" id="iDivLabelNome" style="display:block;">
                                         <label>Nome</label>
                                         <p class="form-control-static"><?php echo ($nome); ?></p>
                                     </div>
@@ -167,11 +184,12 @@ if (!isset($_SESSION['username'])) {
                                                 </button>
                                                 <div class="form-group"></div>
                                     </div>
-                                    <button id="iBtnAlterarNome" onclick="showhideNome()" class="btn btn-default btn-backoffice-size">
+                                    <button id="iBtnAlterarNome" onclick="" class="btn btn-default btn-backoffice-size">
                                         Alterar
                                     </button>
+                                    <!-- End Nome -->
 
-                                    <!--Email-->
+                                    <!-- Email -->
                                     <div class="form-group div-margin-separa" id="iDivLabelEmail" style="display:block">
                                         <label>Email</label>
                                         <p class="form-control-static"><?php echo $email; ?></p>
@@ -187,9 +205,10 @@ if (!isset($_SESSION['username'])) {
                                                             Cancelar
                                                 </button>
                                     </div>
-                                    <button id="iBtnAlterarEmail" onclick="showhideEmail()" class="btn btn-default btn-backoffice-size">
+                                    <button id="iBtnAlterarEmail" onclick="showhideEmail()" class="btn btn-default btn-backoffice-size" style="margin-bottom:20px">
                                         Alterar
                                     </button>
+                                    <!-- End Email -->
 
 
                                     <!--

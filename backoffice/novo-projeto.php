@@ -12,13 +12,13 @@ if (!isset($_SESSION['username'])) {
     $nome;
     $email;
     $tipo = $_SESSION['tipo'];
-    $cargo;
-
+    $cargo = $_SESSION['cargo'];
+/*
     //-- Converte int em string para mostrar o cargo do user no menu superior
     if ($tipo == 0) $cargo = "Administrador";
     else if ($tipo == 1) $cargo = "Aluno";
     else $cargo = "Professor";
-    
+     */  
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
     $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
     if (mysqli_num_rows($result) == 1) {
@@ -43,6 +43,9 @@ if (!isset($_SESSION['username'])) {
     <meta name="author" content="">
 
     <title>Novo Projeto</title>
+
+    <!-- Browser image -->
+    <link rel="icon" href="images/website/logotipo_transparente.png">
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">

@@ -45,6 +45,11 @@ if ($connectDB->errno) {
             $_SESSION['id'] = $ID;
             $_SESSION['tipo'] = $TIPO;
 
+            //-- Converte int em string para mostrar o cargo do user no menu superior
+            if ($TIPO == 0) $_SESSION['cargo'] = "Administrador";
+            else if ($TIPO == 1) $_SESSION['cargo'] = "Aluno";
+            else $_SESSION['cargo'] = "Professor";
+
             //-- Get the data to add into the SESSION
             getData($connectDB, $ID, $TIPO);
 

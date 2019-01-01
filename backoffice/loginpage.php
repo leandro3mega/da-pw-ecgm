@@ -4,10 +4,10 @@ session_start();
 
 // verifica se existe login/sessão
 if (isset($_SESSION['username'])) {
-    header("location:index.php");
-    session_write_close();
+  header("location:index.php");
+  session_write_close();
 
-    exit();
+  exit();
 }
 
 // se não existir continua no codido
@@ -41,6 +41,9 @@ if (isset($_SESSION['username'])) {
     <meta name="author" content="">
 
     <title>Iniciar Sessão</title>
+
+    <!-- Browser image -->
+    <link rel="icon" href="images/website/logotipo_transparente.png">
 
     <!-- Bootstrap core CSS-->
     <link href="vendor2/bootstrap/css/bootstrap.min.css" rel="stylesheet">
