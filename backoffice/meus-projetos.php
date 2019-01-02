@@ -163,23 +163,16 @@ if (!isset($_SESSION['username'])) {
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
+                            <!--
                             <div class="panel-heading">
                                 DataTables Advanced Tables
                             </div>
+                            -->
                             <!-- /.panel-heading -->
                             <div class="panel-body">
                                 <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                    <!--
-                                    <thead>
-                                        <tr>
-                                            <th>Imagem</th>
-                                            <th>Título</th>
-                                            <th>Data</th>
-                                            <th>Unidade Curricular</th>
-                                            <th>Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>-->
+                                    
+                                        <!--###### Start of script ######-->
                                         <?php 
                                         //require_once("connectdb.php");
                                         if ($tipo == 0) {
@@ -203,9 +196,10 @@ if (!isset($_SESSION['username'])) {
                                                         <th style='max-width:60px'>Data</th>
                                                         <th>Autor(es)</th>
                                                         <th>Unidade Curricular</th>
-                                                        <th style='max-width:100px'>Ações</th>
+                                                        <th style='max-width:88px'>Ações</th>
                                                    </tr>
-                                                </thead>";
+                                                </thead>" .
+                                                "<tbody>";
 
                                             $sql = mysqli_query($connectDB, "SELECT idprojeto, titulo, descricao, data, ano, semestre, tipo, fk_iduc FROM projeto");
 
@@ -238,7 +232,7 @@ if (!isset($_SESSION['username'])) {
 
                                                 //-- Print a new table line
                                                 echo
-                                                    "<tbody>" .
+
                                                     "<tr class='odd gradeX'>" .
                                                     "<td style='vertical-align: middle'><img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt=''></td>" .
                                                     "<td style='vertical-align: middle'>" . $row['titulo'] . "</td>" .
@@ -246,14 +240,15 @@ if (!isset($_SESSION['username'])) {
                                                     "<td style='vertical-align: middle'>" . $autoresProjeto . "</td>" .
                                                     "<td style='vertical-align: middle'>" . $nomeUC . "</td>" .
                                                     "<td style='vertical-align: middle'>" .
-                                                    "<ul class='nav navbar-top-links navbar-right' style='float: inherit; vertical-align: middle'>" .
+                                                    "<ul class='nav navbar-top-links' style='float: inherit; vertical-align: middle'>" .
                                                     "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
                                                     "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
                                                     "</ul>" .
                                                     "</td>" .
-                                                    "</tr>" .
-                                                    "</tbody>";
+                                                    "</tr>";
+
                                             }
+                                            echo "</tbody>";
                                         }
 
                                         //-- Seleciona apenas os projetos do utilizador da sessão
@@ -266,9 +261,10 @@ if (!isset($_SESSION['username'])) {
                                                         <th>Título</th>
                                                         <th style='max-width:60px'>Data</th>
                                                         <th>Unidade Curricular</th>
-                                                        <th style='max-width:100px'>Ações</th>
+                                                        <th style='max-width:88px'>Ações</th>
                                                     </tr>
-                                                </thead>";
+                                                </thead>" .
+                                                "<tbody>";
                                             $sql = mysqli_query($connectDB, "SELECT p.idprojeto, p.titulo, p.descricao, p.data, p.ano, p.semestre, p.tipo, p.fk_iduc FROM projeto p, aluno_projeto ap WHERE fk_aluno=$id AND p.idprojeto=ap.fk_projeto");
 
                                             while ($row = $sql->fetch_assoc()) {
@@ -295,21 +291,20 @@ if (!isset($_SESSION['username'])) {
 
                                                 //-- Print a new table line
                                                 echo
-                                                    "<tbody>" .
                                                     "<tr class='odd gradeX'>" .
                                                     "<td style='vertical-align: middle'><img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt=''></td>" .
                                                     "<td style='vertical-align: middle'>" . $row['titulo'] . "</td>" .
                                                     "<td style='vertical-align: middle'>" . $dataProjetostr . "</td>" .
                                                     "<td style='vertical-align: middle'>" . $nomeUC . "</td>" .
                                                     "<td style='vertical-align: middle'>" .
-                                                    "<ul class='nav navbar-top-links navbar-right' style='float: inherit; vertical-align: middle'>" .
+                                                    "<ul class='nav navbar-top-links' style='float: inherit; vertical-align: middle'>" .
                                                     "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
                                                     "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
                                                     "</ul>" .
                                                     "</td>" .
-                                                    "</tr>" .
-                                                    "</tbody>";
+                                                    "</tr>";
                                             }
+                                            echo "</tbody>";
                                         }
 
                                         //-- Seleciona os projetos para as UC do docente na sessão
@@ -323,9 +318,10 @@ if (!isset($_SESSION['username'])) {
                                                         <th style='max-width:60px'>Data</th>
                                                         <th>Tipo</th>
                                                         <th>Unidade Curricular</th>
-                                                        <th style='max-width:100px'>Ações</th>
+                                                        <th style='max-width:88px'>Ações</th>
                                                     </tr>
-                                                </thead>";
+                                                </thead>" .
+                                                "<tbody>";
 
                                             $sql = mysqli_query($connectDB, "SELECT p.idprojeto, p.titulo, p.descricao, p.data, p.ano, p.semestre, p.tipo, p.fk_iduc 
                                                                             FROM projeto p, docente_projeto dp, unidade_curricular uc
@@ -365,7 +361,6 @@ if (!isset($_SESSION['username'])) {
                                                 //echo (alert($row['titulo'] . " | " . $dataProjetostr . " | " . $tipo . " | " . $nomeUC));
                                             //-- Print a new table line
                                                 echo
-                                                    "<tbody>" .
                                                     "<tr class='odd gradeX'>" .
                                                     "<td style='vertical-align: middle'><img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt=''></td>" .
                                                     "<td style='vertical-align: middle'>" . $row['titulo'] . "</td>" .
@@ -373,14 +368,14 @@ if (!isset($_SESSION['username'])) {
                                                     "<td style='vertical-align: middle'>" . $tipoProjeto . "</td>" .
                                                     "<td style='vertical-align: middle'>" . $nomeUC . "</td>" .
                                                     "<td style='vertical-align: middle'>" .
-                                                    "<ul class='nav navbar-top-links navbar-right' style='float: inherit; vertical-align: middle'>" .
+                                                    "<ul class='nav navbar-top-links' style='float: inherit; vertical-align: middle'>" .
                                                     "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
                                                     "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
                                                     "</ul>" .
                                                     "</td>" .
-                                                    "</tr>" .
-                                                    "</tbody>";
+                                                    "</tr>";
                                             }
+                                            echo "</tbody>";
                                         }
 
                                         //-- Select do nome da UC associada a um projeto pelo id da UC
@@ -421,25 +416,9 @@ if (!isset($_SESSION['username'])) {
 
                                         $connectDB->close();    // Close connection
 
-                                        //###### End of script ######//
                                         ?>
-                                        <!--
-                                        <tr class="odd gradeX">
-                                            <td>Trident</td>
-                                            <td>Internet Explorer 4.0</td>
-                                            <td>Win 95+</td>
-                                            <td class="center">4</td>
-                                            <td class="center">X</td>
-                                        </tr>
-                                        <tr class="even gradeC">
-                                            <td>Trident</td>
-                                            <td>Internet Explorer 5.0</td>
-                                            <td>Win 95+</td>
-                                            <td class="center">5</td>
-                                            <td class="center">C</td>
-                                        </tr>
-                                    </tbody>
-                                    -->
+                                        <!--###### End of script ######-->
+                                        
                                 </table>
                                 <!-- /.table-responsive -->
                             </div>
@@ -452,7 +431,7 @@ if (!isset($_SESSION['username'])) {
             </div>
             <!-- /.container-fluid -->
 
-            
+            <!--
             <footer style="width: auto;">
             <div style="margin-top: auto!important; margin-bottom: auto!important;">
                 <div class="text-center" style="padding-top: 15px; padding-bottom: 30px; padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto; margin-top: auto!important; line-height: 1; font-size: 1.2rem;">
@@ -460,7 +439,17 @@ if (!isset($_SESSION['username'])) {
                 </div>
             </div>
             </footer>
-            
+                                    -->
+            <footer style="position: absolute; width: calc(100% - 310px); bottom: 0;">
+            <div style="margin: 20px 0; padding-top: 15px; padding-bottom: 15px; padding-right: 15px; padding-left: 15px;text-align:center!important;line-height: 1; font-size: 1.2rem;">
+                <span>Copyright © <a target="_blank" href="http://www.linkedin.com/in/leandro3mega">Leandro Magalhães</a> 2019</span>
+            </div>
+            </footer>                            
+
+
+
+
+
             
         </div>
         <!-- /#page-wrapper -->
@@ -496,7 +485,20 @@ if (!isset($_SESSION['username'])) {
         //-- Year for the copyright label
         //var d = new Date()
         //document.write(d.getFullYear())
-        
+        $(document).ready(function(){ 
+            //$(".form-control input-sm").attr("placeholder", "Type a name (Lastname, Firstname)").blur();
+            //$(".form-control input-sm").attr("placeholder", "variable");
+            var campo;
+            $('body').find("input[type=search], input[type=text], search").each(function(ev)
+            {
+                if(!$(this).val()) { 
+                    $(this).attr("placeholder", "Pesquisar...");
+                    //$(this).val("asdasdasdasd");
+                    //campo = $(this).val();
+                }
+            });
+            //console.log(campo);
+        });
 
     </script>
 

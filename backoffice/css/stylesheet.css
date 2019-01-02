@@ -83,5 +83,8 @@ input[type=radio] {
 
 .hidden {
     display: none;
-    background-color: rgb(175, 175, 175)
+    background-color: rgb(175, 175, 175);
+    align-content: center;
+    align-items: center;
+    align-self: center;
 }

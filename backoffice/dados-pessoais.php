@@ -154,15 +154,28 @@ if (!isset($_SESSION['username'])) {
                                 <div class="col-lg-6">
                                     
                                     <!--Fotografia-->
-                                    <div class="form-group" id="iDivLabelNome" style="display:block;">
+                                    <!--Fotografia Atual-->
+                                    <div class="form-group" id="iDivImgFotografia" style="display:block;">
                                         <label>Fotografia</label>
                                         
                                         <div class="form-control-static" style="width:50%; heigth:auto; background-color: rgb(175, 175, 175)">
                                             <img class=' img-fluid img-thumbnail' src='http://placehold.it/400x300' alt=''>
                                         </div>
                                     </div>
+                                    <!--Inserir Fotografia-->
+                                    <div class="form-group" id="iDivFileFotografia" style="display:none">
+                                                <label>Fotografia</label>
+                                                <input id="iFileFotografia" type="file">
+                                                <button id="iBtnSubmeterFotografia" class="btn btn-default btn-backoffice-size" onclick="changeFotografia()">
+                                                        Submeter
+                                                    </button>
+                                                <button id="iBtnCancelarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size">
+                                                            Cancelar
+                                                </button>
+                                                <div class="form-group"></div>
+                                    </div>
 
-                                    <button id="iBtnAlterarNome" onclick="showhideNome()" class="btn btn-default btn-backoffice-size">
+                                    <button id="iBtnAlterarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size">
                                         Alterar
                                     </button>
                                     <!-- End Fotografia -->
@@ -184,7 +197,7 @@ if (!isset($_SESSION['username'])) {
                                                 </button>
                                                 <div class="form-group"></div>
                                     </div>
-                                    <button id="iBtnAlterarNome" onclick="" class="btn btn-default btn-backoffice-size">
+                                    <button id="iBtnAlterarNome" onclick="showhideNome()" class="btn btn-default btn-backoffice-size">
                                         Alterar
                                     </button>
                                     <!-- End Nome -->
@@ -344,6 +357,33 @@ if (!isset($_SESSION['username'])) {
                 btnAlterarEmail.style = "display: none";
                 //btnSubmeterEmail.style = "display: none; margin-top:15px";
                 //btnCancelarEmail.style = "display: none; margin-top:15px";
+                
+            }
+        }
+        
+        function showhideFotografia() {
+            var divImgFotografia = document.getElementById("iDivImgFotografia");
+            var divFileFotografia = document.getElementById("iDivFileFotografia");
+            var btnAlterarFotografia = document.getElementById("iBtnAlterarFotografia");
+            var btnSubmeterFotografia = document.getElementById("iBtnSubmeterFotografia");
+            var btnCancelarFotografia = document.getElementById("iBtnCancelarFotografia");
+            
+            //div.classList.toggle('hidden');
+            conta += 1;
+            console.log(conta);
+            
+            if (conta % 2 == 0) {
+                divImgFotografia.style = "display: block";
+                divFileFotografia.style = "display: none";
+                btnAlterarFotografia.style = "display: block";
+                //btnSubmeterFotografia.style = "display: none; margin-top:15px";
+                //btnCancelarFotografia.style = "display: none; margin-top:15px";
+            } else {
+                divImgFotografia.style = "display: none";
+                divFileFotografia.style = "display: block";
+                btnAlterarFotografia.style = "display: none";
+                //btnSubmeterFotografia.style = "display: none; margin-top:15px";
+                //btnCancelarFotografia.style = "display: none; margin-top:15px";
                 
             }
         }
