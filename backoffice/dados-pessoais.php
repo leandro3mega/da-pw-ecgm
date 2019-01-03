@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+header("Pragma: no-cache"); // HTTP 1.0.
+header("Expires: 0"); // Proxies.
+
 require_once("connectdb.php");
 
 if (!isset($_SESSION['username'])) {
@@ -41,6 +45,9 @@ if (!isset($_SESSION['username'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 
     <title>Alterar Dados Pessoais</title>
 
@@ -158,27 +165,56 @@ if (!isset($_SESSION['username'])) {
                                     <div class="form-group" id="iDivImgFotografia" style="display:block;">
                                         <label>Fotografia</label>
                                         
-                                        <div class="form-control-static" style="width:50%; heigth:auto; background-color: rgb(175, 175, 175)">
-                                            <img class=' img-fluid img-thumbnail' src='http://placehold.it/400x300' alt=''>
+                                        <div class="form-control-static" style="width:50%; heigth:auto;">
+                                            <?php
+                                            $resultIMG;
+                                            $diretorioIMG = "images/utilizadores/";
+
+                                            if ($tipo == 1) $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM aluno WHERE fk_idutilizador=$id");
+                                            else if ($tipo == 2) $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM  WHERE professor fk_idutilizador=$id");
+
+                                            if (mysqli_num_rows($resultIMG) == 1) {
+                                                $row = $resultIMG->fetch_assoc();
+                                                $nomeIMG = ($row['fotografia']);
+                                            }
+
+                                            echo ("<img class=' img-fluid img-thumbnail' src='" . $diretorioIMG . $nomeIMG . "' alt=''>");
+                                            ?>
                                         </div>
                                     </div>
                                     <!--Inserir Fotografia-->
                                     <div class="form-group" id="iDivFileFotografia" style="display:none">
                                                 <label>Fotografia</label>
-                                                <input id="iFileFotografia" type="file">
-                                                <button id="iBtnSubmeterFotografia" class="btn btn-default btn-backoffice-size" onclick="changeFotografia()">
-                                                        Submeter
-                                                    </button>
-                                                <button id="iBtnCancelarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size">
+                                                <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post" enctype='multipart/form-data'style="">
+                                                    <div class="form-group">
+                                                        <input type="file" name="avatar" id="avatar_file_upload_field" accept="image/jpeg,image/pjpeg,image/bmp,image/gif,image/jpeg,image/png"/>
+                                                        <input type="hidden" name="iduser" id="iIdUser" value="<?php echo ($id); ?>"/>
+                                                        <input type="submit" class="btn btn-default btn-backoffice-size" style="margin-top:15px"/>
+                                                        <button id="iBtnCancelarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size" style="margin-top:15px">
                                                             Cancelar
-                                                </button>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                                <!--<button id="iBtnSubmeterFotografia" class="btn btn-default btn-backoffice-size" onclick="changeFotografia()">
+                                                        Submeter
+                                                    </button>-->
+                                                
                                                 <div class="form-group"></div>
                                     </div>
 
                                     <button id="iBtnAlterarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size">
                                         Alterar
                                     </button>
-                                    <!-- End Fotografia -->
+                                    <!-- End Fotografia --><!--
+                                    <div class="form-group">
+                                        <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post" enctype='multipart/form-data'style="">
+                                            <div class="form-group">
+                                                <input type="file" name="avatar" id="avatar_file_upload_field" accept="image/jpeg,image/pjpeg,image/bmp,image/gif,image/jpeg,image/png"/>
+                                                <input type="hidden" name="iduser" id="iIdUser" value="<?php echo ($id); ?>"/>
+                                                <input type="submit" class="btn btn-default btn-backoffice-size" style="margin-top:15px"/>
+                                            </div>
+                                        </form>
+                                    </div>-->
 
                                     <!-- Nome -->
                                     <div class="form-group div-margin-separa" id="iDivLabelNome" style="display:block;">
@@ -306,7 +342,9 @@ if (!isset($_SESSION['username'])) {
         $("[data-toggle=popover]")
         .popover()
         
-        var conta = 0;
+        var nomeInputHidden =true;
+        var emailInputHidden =true;
+        var fotografiaInputHidden =true;
         
         function showhideNome() {
             var divLabelNome = document.getElementById("iDivLabelNome");
@@ -315,11 +353,10 @@ if (!isset($_SESSION['username'])) {
             var btnSubmeterNome = document.getElementById("iBtnSubmeterNome");
             var btnCancelarNome = document.getElementById("iBtnCancelarNome");
             
-            //div.classList.toggle('hidden');
-            conta += 1;
-            console.log(conta);
+            if(nomeInputHidden) nomeInputHidden = false;
+            else nomeInputHidden = true;
             
-            if (conta % 2 == 0) {
+            if (nomeInputHidden) {
                 divLabelNome.style = "display: block";
                 divInputNome.style = "display: none";
                 btnAlterarNome.style = "display: block";
@@ -341,11 +378,10 @@ if (!isset($_SESSION['username'])) {
             var btnSubmeterEmail = document.getElementById("iBtnSubmeterEmail");
             var btnCancelarEmail = document.getElementById("iBtnCancelarEmail");
             
-            //div.classList.toggle('hidden');
-            conta += 1;
-            console.log(conta);
+            if(emailInputHidden) emailInputHidden = false;
+            else emailInputHidden = true;
             
-            if (conta % 2 == 0) {
+            if (emailInputHidden) {
                 divLabelEmail.style = "display: block";
                 divInputEmail.style = "display: none";
                 btnAlterarEmail.style = "display: block";
@@ -368,11 +404,10 @@ if (!isset($_SESSION['username'])) {
             var btnSubmeterFotografia = document.getElementById("iBtnSubmeterFotografia");
             var btnCancelarFotografia = document.getElementById("iBtnCancelarFotografia");
             
-            //div.classList.toggle('hidden');
-            conta += 1;
-            console.log(conta);
+            if(fotografiaInputHidden) fotografiaInputHidden = false;
+            else fotografiaInputHidden = true;
             
-            if (conta % 2 == 0) {
+            if (fotografiaInputHidden) {
                 divImgFotografia.style = "display: block";
                 divFileFotografia.style = "display: none";
                 btnAlterarFotografia.style = "display: block";
