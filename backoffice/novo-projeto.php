@@ -4,7 +4,7 @@ session_start();
 require_once("connectdb.php");
 
 if (!isset($_SESSION['username'])) {
-    header("location:index.php");
+    header("location:iniciar-sessao.php");
     exit();
 } else {
     $id = $_SESSION['id'];
@@ -144,26 +144,32 @@ if (!isset($_SESSION['username'])) {
                     <!-- /.col-lg-12 -->
 
                     <!-- Formulário -->
-                    <form role="form">
+                    <form role="form" action="novoprojeto.php" method="post" enctype='multipart/form-data'>
                         <!-- Titulo -->
                         <div class="form-group">
                             <label>Título</label>
-                            <input type="text" class="form-control"  maxlength="50" autofocus required placeholder="Insira o título do projeto"> 
+                            <input type="text" class="form-control" name="titulo" maxlength="50" autofocus required
+                                placeholder="Insira o título do projeto">
                         </div>
 
                         <!-- Descrição -->
                         <div class="form-group">
                             <label>Descrição</label>
-                            <textarea id="idescricao" class="form-control" pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}" rows="10" maxlength="1000" required placeholder="Insira a descrição do projeto"></textarea>
+                            <textarea id="idescricao" class="form-control" name="descricao" pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}"
+                                rows="10" maxlength="1000" required placeholder="Insira a descrição do projeto"></textarea>
                             <p id="helpDescricao" class="help-block">Carateres: 0 de 1000</p>
                         </div>
 
                         <!-- Autores -->
-                            <div class="form-group">
-                                <label>Autor(es) deste projeto</label>
-                                <input type="text" class="form-control" maxlength="100" placeholder="Insira os autores do projeto (separados por ponto e vígula)">
-                                <p class="help-block">Exemplo: Luís Mota;João Almeida</p>
-                            </div>
+                        <div class="form-group">
+                            <label>Autor(es) deste projeto</label>
+                            <input type="text" class="form-control" name="autores" maxlength="100" required placeholder="Insira os autores do projeto (separados por ponto e vígula)">
+                            <p class="help-block tooltip-demo">Exemplo: Luís Mota;João Almeida
+                                <a><i class="fa fa-info-circle fa-fw" data-toggle="tooltip" data-placement="right"
+                                        title="De modo a que outros autores possam editar o projeto, insira o nome tal como estes estão registados no site."></i></a>
+                            </p>
+
+                        </div>
                         <div class="row" style="margin-top:20px; border-top: 1px solid #eee;">
 
                             <!-- Coluna 1 -->
@@ -186,19 +192,21 @@ if (!isset($_SESSION['username'])) {
                                     <label>Semestre</label>
                                     <div style="display: block;">
                                         <label class="radio-inline">
-                                            <input type="radio" class="semestre" onChange="getUCS()" name="semestre" id="semestre1" value="1">1º
+                                            <input type="radio" class="semestre" name="semestre" onChange="getUCS()" id="semestre1"
+                                                value="1">1º
                                             Semestre
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" class="semestre" onChange="getUCS()" name="semestre" id="semestre2" value="2">2º Semestre
+                                            <input type="radio" class="semestre" name="semestre" onChange="getUCS()" id="semestre2"
+                                                value="2">2º Semestre
                                         </label>
                                     </div>
                                 </div>
 
                                 <!-- Unidade Curricular -->
                                 <div class="form-group">
-                                    <label>Selecione Unidade Curricular para a qual o projeto foi desenvolvido</label>
-                                    <select id="iSelectUC" class="form-control" name="selectUC">
+                                    <label>Unidade Curricular associada ao projeto</label>
+                                    <select id="iSelectUC" class="form-control" name="selectUC" required>
                                         <?php
                                         /*
                                         //-- Select do nome das UCs
@@ -214,33 +222,37 @@ if (!isset($_SESSION['username'])) {
                                 </div>
 
                                 <!-- Fotografia -->
-                                <div class="form-group">
+                                <div class="form-group" style="margin-top:30px">
                                     <label>Insira imagem</label>
                                     </br>
                                     <div style="display:inline-flex; margin-bottom: 15px">
-                                        <p style="min-width:110px">Nº de Imagens</p>
-                                        <select class="form-control" style="max-width: 100px">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
+                                        <p style="min-width:110px">Nº de Imagens:</p>
+                                        <select id="iselectIMG" class="form-control" name="num-fotos" onchange="addRemoveIMG()"
+                                            style="max-width: 100px; max-height:30px">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
                                         </select>
 
                                     </div>
-                                    <input type="file">
+                                    <div id="icontainerIMG">
+                                        <input type="file" name="imagem">
+                                    </div>
                                 </div>
 
                                 <!-- Ficheiro -->
-                                <div class="form-group">
+                                <div class="form-group" style="margin-top:30px">
                                     <label>Insira documento PDF (Opcional)</label>
-                                    <input type="file">
+                                    <input type="file" name="ficheiro">
                                 </div>
 
                                 <!-- Video -->
-                                <div class="form-group">
-                                    <label>Vídeo a inserir no projeto (Opcional)</label>
-                                    <input type="url" class="form-control" pattern="https?://.+" placeholder="https://www.youtube.com/watch?v=Cq54GSWDaYI">
+                                <div class="form-group" style="margin-top:30px">
+                                    <label>Inserir vídeo (Opcional)</label>
+                                    <input type="url" class="form-control" name="video" pattern="https?://.+"
+                                        placeholder="https://www.youtube.com/watch?v=Cq54GSWDaYI">
                                     <p class="help-block">Exemplo: https://www.youtube.com/watch?v=Cq54GSWDaYI</p>
                                 </div>
                             </div>
@@ -248,34 +260,68 @@ if (!isset($_SESSION['username'])) {
                             <!-- Coluna 2 -->
                             <div class="col-lg-6" style="padding-top:20px; border-left: 1px solid #eee;">
 
-                                <!-- Palavras Chave -->
-                                <div class="form-group">
-                                    <label>Palavras-Chave</label>
-                                    <input type="text" class="form-control" placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
-                                    <p class="help-block">Exemplo: Desenho;Mockup</p>
-                                </div>
-
                                 <!-- Data -->
                                 <div class="form-group">
                                     <label>Data em que o projeto foi finalizado</label>
-                                    <input type="date" class="form-control">
+                                    <input type="date" class="form-control" name="data" required>
                                     <p class="help-block">Exemplo: 12/03/2019</p>
                                 </div>
 
-                                <!-- Categorias -->
+                                <!-- Ano letivo -->
                                 <div class="form-group">
-                                    <label>Categorias que pretende associar ao seu projeto</label>
-                                    <input type="text" class="form-control" placeholder="Insira as categorias do projeto (separadas por ponto e vígula)">
-                                    <p class="help-block">Exemplo: Desenho;Illustração</p>
+                                    <label>O projeto foi realizado no...</label>
+                                    <select id="iAnoLetivo" class="form-control" name="selectAnoLetivo" required>
+                                        <option value="1">1º ano</option>
+                                        <option value="2">2º ano</option>
+                                        <option value="3">3º ano</option>
+                                    </select>
                                 </div>
 
+                                <!-- Categorias -->
+                                <!--
+                                <div class="form-group" style="margin-top:30px">
+                                    <label>Categorias que pretende associar ao seu projeto</label>
+                                    <input type="text" class="form-control" name="categorias" placeholder="Insira as categorias do projeto (separadas por ponto e vígula)">
+                                    <p class="help-block">Exemplo: Desenho;Illustração</p>
+                                </div>
+                                -->
+
                                 <!-- Ferramentas -->
-                                <div class="form-group">
+                                <!--
+                                <div class="form-group" style="margin-top:30px">
                                     <label>Ferramentas utilizadas</label>
-                                    <input type="text" class="form-control" placeholder="Insira as categorias do projeto (separadas por ponto e vígula)">
+                                    <input type="text" class="form-control" name="ferramentas" placeholder="Insira as categorias do projeto (separadas por ponto e vígula)">
                                     <p class="help-block">Exemplo: Adobe Illustrator;Sketch</p>
                                 </div>
-                                
+                                -->
+
+                                <!-- Ferramentas -->
+                                <div class="form-group" style="margin-top:30px">
+                                    <label>Ferramentas utilizadas</label>
+                                    <div>
+                                        <?php
+                                        //-- Script de selecionar ferramentas
+
+                                        $resultCategoria = mysqli_query($connectDB, "SELECT idferramenta, nome, descricao, empresa FROM ferramenta ORDER BY nome");
+
+                                        if (mysqli_num_rows($resultCategoria) > 0) {
+                                            while ($row = $resultCategoria->fetch_assoc()) {
+                                                echo ("
+                                                <input type='checkbox' name='cb[]' value='" . $row['idferramenta'] . "'/> " . $row['nome'] . "<br/>
+                                                ");
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+
+                                <!-- Palavras Chave -->
+                                <div class="form-group" style="margin-top:30px">
+                                    <label>Palavras-Chave</label>
+                                    <input type="text" class="form-control" name="palavras-chave" placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
+                                    <p class="help-block">Exemplo: Desenho; Mockup</p>
+                                </div>
+
                                 <!--
                                 <div class="form-group">
                                     <label>Categorias que pretende associar ao seu projeto</label>
@@ -312,9 +358,11 @@ if (!isset($_SESSION['username'])) {
                                 </div>
                                 -->
                             </div>
+
                         </div>
-                        <div style="width: 200px; display: block; margin-left:auto; margin-right: auto; margin-top:20px; margin-bottom:40px">
-                            <input type="submit" class="btn btn-default btn-backoffice-size" style="min-width:200px" value="Submeter">
+                        <div style="width: 200px; display: block; margin-left:auto; margin-right: auto; margin-top:20px; margin-bottom:80px">
+                            <input type="submit" class="btn btn-default btn-backoffice-size" style="min-width:200px"
+                                value="Submeter">
                         </div>
                     </form>
                     <!-- /.row -->
@@ -323,6 +371,12 @@ if (!isset($_SESSION['username'])) {
 
             </div>
             <!-- /#wrapper -->
+            <footer class="sticky-footer">
+                <div style="margin: 20px 0; padding-top: 15px; padding-bottom: 15px; padding-right: 15px; padding-left: 15px;text-align:center!important;line-height: 1; font-size: 1.2rem;">
+                    <span>Copyright © <a target="_blank" href="http://www.linkedin.com/in/leandro3mega">Leandro
+                            Magalhães</a> 2019</span>
+                </div>
+            </footer>
 
             <!-- jQuery -->
             <script src="vendor/jquery/jquery.min.js"></script>
@@ -339,34 +393,70 @@ if (!isset($_SESSION['username'])) {
 </body>
 <script>
     //-- Semestre selecionado
-    function getUCS(){
+    function getUCS() {
         var semestre = $('.semestre:checked').val();
-    
+
         //console.log("Semestre: " + semestre);
         $('#iSelectUC').empty();
 
         $.ajax({
-                type: "GET",
-                url: 'novoprojetoHelper.php',
-                data:{'action':'get_ucs', 'semestre': semestre},
-                dataType: 'json',
-                success:function(response) {
-                    $.each(response, function(index, element) {
-                        console.log(element);   // print json code
-                        $("#iSelectUC").append("<option value='" + element.idunidade_curricular + "'>" + element.nome + "</option>");
-                    });
-                    alert(response);
-                }
+            type: "GET",
+            url: 'novoprojeto_ucs.php',
+            data: {
+                'action': 'get_ucs',
+                'semestre': semestre
+            },
+            dataType: 'json',
+            success: function (response) {
+                $.each(response, function (index, element) {
+                    console.log(element); // print json code
+                    $("#iSelectUC").append("<option value='" + element.idunidade_curricular + "'>" +
+                        element.nome + "</option>");
+                });
+                //alert(response);
+            }
 
-            });
+        });
 
     }
 
     //-- Mostra o numero de letras na descrição (textarea)
-    $("#idescricao").keyup(function(){
+    $("#idescricao").keyup(function () {
         $("#helpDescricao").text($(this).val().length + "/1000");
     });
-    
+
+    //-- Adiciona ou remove imagens dependendo do numero selecionado
+    function addRemoveIMG() {
+        var containerIMG = document.getElementById('icontainerIMG');
+        var selector = document.getElementById('iselectIMG');
+        var value = selector[selector.selectedIndex].value;
+
+        containerIMG.innerHTML = "";
+
+        for (var i = 1; i <= value; i++) {
+            var tempimg = document.createElement("input");
+            tempimg.setAttribute("type", "file");
+            tempimg.name = "image[]";
+            tempimg.required = true;
+            tempimg.multiple = true;
+
+            if (i > 1)
+                tempimg.style = "margin-top:15px; margin-bottom:15px";
+
+            containerIMG.appendChild(tempimg);
+
+            var temphidden = document.createElement("input");
+            temphidden.setAttribute("type", "hidden");
+            temphidden.value = i;
+            containerIMG.appendChild(temphidden);
+        }
+    }
+
+    // hint popup
+    $('.tooltip-demo').tooltip({
+        selector: "[data-toggle=tooltip]",
+        container: "body"
+    })
 
 
     $(document).ready(function () {
@@ -375,7 +465,7 @@ if (!isset($_SESSION['username'])) {
             addCheckbox2($('#txtNameCat').val());
         });
 
-
+        addRemoveIMG();
     });
 
     function addCheckbox(name) {

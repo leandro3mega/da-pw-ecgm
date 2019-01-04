@@ -3,7 +3,7 @@ require_once("connectdb.php");
 
 session_start();
 if (!isset($_SESSION['username'])) {
-    header("location:index.php");
+    header("location:iniciar-sessao.php");
     exit();
 } else {
     $id = $_SESSION['id'];
@@ -44,7 +44,7 @@ if (!isset($_SESSION['username'])) {
     <meta name="author" content="">
 
     <title>
-    <?php 
+        <?php 
     if ($tipo == 0) echo ("Projetos");
     else if ($tipo == 1) echo ("Meus Projetos");
     else echo ("Projetos");
@@ -99,9 +99,12 @@ if (!isset($_SESSION['username'])) {
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                
-                <li> <?php echo $cargo; ?> </li>
-                <li><a><i class="fa fa-user fa-fw"></i> <?php echo $username; ?> </a>
+
+                <li>
+                    <?php echo $cargo; ?>
+                </li>
+                <li><a><i class="fa fa-user fa-fw"></i>
+                        <?php echo $username; ?> </a>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
 
             </ul>
@@ -110,11 +113,11 @@ if (!isset($_SESSION['username'])) {
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        
+
                         <li>
                             <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
-                        
+
                         <li>
                             <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Meus Projetos</a>
                         </li>
@@ -122,20 +125,22 @@ if (!isset($_SESSION['username'])) {
                         <li>
                             <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Projeto</a>
                         </li>
-                        
+
                         <li>
                             <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="alterar-password.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra Passe</a>
+                                    <a href="alterar-password.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
+                                        Passe</a>
                                 </li>
                                 <li>
-                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados Pessoais</a>
+                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados
+                                        Pessoais</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
-                        
+
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -171,9 +176,9 @@ if (!isset($_SESSION['username'])) {
                             <!-- /.panel-heading -->
                             <div class="panel-body">
                                 <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                    
-                                        <!--###### Start of script ######-->
-                                        <?php 
+
+                                    <!--###### Start of script ######-->
+                                    <?php 
                                         //require_once("connectdb.php");
                                         if ($tipo == 0) {
                                             selectProjetoAdmin($connectDB);
@@ -232,7 +237,6 @@ if (!isset($_SESSION['username'])) {
 
                                                 //-- Print a new table line
                                                 echo
-
                                                     "<tr class='odd gradeX'>" .
                                                     "<td style='vertical-align: middle'><img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt=''></td>" .
                                                     "<td style='vertical-align: middle'>" . $row['titulo'] . "</td>" .
@@ -417,8 +421,8 @@ if (!isset($_SESSION['username'])) {
                                         $connectDB->close();    // Close connection
 
                                         ?>
-                                        <!--###### End of script ######-->
-                                        
+                                    <!--###### End of script ######-->
+
                                 </table>
                                 <!-- /.table-responsive -->
                             </div>
@@ -441,16 +445,17 @@ if (!isset($_SESSION['username'])) {
             </footer>
                                     -->
             <footer style="position: absolute; width: calc(100% - 310px); bottom: 0;">
-            <div style="margin: 20px 0; padding-top: 15px; padding-bottom: 15px; padding-right: 15px; padding-left: 15px;text-align:center!important;line-height: 1; font-size: 1.2rem;">
-                <span>Copyright © <a target="_blank" href="http://www.linkedin.com/in/leandro3mega">Leandro Magalhães</a> 2019</span>
-            </div>
-            </footer>                            
+                <div style="margin: 20px 0; padding-top: 15px; padding-bottom: 15px; padding-right: 15px; padding-left: 15px;text-align:center!important;line-height: 1; font-size: 1.2rem;">
+                    <span>Copyright © <a target="_blank" href="http://www.linkedin.com/in/leandro3mega">Leandro
+                            Magalhães</a> 2019</span>
+                </div>
+            </footer>
 
 
 
 
 
-            
+
         </div>
         <!-- /#page-wrapper -->
 
@@ -485,13 +490,12 @@ if (!isset($_SESSION['username'])) {
         //-- Year for the copyright label
         //var d = new Date()
         //document.write(d.getFullYear())
-        $(document).ready(function(){ 
+        $(document).ready(function () {
             //$(".form-control input-sm").attr("placeholder", "Type a name (Lastname, Firstname)").blur();
             //$(".form-control input-sm").attr("placeholder", "variable");
             var campo;
-            $('body').find("input[type=search], input[type=text], search").each(function(ev)
-            {
-                if(!$(this).val()) { 
+            $('body').find("input[type=search], input[type=text], search").each(function (ev) {
+                if (!$(this).val()) {
                     $(this).attr("placeholder", "Pesquisar...");
                     //$(this).val("asdasdasdasd");
                     //campo = $(this).val();
@@ -499,7 +503,6 @@ if (!isset($_SESSION['username'])) {
             });
             //console.log(campo);
         });
-
     </script>
 
 </body>

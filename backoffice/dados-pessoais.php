@@ -5,10 +5,12 @@ header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
 header("Pragma: no-cache"); // HTTP 1.0.
 header("Expires: 0"); // Proxies.
 
+clearstatcache();   // limpa a cache
+
 require_once("connectdb.php");
 
 if (!isset($_SESSION['username'])) {
-    header("location:index.php");
+    header("location:iniciar-sessao.php");
     exit();
 
 } else {
@@ -98,7 +100,9 @@ if (!isset($_SESSION['username'])) {
 
             <ul class="nav navbar-top-links navbar-right">
 
-                <li> <?php echo $cargo; ?> </li>
+                <li>
+                    <?php echo $cargo; ?>
+                </li>
                 <li><a><i class="fa fa-user fa-fw"></i>
                         <?php echo $username; ?> </a>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
@@ -115,11 +119,11 @@ if (!isset($_SESSION['username'])) {
                         </li>
 
                         <li>
-                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Todos Trabalhos</a>
+                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Meus Projetos</a>
                         </li>
 
                         <li>
-                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Trabalho</a>
+                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Projeto</a>
                         </li>
 
                         <li>
@@ -159,19 +163,19 @@ if (!isset($_SESSION['username'])) {
                         <div>
                             <div class="row">
                                 <div class="col-lg-6">
-                                    
+
                                     <!--Fotografia-->
                                     <!--Fotografia Atual-->
                                     <div class="form-group" id="iDivImgFotografia" style="display:block;">
                                         <label>Fotografia</label>
-                                        
+
                                         <div class="form-control-static" style="width:50%; heigth:auto;">
                                             <?php
                                             $resultIMG;
                                             $diretorioIMG = "images/utilizadores/";
 
                                             if ($tipo == 1) $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM aluno WHERE fk_idutilizador=$id");
-                                            else if ($tipo == 2) $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM  WHERE professor fk_idutilizador=$id");
+                                            else if ($tipo == 2) $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM docente WHERE    fk_idutilizador=$id");
 
                                             if (mysqli_num_rows($resultIMG) == 1) {
                                                 $row = $resultIMG->fetch_assoc();
@@ -184,28 +188,33 @@ if (!isset($_SESSION['username'])) {
                                     </div>
                                     <!--Inserir Fotografia-->
                                     <div class="form-group" id="iDivFileFotografia" style="display:none">
-                                                <label>Fotografia</label>
-                                                <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post" enctype='multipart/form-data'style="">
-                                                    <div class="form-group">
-                                                        <input type="file" name="avatar" id="avatar_file_upload_field" accept="image/jpeg,image/pjpeg,image/bmp,image/gif,image/jpeg,image/png"/>
-                                                        <input type="hidden" name="iduser" id="iIdUser" value="<?php echo ($id); ?>"/>
-                                                        <input type="submit" class="btn btn-default btn-backoffice-size" style="margin-top:15px"/>
-                                                        <button id="iBtnCancelarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size" style="margin-top:15px">
-                                                            Cancelar
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                                <!--<button id="iBtnSubmeterFotografia" class="btn btn-default btn-backoffice-size" onclick="changeFotografia()">
-                                                        Submeter
-                                                    </button>-->
-                                                
-                                                <div class="form-group"></div>
+                                        <label>Fotografia</label>
+                                        <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post"
+                                            enctype='multipart/form-data' style="">
+                                            <div class="form-group">
+                                                <input type="file" name="avatar" id="avatar_file_upload_field" accept="image/jpeg,image/pjpeg,image/bmp,image/gif,image/jpeg,image/png" />
+                                                <input type="hidden" name="iduser" id="iIdUser" value="<?php echo ($id); ?>" />
+                                                <input type="submit" class="btn btn-default btn-backoffice-size" style="margin-top:15px" />
+                                                <button id="iBtnCancelarFotografia" onclick="showhideFotografia()"
+                                                    class="btn btn-default btn-backoffice-size" style="margin-top:15px">
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <!--
+                                        <button id="iBtnSubmeterFotografia" class="btn btn-default btn-backoffice-size" onclick="changeFotografia()">
+                                            Submeter
+                                        </button>
+                                        -->
+
+                                        <div class="form-group"></div>
                                     </div>
 
                                     <button id="iBtnAlterarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size">
                                         Alterar
                                     </button>
-                                    <!-- End Fotografia --><!--
+                                    <!-- End Fotografia -->
+                                    <!--
                                     <div class="form-group">
                                         <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post" enctype='multipart/form-data'style="">
                                             <div class="form-group">
@@ -219,19 +228,23 @@ if (!isset($_SESSION['username'])) {
                                     <!-- Nome -->
                                     <div class="form-group div-margin-separa" id="iDivLabelNome" style="display:block;">
                                         <label>Nome</label>
-                                        <p class="form-control-static"><?php echo ($nome); ?></p>
+                                        <p class="form-control-static">
+                                            <?php echo ($nome); ?>
+                                        </p>
                                     </div>
-                                        
+
                                     <div class="form-group" id="iDivInputNome" style="display:none">
-                                                <label>Nome</label>
-                                                <input type="text" id="iInputNome" class="form-control" placeholder="Insira o seu nome" value="<?php echo $nome; ?>">
-                                                <button id="iBtnSubmeterNome" class="btn btn-default btn-backoffice-size" onclick="changeNome()">
-                                                        Submeter
-                                                    </button>
-                                                <button id="iBtnCancelarNome" onclick="showhideNome()" class="btn btn-default btn-backoffice-size">
-                                                            Cancelar
-                                                </button>
-                                                <div class="form-group"></div>
+                                        <label>Nome</label>
+                                        <input type="text" id="iInputNome" class="form-control" placeholder="Insira o seu nome"
+                                            value="<?php echo $nome; ?>">
+                                        <button id="iBtnSubmeterNome" class="btn btn-default btn-backoffice-size"
+                                            onclick="changeNome()">
+                                            Submeter
+                                        </button>
+                                        <button id="iBtnCancelarNome" onclick="showhideNome()" class="btn btn-default btn-backoffice-size">
+                                            Cancelar
+                                        </button>
+                                        <div class="form-group"></div>
                                     </div>
                                     <button id="iBtnAlterarNome" onclick="showhideNome()" class="btn btn-default btn-backoffice-size">
                                         Alterar
@@ -241,20 +254,26 @@ if (!isset($_SESSION['username'])) {
                                     <!-- Email -->
                                     <div class="form-group div-margin-separa" id="iDivLabelEmail" style="display:block">
                                         <label>Email</label>
-                                        <p class="form-control-static"><?php echo $email; ?></p>
+                                        <p class="form-control-static">
+                                            <?php echo $email; ?>
+                                        </p>
                                     </div>
 
                                     <div class="form-group div-margin-separa" id="iDivInputEmail" style="display:none">
                                         <label>Email</label>
-                                        <input type="email" name="email" id="iInputEmail" class="form-control" placeholder="Insira novo e-mail" value="<?php echo $email; ?>">
-                                        <button id="iBtnSubmeterEmail" class="btn btn-default btn-backoffice-size" style="margin-top:15px" onclick="changeEmail()">
-                                                        Submeter
-                                                    </button>
-                                                <button id="iBtnCancelarEmail" class="btn btn-default btn-backoffice-size" style="margin-top:15px" onclick="showhideEmail()">
-                                                            Cancelar
-                                                </button>
+                                        <input type="email" name="email" id="iInputEmail" class="form-control"
+                                            placeholder="Insira novo e-mail" value="<?php echo $email; ?>">
+                                        <button id="iBtnSubmeterEmail" class="btn btn-default btn-backoffice-size"
+                                            style="margin-top:15px" onclick="changeEmail()">
+                                            Submeter
+                                        </button>
+                                        <button id="iBtnCancelarEmail" class="btn btn-default btn-backoffice-size"
+                                            style="margin-top:15px" onclick="showhideEmail()">
+                                            Cancelar
+                                        </button>
                                     </div>
-                                    <button id="iBtnAlterarEmail" onclick="showhideEmail()" class="btn btn-default btn-backoffice-size" style="margin-bottom:20px">
+                                    <button id="iBtnAlterarEmail" onclick="showhideEmail()" class="btn btn-default btn-backoffice-size"
+                                        style="margin-bottom:20px">
                                         Alterar
                                     </button>
                                     <!-- End Email -->
@@ -288,7 +307,7 @@ if (!isset($_SESSION['username'])) {
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <!-- /.row -->
@@ -306,7 +325,7 @@ if (!isset($_SESSION['username'])) {
                     </div>
                 </footer>
 -->
-<!-- Esta está boa
+            <!-- Esta está boa
         <footer style="position: absolute; width: calc(100% - 310px); bottom: 0;">
             <div style="margin: 20px 0; padding-top: 15px; padding-bottom: 15px; padding-right: 15px; padding-left: 15px;text-align:center!important;line-height: 1; font-size: 1.2rem;">
                 <span>Copyright © <a target="_blank" href="http://www.linkedin.com/in/leandro3mega">Leandro Magalhães</a> 2019</span>
@@ -340,22 +359,22 @@ if (!isset($_SESSION['username'])) {
         })
         // popover demo
         $("[data-toggle=popover]")
-        .popover()
-        
-        var nomeInputHidden =true;
-        var emailInputHidden =true;
-        var fotografiaInputHidden =true;
-        
+            .popover()
+
+        var nomeInputHidden = true;
+        var emailInputHidden = true;
+        var fotografiaInputHidden = true;
+
         function showhideNome() {
             var divLabelNome = document.getElementById("iDivLabelNome");
             var divInputNome = document.getElementById("iDivInputNome");
             var btnAlterarNome = document.getElementById("iBtnAlterarNome");
             var btnSubmeterNome = document.getElementById("iBtnSubmeterNome");
             var btnCancelarNome = document.getElementById("iBtnCancelarNome");
-            
-            if(nomeInputHidden) nomeInputHidden = false;
+
+            if (nomeInputHidden) nomeInputHidden = false;
             else nomeInputHidden = true;
-            
+
             if (nomeInputHidden) {
                 divLabelNome.style = "display: block";
                 divInputNome.style = "display: none";
@@ -370,17 +389,17 @@ if (!isset($_SESSION['username'])) {
                 btnCancelarNome.style = "display: inline-block; margin-top:15px";
             }
         }
-        
+
         function showhideEmail() {
             var divLabelEmail = document.getElementById("iDivLabelEmail");
             var divInputEmail = document.getElementById("iDivInputEmail");
             var btnAlterarEmail = document.getElementById("iBtnAlterarEmail");
             var btnSubmeterEmail = document.getElementById("iBtnSubmeterEmail");
             var btnCancelarEmail = document.getElementById("iBtnCancelarEmail");
-            
-            if(emailInputHidden) emailInputHidden = false;
+
+            if (emailInputHidden) emailInputHidden = false;
             else emailInputHidden = true;
-            
+
             if (emailInputHidden) {
                 divLabelEmail.style = "display: block";
                 divInputEmail.style = "display: none";
@@ -393,20 +412,20 @@ if (!isset($_SESSION['username'])) {
                 btnAlterarEmail.style = "display: none";
                 //btnSubmeterEmail.style = "display: none; margin-top:15px";
                 //btnCancelarEmail.style = "display: none; margin-top:15px";
-                
+
             }
         }
-        
+
         function showhideFotografia() {
             var divImgFotografia = document.getElementById("iDivImgFotografia");
             var divFileFotografia = document.getElementById("iDivFileFotografia");
             var btnAlterarFotografia = document.getElementById("iBtnAlterarFotografia");
             var btnSubmeterFotografia = document.getElementById("iBtnSubmeterFotografia");
             var btnCancelarFotografia = document.getElementById("iBtnCancelarFotografia");
-            
-            if(fotografiaInputHidden) fotografiaInputHidden = false;
+
+            if (fotografiaInputHidden) fotografiaInputHidden = false;
             else fotografiaInputHidden = true;
-            
+
             if (fotografiaInputHidden) {
                 divImgFotografia.style = "display: block";
                 divFileFotografia.style = "display: none";
@@ -419,10 +438,10 @@ if (!isset($_SESSION['username'])) {
                 btnAlterarFotografia.style = "display: none";
                 //btnSubmeterFotografia.style = "display: none; margin-top:15px";
                 //btnCancelarFotografia.style = "display: none; margin-top:15px";
-                
+
             }
         }
-        
+
         //var inputNome = document.getElementById("iInputNome");
         //var btnSubmeterNome = document.getElementById("iBtnSubmeterNome");
         //var novoNome = inputNome.value;
@@ -444,41 +463,46 @@ if (!isset($_SESSION['username'])) {
         }
         */
 
-        
+
         //-- Ajax to submite change of the user name
         function changeNome() {
             novoNome = $('#iInputNome').val();
             console.log("Novo nome: " + novoNome);
-            
+
             $.ajax({
                 type: "POST",
                 url: 'changeuserdata.php',
-                data:{'action':'change_name', 'name': novoNome},
-                success:function(html) {
+                data: {
+                    'action': 'change_name',
+                    'name': novoNome
+                },
+                success: function (html) {
                     alert(html);
                     location.reload();
                 }
 
             });
         }
-        
+
         //-- Ajax to submite change of the user email
         function changeEmail() {
             novoEmail = $('#iInputEmail').val();
             console.log("Novo Email: " + novoEmail);
-            
+
             $.ajax({
                 type: "POST",
                 url: 'changeuserdata.php',
-                data:{'action':'change_email', 'email': novoEmail},
-                success:function(html) {
+                data: {
+                    'action': 'change_email',
+                    'email': novoEmail
+                },
+                success: function (html) {
                     alert(html);
                     location.reload();
                 }
 
             });
         }
-        
     </script>
 
 </body>

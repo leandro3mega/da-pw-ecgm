@@ -33,13 +33,13 @@ if ($connectDB->errno) {
 
 
         if (isset($_SESSION['username'])) {
-            header("location:loginpage.php");
+            header("location:iniciar-sessao.php");
         } else if (!(isset($_POST['username']) || !(isset($_POST['password'])))) {
             // se recebeu post com username e password vazios
-            header("location:loginpage.php");
+            header("location:iniciar-sessao.php");
         } else if ($_POST['username'] !== $USER || $_POST['password'] !== $PASS) {
             // se o post é diferente do existente na DB
-            header("location:loginpage.php");
+            header("location:iniciar-sessao.php");
         } else {
             $_SESSION['username'] = $_POST['username'];
             $_SESSION['id'] = $ID;
@@ -57,7 +57,7 @@ if ($connectDB->errno) {
 
             //echo "</br><li>" . $USER . " | " . $PASS . "</li>";
             $found = true;
-            header("location:loginpage.php");
+            header("location:iniciar-sessao.php");
         }
     }
 }

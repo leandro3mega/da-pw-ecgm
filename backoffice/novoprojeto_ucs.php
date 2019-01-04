@@ -9,7 +9,7 @@ if ($_GET['action'] == 'get_ucs') {
     //-- Seleciona as ucs a mostrar na pagina novo-projeto
     selectUCS($connectDB, $semestre);
 
-}
+} 
 
 //-- Select do nome das UCs
 function selectUCS($connectDB, $semestre)
@@ -26,6 +26,5 @@ function selectUCS($connectDB, $semestre)
         print json_encode(($rows));
     }
 }
-
 
 ?>

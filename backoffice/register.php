@@ -1,6 +1,7 @@
 <?php
-
 session_start();
+
+require_once("connectdb.php");
 
 // verifica se existe login/sessão
 if (isset($_SESSION['username'])) {
@@ -9,14 +10,6 @@ if (isset($_SESSION['username'])) {
 
   exit();
 }
-
-// se não existir continua no codido
-
-?>
-
-<?php
-
-require_once("connectdb.php");
 
 // Output variavel
 $result = "";
@@ -136,17 +129,22 @@ function insertData($connectDB, &$result, $id, $username, $profissao)
   if ($profissao == 1) {
     if (!selectAlunos($connectDB, $result, $id, $username)) {
 
-      $createUserQuery = "INSERT INTO aluno (fk_idutilizador, nome, email) VALUES (?, ?, ?)";
+      $createUserQuery = "INSERT INTO aluno (fk_idutilizador, nome, email, fotografia) VALUES (?, ?, ?, ?)";
 
       if ($stmt2 = mysqli_prepare($connectDB, $createUserQuery)) {
         // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt2, "sss", $fk_idutilizador, $nome, $email);
+        mysqli_stmt_bind_param($stmt2, "ssss", $fk_idutilizador, $nome, $email, $fotografia);
   
         // Set parameters
         $fk_idutilizador = $id;
         $nome = $_REQUEST['nome'];
         $email = $_REQUEST['email'];
-      
+        $fotografia = 'logotipo_white.png';
+
+        echo ("Imagem: " . $fotografia);
+
+        $result .= '</br>(4) Imagem: ' . $fotografia;
+        
         // Attempt to execute the prepared statement
         if (mysqli_stmt_execute($stmt2)) {
           $result .= '</br>(4) Dados inseridos em Aluno com sucesso. ';
@@ -170,17 +168,21 @@ function insertData($connectDB, &$result, $id, $username, $profissao)
     //-- é professor
     if (!selectDocentes($connectDB, $result, $id, $username)) {
 
-      $createUserQuery = "INSERT INTO docente (fk_idutilizador, nome, email) VALUES (?, ?, ?)";
+      $createUserQuery = "INSERT INTO docente (fk_idutilizador, nome, email, fotografia) VALUES (?, ?, ?, ?)";
 
       if ($stmt2 = mysqli_prepare($connectDB, $createUserQuery)) {
         // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt2, "sss", $fk_idutilizador, $nome, $email);
+        mysqli_stmt_bind_param($stmt2, "ssss", $fk_idutilizador, $nome, $email, $fotografia);
   
         // Set parameters
         $fk_idutilizador = $id;
         $nome = $_REQUEST['nome'];
         $email = $_REQUEST['email'];
-        //$fotografia;
+        $fotografia = 'logotipo_white.png';
+
+        echo ("Imagem: " . $fotografia);
+
+        $result .= '</br>(4) Imagem: ' . $fotografia;
       
         // Attempt to execute the prepared statement
         if (mysqli_stmt_execute($stmt2)) {
@@ -202,8 +204,6 @@ function insertData($connectDB, &$result, $id, $username, $profissao)
     }
   }
 }
-
-
 
 //-- 5º: Select of alunos -> if idUser exists return true so we dont insert data into alunos
 function selectAlunos($connectDB, &$result, $id, $username)
@@ -261,7 +261,6 @@ function selectDocentes($connectDB, &$result, $id, $username)
   else return false;
 }
 
-
 //-- 6º: delete new user data if failed to insert data into Aluno/Docente
 function deleteUser($connectDB, &$result, $username)
 {
@@ -275,9 +274,6 @@ function deleteUser($connectDB, &$result, $username)
   }
 }
 
-
-
- 
 // Close connection
 mysqli_close($connectDB);
 

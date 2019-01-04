@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['username'])) {
-    header("location:loginpage.php");
+    header("location:iniciar-sessao.php");
     exit();
 } else {
     header("location:meus-projetos.php");
@@ -63,8 +63,9 @@ $username = $_SESSION['username'];
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                
-                <li><a><i class="fa fa-user fa-fw"></i> <?php echo $username; ?> </a>
+
+                <li><a><i class="fa fa-user fa-fw"></i>
+                        <?php echo $username; ?> </a>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
 
             </ul>
@@ -73,11 +74,11 @@ $username = $_SESSION['username'];
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        
+
                         <li>
                             <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
-                        
+
                         <li>
                             <a href="trabalhospage.php"><i class="fa fa-th-list fa-fw"></i> Todos Trabalhos</a>
                         </li>
@@ -85,20 +86,22 @@ $username = $_SESSION['username'];
                         <li>
                             <a href="novotrabalhopage.php"><i class="fa fa-file-o fa-fw"></i> Novo Trabalho</a>
                         </li>
-                        
+
                         <li>
                             <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="alterarpasswordpage.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra Passe</a>
+                                    <a href="alterarpasswordpage.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
+                                        Passe</a>
                                 </li>
                                 <li>
-                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados Pessoais</a>
+                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados
+                                        Pessoais</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
-                        
+
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

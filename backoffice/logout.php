@@ -4,5 +4,5 @@ session_unset();
 session_destroy();
 session_write_close();
 
-header("location:loginpage.php");
+header("location:iniciar-sessao.php");
 ?>

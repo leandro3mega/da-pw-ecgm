@@ -4,7 +4,7 @@ session_start();
 require_once("connectdb.php");
 
 if (!isset($_SESSION['username'])) {
-    header("location:index.php");
+    header("location:iniciar-sessao.php");
     exit();
 } else {
     $id = $_SESSION['id'];
@@ -90,8 +90,11 @@ if (!isset($_SESSION['username'])) {
 
             <ul class="nav navbar-top-links navbar-right">
 
-                <li> <?php echo $cargo; ?> </li>
-                <li><a><i class="fa fa-user fa-fw"></i> <?php echo $username; ?> </a>
+                <li>
+                    <?php echo $cargo; ?>
+                </li>
+                <li><a><i class="fa fa-user fa-fw"></i>
+                        <?php echo $username; ?> </a>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
 
             </ul>
@@ -106,11 +109,11 @@ if (!isset($_SESSION['username'])) {
                         </li>
 
                         <li>
-                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Todos Trabalhos</a>
+                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Meus Projetos</a>
                         </li>
 
                         <li>
-                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Trabalho</a>
+                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Projeto</a>
                         </li>
 
                         <li>
@@ -235,9 +238,9 @@ if (!isset($_SESSION['username'])) {
 
     //-- Ajax to submite change of the user email
     function changePassword() {
-        
+
         //-- Compara se a nova pass é igual nos 2 campos
-        if($('#iInputPass2').val() === $('#iInputPass3').val()){
+        if ($('#iInputPass2').val() === $('#iInputPass3').val()) {
             passAntiga = $('#iInputPass1').val();
             passNova = $('#iInputPass2').val();
             //alert("Pass 2 e 3 são iguais");
@@ -254,13 +257,13 @@ if (!isset($_SESSION['username'])) {
                     alert(html);
                     location.reload();
                 }
-    
+
             });
-        } else{
+        } else {
             alert("Confirme que a nova password que pretende inserir é igual à que está a confirmar.");
         }
         /*
-        */
+         */
     }
 </script>
 
