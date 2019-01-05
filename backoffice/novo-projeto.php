@@ -13,12 +13,12 @@ if (!isset($_SESSION['username'])) {
     $email;
     $tipo = $_SESSION['tipo'];
     $cargo = $_SESSION['cargo'];
-/*
-    //-- Converte int em string para mostrar o cargo do user no menu superior
-    if ($tipo == 0) $cargo = "Administrador";
-    else if ($tipo == 1) $cargo = "Aluno";
-    else $cargo = "Professor";
-     */  
+    /*
+        //-- Converte int em string para mostrar o cargo do user no menu superior
+        if ($tipo == 0) $cargo = "Administrador";
+        else if ($tipo == 1) $cargo = "Aluno";
+        else $cargo = "Professor";
+         */
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
     $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
     if (mysqli_num_rows($result) == 1) {
@@ -163,7 +163,7 @@ if (!isset($_SESSION['username'])) {
                         <!-- Autores -->
                         <div class="form-group">
                             <label>Autor(es) deste projeto</label>
-                            <input type="text" class="form-control" name="autores" maxlength="100" required placeholder="Insira os autores do projeto (separados por ponto e vígula)">
+                            <input type="text" class="form-control" name="autores" maxlength="100" placeholder="Insira os autores do projeto (separados por ponto e vígula)">
                             <p class="help-block tooltip-demo">Exemplo: Luís Mota;João Almeida
                                 <a><i class="fa fa-info-circle fa-fw" data-toggle="tooltip" data-placement="right"
                                         title="De modo a que outros autores possam editar o projeto, insira o nome tal como estes estão registados no site."></i></a>
@@ -306,7 +306,7 @@ if (!isset($_SESSION['username'])) {
 
                                         if (mysqli_num_rows($resultCategoria) > 0) {
                                             while ($row = $resultCategoria->fetch_assoc()) {
-                                                echo ("
+                                                echo("
                                                 <input type='checkbox' name='cb[]' value='" . $row['idferramenta'] . "'/> " . $row['nome'] . "<br/>
                                                 ");
                                             }
@@ -407,8 +407,8 @@ if (!isset($_SESSION['username'])) {
                 'semestre': semestre
             },
             dataType: 'json',
-            success: function (response) {
-                $.each(response, function (index, element) {
+            success: function(response) {
+                $.each(response, function(index, element) {
                     console.log(element); // print json code
                     $("#iSelectUC").append("<option value='" + element.idunidade_curricular + "'>" +
                         element.nome + "</option>");
@@ -421,7 +421,7 @@ if (!isset($_SESSION['username'])) {
     }
 
     //-- Mostra o numero de letras na descrição (textarea)
-    $("#idescricao").keyup(function () {
+    $("#idescricao").keyup(function() {
         $("#helpDescricao").text($(this).val().length + "/1000");
     });
 
@@ -437,7 +437,7 @@ if (!isset($_SESSION['username'])) {
             var tempimg = document.createElement("input");
             tempimg.setAttribute("type", "file");
             tempimg.name = "image[]";
-            tempimg.required = true;
+            //tempimg.required = true;
             tempimg.multiple = true;
 
             if (i > 1)
@@ -459,9 +459,9 @@ if (!isset($_SESSION['username'])) {
     })
 
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        $('#btnInsert').click(function () {
+        $('#btnInsert').click(function() {
             addCheckbox2($('#txtNameCat').val());
         });
 
