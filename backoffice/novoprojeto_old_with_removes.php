@@ -37,29 +37,31 @@ if (isset($_POST['titulo']) && isset($_POST['descricao']) && isset($_POST['autor
     $tipo = $_REQUEST['tipo'];
     
     
-    //insertProjeto($connectDB, $sucesso, $idprojeto, $fk_iduc, $titulo, $descricao, $autores, $data, $ano, $semestre, $tipo);
+    insertProjeto($connectDB, $sucesso, $idprojeto, $fk_iduc, $titulo, $descricao, $autores, $data, $ano, $semestre, $tipo);
 
     if ($sucesso) {
-        // obterIdProjeto($connectDB, $sucesso, $idprojeto, $titulo, $descricao, $autores, $data);
+        obterIdProjeto($connectDB, $sucesso, $idprojeto, $titulo, $descricao, $autores, $data);
     }
     if ($sucesso) {
-        // getAluno($connectDB, $sucesso, $idprojeto, $autores);
+        getAluno($connectDB, $sucesso, $idprojeto, $autores);
     }
     if ($sucesso) {
-        // getFerramentas($connectDB, $sucesso, $idprojeto);
+        //$idprojeto = 34;
+        getFerramentas($connectDB, $sucesso, $idprojeto);
     }
     if ($sucesso) {
-        // getDocente($connectDB, $sucesso, $idprojeto, $fk_iduc);
+        getDocente($connectDB, $sucesso, $idprojeto, $fk_iduc);
     }
     if ($sucesso) {
-        // insertPalavrasChave($connectDB, $sucesso, $idprojeto);
-    }
-    if ($sucesso) {
-        // insertVideo($connectDB, $sucesso, $idprojeto);
+        insertPalavrasChave($connectDB, $sucesso, $idprojeto);
     }
     if ($sucesso) {
         /// Variveis teste | Only for testing purposes ///
-        $idprojeto = 25;
+        // $idprojeto = 25;
+        // $videoid = "adAD95DASasd9";
+        insertVideo($connectDB, $sucesso, $idprojeto);
+    }
+    if ($sucesso) {
         insertImagens($connectDB, $sucesso, $idprojeto);
     }
     if ($sucesso) {
@@ -379,7 +381,7 @@ function insertFerramentaProjeto($connectDB, &$sucesso, $idferramenta, $idprojet
 
             /* When Fail: Remove previous content */
             removeProjeto($connectDB, $idprojeto);
-            //removeAlunoProjeto($connectDB, $idprojeto);
+            removeAlunoProjeto($connectDB, $idprojeto);
         }
     } else {
         echo "</br>(insertFerramentaProjeto) Ocurreu um erro: Não conseguiu preparar a query: " . mysqli_error($connectDB) . " . ";
@@ -387,7 +389,7 @@ function insertFerramentaProjeto($connectDB, &$sucesso, $idferramenta, $idprojet
 
         /* When Fail: Remove previous content */
         removeProjeto($connectDB, $idprojeto);
-        //removeAlunoProjeto($connectDB, $idprojeto);
+        removeAlunoProjeto($connectDB, $idprojeto);
     }
     
     // Close statement
@@ -446,8 +448,8 @@ function getDocente($connectDB, &$sucesso, $idprojeto, $iduc)
 
         /* When Fail: Remove previous content */
         removeProjeto($connectDB, $idprojeto);
-        // removeAlunoProjeto($connectDB, $idprojeto);
-        // removeFerramentas($connectDB, $idprojeto);
+        removeAlunoProjeto($connectDB, $idprojeto);
+        removeFerramentas($connectDB, $idprojeto);
     }
 }
 
@@ -469,8 +471,8 @@ function insertDocenteProjeto($connectDB, &$sucesso, $iddocente, $idprojeto)
 
             /* When Fail: Remove previous content */
             removeProjeto($connectDB, $idprojeto);
-            // removeAlunoProjeto($connectDB, $idprojeto);
-            // removeFerramentas($connectDB, $idprojeto);
+            removeAlunoProjeto($connectDB, $idprojeto);
+            removeFerramentas($connectDB, $idprojeto);
         }
     } else {
         echo "</br>(insertDocenteProjeto) Ocurreu um erro: Não conseguiu preparar a query: " . mysqli_error($connectDB) . " . ";
@@ -478,8 +480,8 @@ function insertDocenteProjeto($connectDB, &$sucesso, $iddocente, $idprojeto)
 
         /* When Fail: Remove previous content */
         removeProjeto($connectDB, $idprojeto);
-        // removeAlunoProjeto($connectDB, $idprojeto);
-        // removeFerramentas($connectDB, $idprojeto);
+        removeAlunoProjeto($connectDB, $idprojeto);
+        removeFerramentas($connectDB, $idprojeto);
     }
     
     // Close statement
@@ -548,9 +550,9 @@ function insertPalavrasChave($connectDB, &$sucesso, $idprojeto)
 
             /* When Fail: Remove previous content */
             removeProjeto($connectDB, $idprojeto);
-            // removeAlunoProjeto($connectDB, $idprojeto);
-            // removeFerramentas($connectDB, $idprojeto);
-            // removeDocenteProjeto($connectDB, $idprojeto);
+            removeAlunoProjeto($connectDB, $idprojeto);
+            removeFerramentas($connectDB, $idprojeto);
+            removeDocenteProjeto($connectDB, $idprojeto);
         }
     } else {
         echo "</br>(4) Ocurreu um erro: Não conseguiu preparar a query query:" . mysqli_error($connectDB) . " . ";
@@ -558,9 +560,9 @@ function insertPalavrasChave($connectDB, &$sucesso, $idprojeto)
 
         /* When Fail: Remove previous content */
         removeProjeto($connectDB, $idprojeto);
-        // removeAlunoProjeto($connectDB, $idprojeto);
-        // removeFerramentas($connectDB, $idprojeto);
-        // removeDocenteProjeto($connectDB, $idprojeto);
+        removeAlunoProjeto($connectDB, $idprojeto);
+        removeFerramentas($connectDB, $idprojeto);
+        removeDocenteProjeto($connectDB, $idprojeto);
     }
         
     // Close statement
@@ -617,10 +619,10 @@ function insertVideo($connectDB, &$sucesso, $idprojeto)
 
             /* When Fail: Remove previous content */
             removeProjeto($connectDB, $idprojeto);
-            // removeAlunoProjeto($connectDB, $idprojeto);
-            // removeFerramentas($connectDB, $idprojeto);
-            // removeDocenteProjeto($connectDB, $idprojeto);
-            // removePalavraChaveProjeto($connectDB, $idprojeto);
+            removeAlunoProjeto($connectDB, $idprojeto);
+            removeFerramentas($connectDB, $idprojeto);
+            removeDocenteProjeto($connectDB, $idprojeto);
+            removePalavraChaveProjeto($connectDB, $idprojeto);
         }
     } else {
         echo "</br>(insertVideo) Ocurreu um erro: Não conseguiu preparar a query query:" . mysqli_error($connectDB) . " . ";
@@ -628,10 +630,10 @@ function insertVideo($connectDB, &$sucesso, $idprojeto)
 
         /* When Fail: Remove previous content */
         removeProjeto($connectDB, $idprojeto);
-        //removeAlunoProjeto($connectDB, $idprojeto);
-        //removeFerramentas($connectDB, $idprojeto);
-        //removeDocenteProjeto($connectDB, $idprojeto);
-        //removePalavraChaveProjeto($connectDB, $idprojeto);
+        removeAlunoProjeto($connectDB, $idprojeto);
+        removeFerramentas($connectDB, $idprojeto);
+        removeDocenteProjeto($connectDB, $idprojeto);
+        removePalavraChaveProjeto($connectDB, $idprojeto);
     }
         
     // Close statement
@@ -667,121 +669,6 @@ function insertImagens($connectDB, &$sucesso, $idprojeto)
     if (count($_FILES["image"]['name']) > 0) {
         echo("</br> insertImagens não desenvolvida!");
     }
-
-    if (empty($_REQUEST['video'])) {
-        return;
-    }
-
-    //-- Definicao de variaveis de tamanho
-    define('KB', 1024);
-    define('MB', 1048576);
-    define('GB', 1073741824);
-    define('TB', 1099511627776);
-
-    $diretorio = "images/ficheiros/";
-    $tipo = $_SESSION['tipo'];
-    $id = null;
-    $tamanhoMax = 0.5 * MB;
-    $change = false;    // se a imagem pode ou não ser mudada/inserida
-    $type = mime_content_type($_FILES['avatar']['tmp_name']);
-
-
-    // limite de tamanho da imagem
-    if ($_FILES['avatar']['size'] > $tamanhoMax) {
-        echo "<script type='text/javascript'>alert('A tamanho da imagem excede o limite. Insira uma imagem com menos de 500KB'); window.location.replace('dados-pessoais.php');</script>";
-        //exit("A tamanho da imagem excede o limite.");
-        $change = false;
-    } else {
-        echo("\nO tamanho é inferior ao permitido");
-        $change = true;
-    }
-
-    // limita o tipo de imagem suportado
-    if ($type !== "image/jpeg" && $type !== "image/png" && $change) {
-        //echo ("Tipo não permitido");
-        echo "<script type='text/javascript'>alert('A imagem não é permitida. Insira uma imagem .png ou .jpeg'); window.location.replace('dados-pessoais.php');</script>";
-        $change = false;
-    } else {
-        //echo ("Tipo permitido");
-        $change = true;
-    }
-
-    if ($change) {
-        $image = ($_FILES["avatar"]['tmp_name']);
-        $imageinfo = getimagesize($image);  // intem informação do tamanho da imagem
-    
-        //-- Limita a resolução -> $imageinfo[0] = width | $imageinfo[1] = height
-        if ($imageinfo[0] > 1500 || $imageinfo[1] > 1000) {
-            echo "<script type='text/javascript'>alert('A imagem possui uma resolução demasiado grande. Insira uma imagem com dimensões até 1920x1080.'); window.location.replace('dados-pessoais.php');</script>";
-            //echo ("A imagem possui uma resolução demasiado grande!");
-            $change = false;
-        } else {
-            //echo ("A imagem possui uma resolução aceitavel!");
-            $change = true;
-        }
-    }
-
-    //-- Se existir ficheiro
-    if (isset($_FILES["avatar"]) && $change) {
-        //Begins image upload
-    //$user_avatar = md5(uniqid(time())) . $mimeExt[$_FILES["avatar"]["type"]]; //Get image extension
-    $user_foto = $id . $mimeExt[$_FILES["avatar"]["type"]]; //Get image extension
-    $user_foto_dir = $diretorio . $user_foto; //Path file
-    
-
-    //-- Insert image name into de DB
-        insertImage($connectDB, $id, $tipo, $user_foto, $user_foto_dir);
-        echo("Nome: " . $user_foto);
-        echo("\nDiretorio: " . $user_foto_dir);
-    } else {
-        //$user_avatar = "default_130x130.png";
-    header("location:dados-pessoais.php");  // se não receber imagem volta a pagina
-    echo("dentro do else");
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*
-    // -- If statement is prepared
-    if ($stmt = mysqli_prepare($connectDB, "INSERT INTO imagem (fk_idprojeto, nome) VALUES (?, ?)")) {
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "ss", $idprojeto, $nome);
-
-        // Attempt to execute the prepared statement
-        if (mysqli_stmt_execute($stmt)) {
-            echo '</br>(insertVideo) Dados inseridos em video com sucesso. Video Youtube ID: ' . $video;
-            $sucesso = true;
-        } else {
-            echo "</br>(insertVideo) Ocurreu um erro: Não conseguiu executar a query:" . mysqli_error($connectDB) . ". ";
-            $sucesso = false;
-
-            // When Fail: Remove previous content //
-            //removeProjeto($connectDB, $idprojeto);
-        }
-    } else {
-        echo "</br>(insertVideo) Ocurreu um erro: Não conseguiu preparar a query query:" . mysqli_error($connectDB) . " . ";
-        $sucesso = false;
-
-        // When Fail: Remove previous content //
-        //removeProjeto($connectDB, $idprojeto);
-    }
-
-    // Close statement
-    mysqli_stmt_close($stmt);*/
 }
 
 //--TODO: Inserir Ficheiro
@@ -801,7 +688,7 @@ echo("</br>Semestre: " . $_POST['semestre'] . " | ");
 echo("</br>UC: " . $_POST['selectUC'] . " | ");
 //echo("</br>Fotografia: " . $_FILES["img1"]['tmp_name'] . " | ");
 echo("</br>Data: " . $_POST['data'] . " | ");
-echo("</br>PDF: " . $_FILES["ficheiro"]['tmp_name'] . " | ");
+//echo("</br>PDF: " . $_FILES["ficheiro"]['tmp_name'] . " | ");
 echo("</br>Video: " . $_POST['video'] . " | ");
 echo("</br>Palavras chave: " . $_POST['palavras-chave'] . " | ");
 //echo ("</br>Categorias: " . $_POST['categorias'] . " | ");

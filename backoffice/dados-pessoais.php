@@ -12,7 +12,6 @@ require_once("connectdb.php");
 if (!isset($_SESSION['username'])) {
     header("location:iniciar-sessao.php");
     exit();
-
 } else {
     $id = $_SESSION['id'];
     $username = $_SESSION['username'];
@@ -163,73 +162,11 @@ if (!isset($_SESSION['username'])) {
                         <div>
                             <div class="row">
                                 <div class="col-lg-6">
-
-                                    <!--Fotografia-->
-                                    <!--Fotografia Atual-->
-                                    <div class="form-group" id="iDivImgFotografia" style="display:block;">
-                                        <label>Fotografia</label>
-
-                                        <div class="form-control-static" style="width:50%; heigth:auto;">
-                                            <?php
-                                            $resultIMG;
-                                            $diretorioIMG = "images/utilizadores/";
-
-                                            if ($tipo == 1) $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM aluno WHERE fk_idutilizador=$id");
-                                            else if ($tipo == 2) $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM docente WHERE    fk_idutilizador=$id");
-
-                                            if (mysqli_num_rows($resultIMG) == 1) {
-                                                $row = $resultIMG->fetch_assoc();
-                                                $nomeIMG = ($row['fotografia']);
-                                            }
-
-                                            echo ("<img class=' img-fluid img-thumbnail' src='" . $diretorioIMG . $nomeIMG . "' alt=''>");
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <!--Inserir Fotografia-->
-                                    <div class="form-group" id="iDivFileFotografia" style="display:none">
-                                        <label>Fotografia</label>
-                                        <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post"
-                                            enctype='multipart/form-data' style="">
-                                            <div class="form-group">
-                                                <input type="file" name="avatar" id="avatar_file_upload_field" accept="image/jpeg,image/pjpeg,image/bmp,image/gif,image/jpeg,image/png" />
-                                                <input type="hidden" name="iduser" id="iIdUser" value="<?php echo ($id); ?>" />
-                                                <input type="submit" class="btn btn-default btn-backoffice-size" style="margin-top:15px" />
-                                                <button id="iBtnCancelarFotografia" onclick="showhideFotografia()"
-                                                    class="btn btn-default btn-backoffice-size" style="margin-top:15px">
-                                                    Cancelar
-                                                </button>
-                                            </div>
-                                        </form>
-                                        <!--
-                                        <button id="iBtnSubmeterFotografia" class="btn btn-default btn-backoffice-size" onclick="changeFotografia()">
-                                            Submeter
-                                        </button>
-                                        -->
-
-                                        <div class="form-group"></div>
-                                    </div>
-
-                                    <button id="iBtnAlterarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size">
-                                        Alterar
-                                    </button>
-                                    <!-- End Fotografia -->
-                                    <!--
-                                    <div class="form-group">
-                                        <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post" enctype='multipart/form-data'style="">
-                                            <div class="form-group">
-                                                <input type="file" name="avatar" id="avatar_file_upload_field" accept="image/jpeg,image/pjpeg,image/bmp,image/gif,image/jpeg,image/png"/>
-                                                <input type="hidden" name="iduser" id="iIdUser" value="<?php echo ($id); ?>"/>
-                                                <input type="submit" class="btn btn-default btn-backoffice-size" style="margin-top:15px"/>
-                                            </div>
-                                        </form>
-                                    </div>-->
-
                                     <!-- Nome -->
-                                    <div class="form-group div-margin-separa" id="iDivLabelNome" style="display:block;">
+                                    <div class="form-group" id="iDivLabelNome" style="display:block;">
                                         <label>Nome</label>
                                         <p class="form-control-static">
-                                            <?php echo ($nome); ?>
+                                            <?php echo($nome); ?>
                                         </p>
                                     </div>
 
@@ -303,6 +240,71 @@ if (!isset($_SESSION['username'])) {
                                     </div>
                                 -->
                                     <!--</form>-->
+                                </div>
+                                <div class="col-lg-6">
+                                    <!--Fotografia-->
+                                    <!--Fotografia Atual-->
+                                    <div class="form-group" id="iDivImgFotografia" style="display:block;">
+                                        <label>Fotografia</label>
+
+                                        <div class="form-control-static" style="width:50%; heigth:auto;">
+                                            <?php
+                                            $resultIMG;
+                                            $diretorioIMG = "images/utilizadores/";
+
+                                            if ($tipo == 1) {
+                                                $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM aluno WHERE fk_idutilizador=$id");
+                                            } elseif ($tipo == 2) {
+                                                $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM docente WHERE    fk_idutilizador=$id");
+                                            }
+
+                                            if (mysqli_num_rows($resultIMG) == 1) {
+                                                $row = $resultIMG->fetch_assoc();
+                                                $nomeIMG = ($row['fotografia']);
+                                            }
+
+                                            echo("<img class=' img-fluid img-thumbnail' src='" . $diretorioIMG . $nomeIMG . "' alt=''>");
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <!--Inserir Fotografia-->
+                                    <div class="form-group" id="iDivFileFotografia" style="display:none">
+                                        <label>Fotografia</label>
+                                        <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post"
+                                            enctype='multipart/form-data' style="">
+                                            <div class="form-group">
+                                                <input type="file" name="avatar" id="avatar_file_upload_field" accept="image/jpeg,image/png" />
+                                                <input type="hidden" name="iduser" id="iIdUser" value="<?php echo($id); ?>" />
+                                                <input type="submit" class="btn btn-default btn-backoffice-size" style="margin-top:15px" />
+                                                <button id="iBtnCancelarFotografia" onclick="showhideFotografia()"
+                                                    class="btn btn-default btn-backoffice-size" style="margin-top:15px">
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <!--
+                                        <button id="iBtnSubmeterFotografia" class="btn btn-default btn-backoffice-size" onclick="changeFotografia()">
+                                            Submeter
+                                        </button>
+                                        -->
+
+                                        <div class="form-group"></div>
+                                    </div>
+
+                                    <button id="iBtnAlterarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size">
+                                        Alterar
+                                    </button>
+                                    <!-- End Fotografia -->
+                                    <!--
+                                    <div class="form-group">
+                                        <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post" enctype='multipart/form-data'style="">
+                                            <div class="form-group">
+                                                <input type="file" name="avatar" id="avatar_file_upload_field" accept="image/jpeg,image/pjpeg,image/bmp,image/gif,image/jpeg,image/png"/>
+                                                <input type="hidden" name="iduser" id="iIdUser" value="<?php echo($id); ?>"/>
+                                                <input type="submit" class="btn btn-default btn-backoffice-size" style="margin-top:15px"/>
+                                            </div>
+                                        </form>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -476,7 +478,7 @@ if (!isset($_SESSION['username'])) {
                     'action': 'change_name',
                     'name': novoNome
                 },
-                success: function (html) {
+                success: function(html) {
                     alert(html);
                     location.reload();
                 }
@@ -496,7 +498,7 @@ if (!isset($_SESSION['username'])) {
                     'action': 'change_email',
                     'email': novoEmail
                 },
-                success: function (html) {
+                success: function(html) {
                     alert(html);
                     location.reload();
                 }

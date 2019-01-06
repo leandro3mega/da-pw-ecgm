@@ -245,7 +245,13 @@ if (!isset($_SESSION['username'])) {
                                 <!-- Ficheiro -->
                                 <div class="form-group" style="margin-top:30px">
                                     <label>Insira documento PDF (Opcional)</label>
-                                    <input type="file" name="ficheiro">
+
+                                    <input type="file" id="iFicheiro" name="ficheiro" onChange="verificaLimitesFicheiro()"
+                                        accept="application/pdf">
+
+                                    <p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo
+                                        de 500KB</p>
+
                                 </div>
 
                                 <!-- Video -->
@@ -415,9 +421,7 @@ if (!isset($_SESSION['username'])) {
                 });
                 //alert(response);
             }
-
         });
-
     }
 
     //-- Mostra o numero de letras na descrição (textarea)
@@ -437,20 +441,156 @@ if (!isset($_SESSION['username'])) {
             var tempimg = document.createElement("input");
             tempimg.setAttribute("type", "file");
             tempimg.name = "image[]";
-            //tempimg.required = true;
-            tempimg.multiple = true;
+            tempimg.required = true;
+            tempimg.accept = "image/jpeg, image/png";
+            //tempimg.multiple = true;
+
+            tempimg.onchange = function() {
+                var limiteSize = 1020; // 1 Megabyte
+                var file = this.files[0];
+                var input = this;
+                console.log(file);
+
+                if (file.type === "image/png" || file.type === "image/jpeg") {
+                    console.log("Ficheiro é png ou jpeg!");
+
+                } else {
+                    console.log("Ficheiro não é png ou jpeg!");
+                    alert("A imagem não é de tipo suportado.");
+                    this.value = "";
+
+
+                    return;
+                }
+
+                //##### Start of reader
+                var reader = new FileReader(); // CREATE AN NEW INSTANCE.
+
+                reader.onload = function(e) {
+                    var img = new Image();
+                    img.src = e.target.result;
+
+                    img.onload = function() {
+                        var valido = true;
+                        var w = this.width;
+                        var h = this.height;
+                        var size = Math.round((file.size / 1024));
+
+                        // console.log("File Name: " + file.name);
+                        // console.log("Width: " + w);
+                        // console.log("Height: " + h);
+                        // console.log("Size: " + Math.round((file.size / 1024)));
+                        // console.log("File Type: " + file.type);
+                        //console.log("Limite: " + limiteSize);
+
+                        if (file.type == "image/png" || file.type == "image/jpeg") {
+                            console.log("A imagem é png ou jpeg");
+                            valido = true;
+                            //-- Check size and dimensions of image
+                            //readImageFile(file, );
+                            if (w > 1980 || h > 1080 || size > limiteSize) {
+                                alert(
+                                    "A imagem tem tamanho superior a 1MB ou dimensões superiores a 1960*1080."
+                                );
+
+                                console.log(
+                                    "A imagem tem tamanho superior a 1mb ou dimensoes superiores a 1960*1080"
+                                );
+                                valido = false;
+
+                            } else {
+                                console.log("A imagem não tem tamanho superior a 1mb");
+                                valido = true;
+                            }
+                        } else {
+                            console.log("A imagem não é png ou jpeg");
+                            alert("Imagens não é de tipo suportado!");
+
+                            valido = false;
+                        }
+
+                        if (!valido) {
+                            console.log("Imagem não valida");
+                            input.value = "";
+
+                        } else {
+                            console.log("Imagem é valida");
+                        }
+                    }
+                };
+                reader.readAsDataURL(file, input);
+                //##### End of reader
+
+            }
 
             if (i > 1)
                 tempimg.style = "margin-top:15px; margin-bottom:15px";
 
             containerIMG.appendChild(tempimg);
 
-            var temphidden = document.createElement("input");
-            temphidden.setAttribute("type", "hidden");
-            temphidden.value = i;
-            containerIMG.appendChild(temphidden);
+            //<p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo de 500KB</p>
+            var tempHint = document.createElement("p");
+            tempHint.name = "hintImage";
+            tempHint.id = "hintImage";
+            tempHint.className = "help-block";
+            tempHint.innerHTML = "Insira uma PNG/JPEG com tamanho máximo de 1MB";
+            containerIMG.appendChild(tempHint);
         }
     }
+
+    //-- Verifica se o ficheiro obdece aos limites estabelecidos
+    function verificaLimitesFicheiro() {
+
+        var ficheiro = document.getElementById("iFicheiro");
+        var hint = document.getElementById("iHintFicheito");
+
+        var file_info = ficheiro.files[0];
+        //console.log(file_info);
+        var nome = file_info.name;
+        //console.log("File Name: " + nome);
+        var tipo = file_info.type;
+        //console.log("File type: " + tipo);
+        var tamanho = file_info.size;
+        //console.log("File size: " + tamanho / 1024);
+
+        if (tipo != "application/pdf" || (tamanho / 1024) > 500) {
+            ficheiro.value = "";
+
+            //-- Mostra hint de Invalidez
+            hint.style = "color:rgb(216, 79, 79);";
+            hint.innerHTML = "Ficheiro inválido. Insira um ficheiro PDF com até 500KB.";
+
+        } else {
+            //-- Mostra hint de Sucesso
+            hint.style = "color:rgb(79, 216, 132)";
+            hint.innerHTML = "Ficheiro válido.";
+
+        }
+    }
+
+    //## NOT USED
+    // GET THE IMAGE WIDTH AND HEIGHT USING fileReader() API.
+    function readImageFile(file) {
+        var reader = new FileReader(); // CREATE AN NEW INSTANCE.
+
+        reader.onload = function(e) {
+            var img = new Image();
+            img.src = e.target.result;
+
+            img.onload = function() {
+                var w = this.width;
+                var h = this.height;
+
+                // console.log("File Name: " + file.name);
+                // console.log("Width: " + w);
+                // console.log("Height: " + h);
+                // console.log("Size: " + Math.round((file.size / 1024)));
+                // console.log("File Type: " + file.type);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
 
     // hint popup
     $('.tooltip-demo').tooltip({
@@ -459,6 +599,7 @@ if (!isset($_SESSION['username'])) {
     })
 
 
+    //## LIXO
     $(document).ready(function() {
 
         $('#btnInsert').click(function() {
@@ -468,6 +609,7 @@ if (!isset($_SESSION['username'])) {
         addRemoveIMG();
     });
 
+    //## LIXO
     function addCheckbox(name) {
         var container = $('#cblist');
         var inputs = container.find('input');
