@@ -44,35 +44,6 @@ input[type=radio] {
     cursor: pointer;
 }
 
-/*
-.dropbtn {
-    background-color: #fff;
-    color: white;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-
-    border: 1px solid #ced4da;
-
-    padding-top: 0.5rem;
-    padding-right: 1rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1rem;
-
-    border-top-left-radius: 0.3rem;
-    border-top-right-radius: 0.3rem;
-    border-bottom-right-radius: 0.3rem;
-    border-bottom-left-radius: 0.3rem;
-
-    display: block;
-    width: 100%;
-    margin-bottom: 0;
-    line-height: 1.5;
-    color: #495057;
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
-}*/
-
 .div-margin-separa {
     margin-top: 3rem !important;
 }
@@ -81,10 +52,29 @@ input[type=radio] {
     padding: 8px 30px;
 }
 
+/* Estilo para os botoes de editar/remover projeto */
+.icon-meus-projetos {
+    background: Transparent no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+/* ------------------------------------ */
+
+
+
+
+
+/* ------------------------------------ */
+
+/* Estilos de teste - a remover no final */
 .hidden {
     display: none;
     background-color: rgb(175, 175, 175);
     background-color: rgb(216, 79, 79);
     background-color: rgb(79, 216, 132);
     align-content: center;
+    border-right: 1px solid rgba(46, 207, 207, 0.322);
 }

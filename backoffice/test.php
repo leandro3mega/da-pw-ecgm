@@ -51,3 +51,12 @@ echo($mesNome['01']);
 */
 
 ?>
+
+<!-- for(int i = 0; i<n; i++){
+    for(int j = 0; j<n; j++){
+        if(mapa[i][j] == 7){
+            mapa[i][j] = 0;
+            mapa[i-1][j] = 7;
+        }
+    }       
+} -->

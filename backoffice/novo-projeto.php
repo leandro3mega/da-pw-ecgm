@@ -148,22 +148,23 @@ if (!isset($_SESSION['username'])) {
                         <!-- Titulo -->
                         <div class="form-group">
                             <label>Título</label>
-                            <input type="text" class="form-control" name="titulo" maxlength="50" autofocus required
-                                placeholder="Insira o título do projeto">
+                            <input type="text" class="form-control" name="titulo" minlength="10" maxlength="50"
+                                autofocus required placeholder="Insira o título do projeto">
                         </div>
 
                         <!-- Descrição -->
                         <div class="form-group">
                             <label>Descrição</label>
                             <textarea id="idescricao" class="form-control" name="descricao" pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}"
-                                rows="10" maxlength="1000" required placeholder="Insira a descrição do projeto"></textarea>
+                                rows="10" minlength="10" maxlength="1000" required placeholder="Insira a descrição do projeto"></textarea>
                             <p id="helpDescricao" class="help-block">Carateres: 0 de 1000</p>
                         </div>
 
                         <!-- Autores -->
                         <div class="form-group">
                             <label>Autor(es) deste projeto</label>
-                            <input type="text" class="form-control" name="autores" maxlength="100" placeholder="Insira os autores do projeto (separados por ponto e vígula)">
+                            <input type="text" class="form-control" name="autores" minlength="10" maxlength="200"
+                                placeholder="Insira os autores do projeto (separados por ponto e vígula)">
                             <p class="help-block tooltip-demo">Exemplo: Luís Mota;João Almeida
                                 <a><i class="fa fa-info-circle fa-fw" data-toggle="tooltip" data-placement="right"
                                         title="De modo a que outros autores possam editar o projeto, insira o nome tal como estes estão registados no site."></i></a>
@@ -207,17 +208,6 @@ if (!isset($_SESSION['username'])) {
                                 <div class="form-group">
                                     <label>Unidade Curricular associada ao projeto</label>
                                     <select id="iSelectUC" class="form-control" name="selectUC" required>
-                                        <?php
-                                        /*
-                                        //-- Select do nome das UCs
-                                        $resultUC = mysqli_query($connectDB, "SELECT nome FROM unidade_curricular ORDER BY nome");
-
-                                        if (mysqli_num_rows($resultUC) > 0) {
-                                            while ($row = $resultUC->fetch_assoc()) {
-                                                echo ("<option>" . $row['nome'] . "</option>");
-                                            }
-                                        }*/
-                                        ?>
                                     </select>
                                 </div>
 
@@ -250,7 +240,7 @@ if (!isset($_SESSION['username'])) {
                                         accept="application/pdf">
 
                                     <p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo
-                                        de 500KB</p>
+                                        de 2MB</p>
 
                                 </div>
 
@@ -377,254 +367,251 @@ if (!isset($_SESSION['username'])) {
 
             </div>
             <!-- /#wrapper -->
-            <footer class="sticky-footer">
-                <div style="margin: 20px 0; padding-top: 15px; padding-bottom: 15px; padding-right: 15px; padding-left: 15px;text-align:center!important;line-height: 1; font-size: 1.2rem;">
-                    <span>Copyright © <a target="_blank" href="http://www.linkedin.com/in/leandro3mega">Leandro
-                            Magalhães</a> 2019</span>
-                </div>
-            </footer>
 
-            <!-- jQuery -->
-            <script src="vendor/jquery/jquery.min.js"></script>
+            <!-- footer -->
+            <?php
+            include 'footer.html';
+            ?>
 
-            <!-- Bootstrap Core JavaScript -->
-            <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+        </div>
+    </div>
 
-            <!-- Metis Menu Plugin JavaScript -->
-            <script src="vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
 
-            <!-- Custom Theme JavaScript -->
-            <script src="dist/js/sb-admin-2.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="dist/js/sb-admin-2.js"></script>
 
 </body>
 <script>
-    //-- Semestre selecionado
-    function getUCS() {
-        var semestre = $('.semestre:checked').val();
+//-- Semestre selecionado
+function getUCS() {
+    var semestre = $('.semestre:checked').val();
 
-        //console.log("Semestre: " + semestre);
-        $('#iSelectUC').empty();
+    //console.log("Semestre: " + semestre);
+    $('#iSelectUC').empty();
 
-        $.ajax({
-            type: "GET",
-            url: 'novoprojeto_ucs.php',
-            data: {
-                'action': 'get_ucs',
-                'semestre': semestre
-            },
-            dataType: 'json',
-            success: function(response) {
-                $.each(response, function(index, element) {
-                    console.log(element); // print json code
-                    $("#iSelectUC").append("<option value='" + element.idunidade_curricular + "'>" +
-                        element.nome + "</option>");
-                });
-                //alert(response);
-            }
-        });
-    }
-
-    //-- Mostra o numero de letras na descrição (textarea)
-    $("#idescricao").keyup(function() {
-        $("#helpDescricao").text($(this).val().length + "/1000");
+    $.ajax({
+        type: "GET",
+        url: 'novoprojeto_ucs.php',
+        data: {
+            'action': 'get_ucs',
+            'semestre': semestre
+        },
+        dataType: 'json',
+        success: function(response) {
+            $.each(response, function(index, element) {
+                console.log(element); // print json code
+                $("#iSelectUC").append("<option value='" + element.idunidade_curricular + "'>" +
+                    element.nome + "</option>");
+            });
+            //alert(response);
+        }
     });
+}
 
-    //-- Adiciona ou remove imagens dependendo do numero selecionado
-    function addRemoveIMG() {
-        var containerIMG = document.getElementById('icontainerIMG');
-        var selector = document.getElementById('iselectIMG');
-        var value = selector[selector.selectedIndex].value;
+//-- Mostra o numero de letras na descrição (textarea)
+$("#idescricao").keyup(function() {
+    $("#helpDescricao").text($(this).val().length + "/1000");
+});
 
-        containerIMG.innerHTML = "";
+//-- Adiciona ou remove imagens dependendo do numero selecionado
+function addRemoveIMG() {
+    var containerIMG = document.getElementById('icontainerIMG');
+    var selector = document.getElementById('iselectIMG');
+    var value = selector[selector.selectedIndex].value;
 
-        for (var i = 1; i <= value; i++) {
-            var tempimg = document.createElement("input");
-            tempimg.setAttribute("type", "file");
-            tempimg.name = "image[]";
-            tempimg.required = true;
-            tempimg.accept = "image/jpeg, image/png";
-            //tempimg.multiple = true;
+    containerIMG.innerHTML = "";
 
-            tempimg.onchange = function() {
-                var limiteSize = 1020; // 1 Megabyte
-                var file = this.files[0];
-                var input = this;
-                console.log(file);
+    for (var i = 1; i <= value; i++) {
+        var tempimg = document.createElement("input");
+        tempimg.setAttribute("type", "file");
+        tempimg.name = "image[]";
+        tempimg.required = true;
+        tempimg.accept = "image/jpeg, image/png";
+        tempimg.multiple = true;
 
-                if (file.type === "image/png" || file.type === "image/jpeg") {
-                    console.log("Ficheiro é png ou jpeg!");
+        tempimg.onchange = function() {
+            var limiteSize = 2024; // 2 Megabyte
+            var file = this.files[0];
+            var input = this;
+            console.log(file);
 
-                } else {
-                    console.log("Ficheiro não é png ou jpeg!");
-                    alert("A imagem não é de tipo suportado.");
-                    this.value = "";
+            if (file.type === "image/png" || file.type === "image/jpeg") {
+                console.log("Ficheiro é png ou jpeg!");
+
+            } else {
+                console.log("Ficheiro não é png ou jpeg!");
+                alert("A imagem não é suportada. Insira uma imagem PNG ou JPG");
+                this.value = "";
 
 
-                    return;
-                }
+                return;
+            }
 
-                //##### Start of reader
-                var reader = new FileReader(); // CREATE AN NEW INSTANCE.
+            //##### Start of reader
+            var reader = new FileReader(); // CREATE AN NEW INSTANCE.
 
-                reader.onload = function(e) {
-                    var img = new Image();
-                    img.src = e.target.result;
+            reader.onload = function(e) {
+                var img = new Image();
+                img.src = e.target.result;
 
-                    img.onload = function() {
-                        var valido = true;
-                        var w = this.width;
-                        var h = this.height;
-                        var size = Math.round((file.size / 1024));
+                img.onload = function() {
+                    var valido = true;
+                    var w = this.width;
+                    var h = this.height;
+                    var size = Math.round((file.size / 1024));
 
-                        // console.log("File Name: " + file.name);
-                        // console.log("Width: " + w);
-                        // console.log("Height: " + h);
-                        // console.log("Size: " + Math.round((file.size / 1024)));
-                        // console.log("File Type: " + file.type);
-                        //console.log("Limite: " + limiteSize);
 
-                        if (file.type == "image/png" || file.type == "image/jpeg") {
-                            console.log("A imagem é png ou jpeg");
-                            valido = true;
-                            //-- Check size and dimensions of image
-                            //readImageFile(file, );
-                            if (w > 1980 || h > 1080 || size > limiteSize) {
-                                alert(
-                                    "A imagem tem tamanho superior a 1MB ou dimensões superiores a 1960*1080."
-                                );
+                    if (file.type == "image/png" || file.type == "image/jpeg") {
+                        console.log("A imagem é png ou jpeg");
+                        valido = true;
+                        //-- Check size and dimensions of image
+                        //readImageFile(file, );
+                        if (w > 1980 || h > 1080 || size > limiteSize) {
+                            alert(
+                                "A imagem tem tamanho superior a 2MB ou dimensões superiores a 1960x1080."
+                            );
 
-                                console.log(
-                                    "A imagem tem tamanho superior a 1mb ou dimensoes superiores a 1960*1080"
-                                );
-                                valido = false;
-
-                            } else {
-                                console.log("A imagem não tem tamanho superior a 1mb");
-                                valido = true;
-                            }
-                        } else {
-                            console.log("A imagem não é png ou jpeg");
-                            alert("Imagens não é de tipo suportado!");
-
+                            console.log(
+                                "A imagem tem tamanho superior a 2mb ou dimensoes superiores a 1960x1080"
+                            );
                             valido = false;
-                        }
-
-                        if (!valido) {
-                            console.log("Imagem não valida");
-                            input.value = "";
 
                         } else {
-                            console.log("Imagem é valida");
+                            console.log("A imagem não tem tamanho superior a 2mb");
+                            valido = true;
                         }
+                    } else {
+                        console.log("A imagem não é png ou jpeg");
+                        alert("Imagens não é de tipo suportado!");
+
+                        valido = false;
                     }
-                };
-                reader.readAsDataURL(file, input);
-                //##### End of reader
 
-            }
+                    if (!valido) {
+                        console.log("Imagem não valida");
+                        input.value = "";
 
-            if (i > 1)
-                tempimg.style = "margin-top:15px; margin-bottom:15px";
-
-            containerIMG.appendChild(tempimg);
-
-            //<p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo de 500KB</p>
-            var tempHint = document.createElement("p");
-            tempHint.name = "hintImage";
-            tempHint.id = "hintImage";
-            tempHint.className = "help-block";
-            tempHint.innerHTML = "Insira uma PNG/JPEG com tamanho máximo de 1MB";
-            containerIMG.appendChild(tempHint);
-        }
-    }
-
-    //-- Verifica se o ficheiro obdece aos limites estabelecidos
-    function verificaLimitesFicheiro() {
-
-        var ficheiro = document.getElementById("iFicheiro");
-        var hint = document.getElementById("iHintFicheito");
-
-        var file_info = ficheiro.files[0];
-        //console.log(file_info);
-        var nome = file_info.name;
-        //console.log("File Name: " + nome);
-        var tipo = file_info.type;
-        //console.log("File type: " + tipo);
-        var tamanho = file_info.size;
-        //console.log("File size: " + tamanho / 1024);
-
-        if (tipo != "application/pdf" || (tamanho / 1024) > 500) {
-            ficheiro.value = "";
-
-            //-- Mostra hint de Invalidez
-            hint.style = "color:rgb(216, 79, 79);";
-            hint.innerHTML = "Ficheiro inválido. Insira um ficheiro PDF com até 500KB.";
-
-        } else {
-            //-- Mostra hint de Sucesso
-            hint.style = "color:rgb(79, 216, 132)";
-            hint.innerHTML = "Ficheiro válido.";
+                    } else {
+                        console.log("Imagem é valida");
+                    }
+                }
+            };
+            reader.readAsDataURL(file, input);
+            //##### End of reader
 
         }
+
+        if (i > 1)
+            tempimg.style = "margin-top:15px; margin-bottom:15px";
+
+        containerIMG.appendChild(tempimg);
+
+        //<p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo de 500KB</p>
+        var tempHint = document.createElement("p");
+        tempHint.name = "hintImage";
+        tempHint.id = "hintImage";
+        tempHint.className = "help-block";
+        tempHint.innerHTML = "Insira uma PNG/JPEG com tamanho máximo de 1MB";
+        containerIMG.appendChild(tempHint);
     }
+}
 
-    //## NOT USED
-    // GET THE IMAGE WIDTH AND HEIGHT USING fileReader() API.
-    function readImageFile(file) {
-        var reader = new FileReader(); // CREATE AN NEW INSTANCE.
+//-- Verifica se o ficheiro obdece aos limites estabelecidos
+function verificaLimitesFicheiro() {
 
-        reader.onload = function(e) {
-            var img = new Image();
-            img.src = e.target.result;
+    var ficheiro = document.getElementById("iFicheiro");
+    var hint = document.getElementById("iHintFicheito");
 
-            img.onload = function() {
-                var w = this.width;
-                var h = this.height;
+    var file_info = ficheiro.files[0];
+    //console.log(file_info);
+    var nome = file_info.name;
+    //console.log("File Name: " + nome);
+    var tipo = file_info.type;
+    //console.log("File type: " + tipo);
+    var tamanho = file_info.size;
+    //console.log("File size: " + tamanho / 1024);
 
-                // console.log("File Name: " + file.name);
-                // console.log("Width: " + w);
-                // console.log("Height: " + h);
-                // console.log("Size: " + Math.round((file.size / 1024)));
-                // console.log("File Type: " + file.type);
-            }
-        };
-        reader.readAsDataURL(file);
+    //-- So aceita o ficheiro de este for pdf e tiver até 2MB
+    if (tipo != "application/pdf" || (tamanho / 1024) > 2000) {
+        ficheiro.value = "";
+
+        //-- Mostra hint de Invalidez
+        hint.style = "color:rgb(216, 79, 79);";
+        hint.innerHTML = "Ficheiro inválido. Insira um ficheiro PDF com até 2MB.";
+
+    } else {
+        //-- Mostra hint de Sucesso
+        hint.style = "color:rgb(79, 216, 132)";
+        hint.innerHTML = "Ficheiro válido.";
+
     }
+}
+
+//## NOT USED
+// GET THE IMAGE WIDTH AND HEIGHT USING fileReader() API.
+function readImageFile(file) {
+    var reader = new FileReader(); // CREATE AN NEW INSTANCE.
+
+    reader.onload = function(e) {
+        var img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function() {
+            var w = this.width;
+            var h = this.height;
+
+            // console.log("File Name: " + file.name);
+            // console.log("Width: " + w);
+            // console.log("Height: " + h);
+            // console.log("Size: " + Math.round((file.size / 1024)));
+            // console.log("File Type: " + file.type);
+        }
+    };
+    reader.readAsDataURL(file);
+}
 
 
-    // hint popup
-    $('.tooltip-demo').tooltip({
-        selector: "[data-toggle=tooltip]",
-        container: "body"
-    })
+// hint popup
+$('.tooltip-demo').tooltip({
+    selector: "[data-toggle=tooltip]",
+    container: "body"
+})
 
 
-    //## LIXO
-    $(document).ready(function() {
+//## LIXO
+$(document).ready(function() {
 
-        $('#btnInsert').click(function() {
-            addCheckbox2($('#txtNameCat').val());
-        });
-
-        addRemoveIMG();
+    $('#btnInsert').click(function() {
+        addCheckbox2($('#txtNameCat').val());
     });
 
-    //## LIXO
-    function addCheckbox(name) {
-        var container = $('#cblist');
-        var inputs = container.find('input');
-        var id = inputs.length + 1;
+    addRemoveIMG();
+});
 
-        $('<input />', {
-            type: 'checkbox',
-            id: 'cb' + id,
-            value: name
-        }).appendTo(container);
-        $('<label />', {
-            'for': 'cb' + id,
-            text: name
-        }).appendTo(container);
-    }
+//## LIXO
+function addCheckbox(name) {
+    var container = $('#cblist');
+    var inputs = container.find('input');
+    var id = inputs.length + 1;
+
+    $('<input />', {
+        type: 'checkbox',
+        id: 'cb' + id,
+        value: name
+    }).appendTo(container);
+    $('<label />', {
+        'for': 'cb' + id,
+        text: name
+    }).appendTo(container);
+}
 </script>
 
 </html>

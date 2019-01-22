@@ -25,7 +25,6 @@ if (!isset($_SESSION['username'])) {
         $nome = ($row['nome']);
         $email = ($row['email']);
     }
-
 }
 
 // Close connection
@@ -44,10 +43,14 @@ if (!isset($_SESSION['username'])) {
     <meta name="author" content="">
 
     <title>
-        <?php 
-    if ($tipo == 0) echo ("Projetos");
-    else if ($tipo == 1) echo ("Meus Projetos");
-    else echo ("Projetos");
+        <?php
+    if ($tipo == 0) {
+        echo("Projetos");
+    } elseif ($tipo == 1) {
+        echo("Meus Projetos");
+    } else {
+        echo("Projetos");
+    }
     ?>
     </title>
 
@@ -71,6 +74,10 @@ if (!isset($_SESSION['username'])) {
 
     <!-- Custom Fonts -->
     <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Meus estilos -->
+    <!-- <link href="css/stylesheet.css" rel="stylesheet" type="text/css"> -->
+    <link rel="stylesheet" href="css/stylesheet.css" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -98,7 +105,7 @@ if (!isset($_SESSION['username'])) {
             </div>
             <!-- /.navbar-header -->
 
-            <ul class="nav navbar-top-links navbar-right">
+            <ul class="nav navbar-top-links navbar-right" style="padding-left:10px">
 
                 <li>
                     <?php echo $cargo; ?>
@@ -155,10 +162,14 @@ if (!isset($_SESSION['username'])) {
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            <?php 
-                            if ($tipo == 0) echo ("Projetos");
-                            else if ($tipo == 1) echo ("Meus Projetos");
-                            else echo ("Projetos");
+                            <?php
+                            if ($tipo == 0) {
+                                echo("Projetos");
+                            } elseif ($tipo == 1) {
+                                echo("Meus Projetos");
+                            } else {
+                                echo("Projetos");
+                            }
                             ?>
                         </h1>
                     </div>
@@ -168,26 +179,20 @@ if (!isset($_SESSION['username'])) {
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
-                            <!--
-                            <div class="panel-heading">
-                                DataTables Advanced Tables
-                            </div>
-                            -->
+                            
                             <!-- /.panel-heading -->
                             <div class="panel-body">
                                 <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
 
                                     <!--###### Start of script ######-->
-                                    <?php 
+                                    <?php
                                         //require_once("connectdb.php");
                                         if ($tipo == 0) {
                                             selectProjetoAdmin($connectDB);
-                                        } else if ($tipo == 1) {
+                                        } elseif ($tipo == 1) {
                                             selectProjetoAluno($connectDB, $id);
-
                                         } else {
                                             selectProjetoDocente($connectDB, $id);
-
                                         }
 
                                         //-- Seleciona todos os projetos existentes na DB
@@ -201,7 +206,7 @@ if (!isset($_SESSION['username'])) {
                                                         <th style='max-width:60px'>Data</th>
                                                         <th>Autor(es)</th>
                                                         <th>Unidade Curricular</th>
-                                                        <th style='max-width:88px'>Ações</th>
+                                                        <th style='max-width:100px'>Ações</th>
                                                    </tr>
                                                 </thead>" .
                                                 "<tbody>";
@@ -231,7 +236,7 @@ if (!isset($_SESSION['username'])) {
                                                 $dataProjetostr = $diaProjetostr . "/" . $mesProjetostr . "/" . $anoProjetostr;
 
                                                 //-- 1ª imagem do projeto
-                                                $imageURL = "images/projetos/";
+                                                $imageURL = "images/projetos/imagens/";
                                                 $imageName = "";
                                                 selectProjetoImage($connectDB, $idProjeto, $imageName);
 
@@ -250,7 +255,6 @@ if (!isset($_SESSION['username'])) {
                                                     "</ul>" .
                                                     "</td>" .
                                                     "</tr>";
-
                                             }
                                             echo "</tbody>";
                                         }
@@ -265,7 +269,7 @@ if (!isset($_SESSION['username'])) {
                                                         <th>Título</th>
                                                         <th style='max-width:60px'>Data</th>
                                                         <th>Unidade Curricular</th>
-                                                        <th style='max-width:88px'>Ações</th>
+                                                        <th style='max-width:100px'>Ações</th>
                                                     </tr>
                                                 </thead>" .
                                                 "<tbody>";
@@ -289,7 +293,7 @@ if (!isset($_SESSION['username'])) {
                                                 $dataProjetostr = $diaProjetostr . "/" . $mesProjetostr . "/" . $anoProjetostr;
 
                                                 //-- 1ª imagem do projeto
-                                                $imageURL = "images/projetos/";
+                                                $imageURL = "images/projetos/imagens/";
                                                 $imageName = "";
                                                 selectProjetoImage($connectDB, $idProjeto, $imageName);
 
@@ -302,8 +306,25 @@ if (!isset($_SESSION['username'])) {
                                                     "<td style='vertical-align: middle'>" . $nomeUC . "</td>" .
                                                     "<td style='vertical-align: middle'>" .
                                                     "<ul class='nav navbar-top-links' style='float: inherit; vertical-align: middle'>" .
-                                                    "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
-                                                    "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
+                                                        "<div class='form-group form-inline'>" .
+                                                            "<div style ='display:flex;margin-left:auto; margin-right:auto;'>" .
+                                                                "<form id='formEditProjeto[". $idProjeto ."]' action='editar-projeto.php' enctype='multipart/form-data' method='POST'>" .
+                                                                    "<input type = 'hidden' value = '" . $idProjeto ."'name = 'id_projeto' >" .
+                                                                    "<li>
+                                                                        <button href='#' id='".$idProjeto."' onclick='editaProjeto(this.id)' style='background: Transparent no-repeat; border: none;'>
+                                                                            <i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i>
+                                                                        </button>
+                                                                    </li>" .
+                                                                "</form>" .
+                                                                // "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
+                                                                "<li style='margin-left:15px'>
+                                                                    <button class='icon-meus-projetos' id='" . $idProjeto . "' onclick='deleteProjeto(this.id)' style='background: Transparent no-repeat; border: none;'>
+                                                                        <i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i>
+                                                                    </button>
+                                                                </li>" .
+                                                            "</div>" .
+                                                        "</div>" .
+                                                    // "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
                                                     "</ul>" .
                                                     "</td>" .
                                                     "</tr>";
@@ -322,7 +343,7 @@ if (!isset($_SESSION['username'])) {
                                                         <th style='max-width:60px'>Data</th>
                                                         <th>Tipo</th>
                                                         <th>Unidade Curricular</th>
-                                                        <th style='max-width:88px'>Ações</th>
+                                                        <th style='max-width:100px'>Ações</th>
                                                     </tr>
                                                 </thead>" .
                                                 "<tbody>";
@@ -354,16 +375,19 @@ if (!isset($_SESSION['username'])) {
                                                 //-- Tipo de projeto
                                                 //####
                                                 $tProjeto = $row['tipo'];
-                                                if ($tProjeto == 1) $tipoProjeto = "Teórico";
-                                                else $tipoProjeto = "Prático";
+                                                if ($tProjeto == 1) {
+                                                    $tipoProjeto = "Teórico";
+                                                } else {
+                                                    $tipoProjeto = "Prático";
+                                                }
 
                                                 //-- 1ª imagem do projeto
-                                                $imageURL = "images/projetos/";
+                                                $imageURL = "images/projetos/imagens/";
                                                 $imageName = "";
                                                 selectProjetoImage($connectDB, $idProjeto, $imageName);
 
                                                 //echo (alert($row['titulo'] . " | " . $dataProjetostr . " | " . $tipo . " | " . $nomeUC));
-                                            //-- Print a new table line
+                                                //-- Print a new table line
                                                 echo
                                                     "<tr class='odd gradeX'>" .
                                                     "<td style='vertical-align: middle'><img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt=''></td>" .
@@ -399,8 +423,11 @@ if (!isset($_SESSION['username'])) {
                                             $resultQuery = mysqli_query($connectDB, "SELECT a.nome FROM aluno a, aluno_projeto ap WHERE ap.fk_projeto=$idProjeto AND a.fk_idutilizador=ap.fk_aluno ORDER BY a.nome");
                                             if (mysqli_num_rows($resultQuery) > 0) {    // se existerem resultados
                                                 while ($row = $resultQuery->fetch_assoc()) { // enquanto houverem resultados
-                                                    if ($count == 0) $autoresProjeto .= $row['nome'];
-                                                    else $autoresProjeto .= ",\n" . $row['nome'];
+                                                    if ($count == 0) {
+                                                        $autoresProjeto .= $row['nome'];
+                                                    } else {
+                                                        $autoresProjeto .= ",\n" . $row['nome'];
+                                                    }
 
                                                     $count++;
                                                 }
@@ -435,32 +462,17 @@ if (!isset($_SESSION['username'])) {
             </div>
             <!-- /.container-fluid -->
 
-            <!--
-            <footer style="width: auto;">
-            <div style="margin-top: auto!important; margin-bottom: auto!important;">
-                <div class="text-center" style="padding-top: 15px; padding-bottom: 30px; padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto; margin-top: auto!important; line-height: 1; font-size: 1.2rem;">
-                <span>Copyright © <a target="_blank" href="http://www.linkedin.com/in/leandro3mega">Leandro Magalhães</a> 2019</span>
-                </div>
-            </div>
-            </footer>
-                                    -->
-            <footer style="position: absolute; width: calc(100% - 310px); bottom: 0;">
-                <div style="margin: 20px 0; padding-top: 15px; padding-bottom: 15px; padding-right: 15px; padding-left: 15px;text-align:center!important;line-height: 1; font-size: 1.2rem;">
-                    <span>Copyright © <a target="_blank" href="http://www.linkedin.com/in/leandro3mega">Leandro
-                            Magalhães</a> 2019</span>
-                </div>
-            </footer>
-
-
-
-
-
+            <?php
+            include 'footer.html';
+            ?>
 
         </div>
         <!-- /#page-wrapper -->
 
     </div>
     <!-- /#wrapper -->
+
+
 
     <!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -481,28 +493,62 @@ if (!isset($_SESSION['username'])) {
 
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
-        $(document).ready(function () {
-            $('#dataTables-example').DataTable({
-                responsive: true
-            });
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+            responsive: true
         });
+    });
 
-        //-- Year for the copyright label
-        //var d = new Date()
-        //document.write(d.getFullYear())
-        $(document).ready(function () {
-            //$(".form-control input-sm").attr("placeholder", "Type a name (Lastname, Firstname)").blur();
-            //$(".form-control input-sm").attr("placeholder", "variable");
-            var campo;
-            $('body').find("input[type=search], input[type=text], search").each(function (ev) {
-                if (!$(this).val()) {
-                    $(this).attr("placeholder", "Pesquisar...");
-                    //$(this).val("asdasdasdasd");
-                    //campo = $(this).val();
+    //-- Year for the copyright label
+    //var d = new Date()
+    //document.write(d.getFullYear())
+    $(document).ready(function() {
+        //$(".form-control input-sm").attr("placeholder", "Type a name (Lastname, Firstname)").blur();
+        //$(".form-control input-sm").attr("placeholder", "variable");
+        var campo;
+        $('body').find("input[type=search], input[type=text], search").each(function(ev) {
+            if (!$(this).val()) {
+                $(this).attr("placeholder", "Pesquisar...");
+                //$(this).val("asdasdasdasd");
+                //campo = $(this).val();
+            }
+        });
+        //console.log(campo);
+    });
+
+    function deleteProjeto(user_id) {
+
+        if (confirm('Tem a certeza que pretende remover o projeto?')) {
+            console.log("O projeto será removido!");
+
+            $.ajax({
+                type: "POST",
+                url: 'delete_edit_projeto.php',
+                data: {
+                    'action': 'delete_projeto',
+                    'id_projeto': user_id
+                },
+                success: function(response) {
+                    location.reload();
                 }
             });
-            //console.log(campo);
-        });
+
+        } else {
+            return;
+        }
+
+    }
+
+    function editaProjeto(projeto_id) {
+        // formEditProjeto[". $idProjeto ."]'
+        var form = document.getElementById("formEditProjeto[" + projeto_id + "]");
+
+        form.submit();
+
+        // document.getElementById("your-id").addEventListener("click", function () {
+        // form.submit();
+        // });
+    }
     </script>
 
 </body>
