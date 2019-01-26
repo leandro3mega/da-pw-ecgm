@@ -321,7 +321,7 @@ mysqli_close($connectDB);
               </div>
             </div>
 
-            <a href="loginpage.php" class="btn btn-lg btn-success btn-block">Iniciar Sessão</a>    
+            <a href="iniciar-sessao.php" class="btn btn-lg btn-success btn-block">Iniciar Sessão</a>    
 
           </form>
         </div>

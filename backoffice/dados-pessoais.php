@@ -12,6 +12,9 @@ require_once("connectdb.php");
 if (!isset($_SESSION['username'])) {
     header("location:iniciar-sessao.php");
     exit();
+} elseif ($_SESSION['cargo'] === "Administrador") {
+    header("location:index.php");
+    exit();
 } else {
     $id = $_SESSION['id'];
     $username = $_SESSION['username'];
@@ -97,50 +100,19 @@ if (!isset($_SESSION['username'])) {
             </div>
             <!-- /.navbar-header -->
 
-            <ul class="nav navbar-top-links navbar-right">
-
+            <ul class="nav navbar-top-links navbar-right" style="padding-left:10px">
                 <li>
                     <?php echo $cargo; ?>
                 </li>
                 <li><a><i class="fa fa-user fa-fw"></i>
                         <?php echo $username; ?> </a>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
-
             </ul>
             <!-- /.navbar-top-links -->
 
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-
-                        <li>
-                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-
-                        <li>
-                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Meus Projetos</a>
-                        </li>
-
-                        <li>
-                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Projeto</a>
-                        </li>
-
-                        <li>
-                            <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="alterar-password.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
-                                        Passe</a>
-                                </li>
-                                <li>
-                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados
-                                        Pessoais</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-
-                    </ul>
+                    <?php include "sidemenu.php"; ?>
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
@@ -172,18 +144,20 @@ if (!isset($_SESSION['username'])) {
 
                                     <div class="form-group" id="iDivInputNome" style="display:none">
                                         <label>Nome</label>
-                                        <input type="text" id="iInputNome" class="form-control" placeholder="Insira o seu nome"
-                                            value="<?php echo $nome; ?>">
+                                        <input type="text" id="iInputNome" class="form-control"
+                                            placeholder="Insira o seu nome" value="<?php echo $nome; ?>">
                                         <button id="iBtnSubmeterNome" class="btn btn-default btn-backoffice-size"
                                             onclick="changeNome()">
                                             Submeter
                                         </button>
-                                        <button id="iBtnCancelarNome" onclick="showhideNome()" class="btn btn-default btn-backoffice-size">
+                                        <button id="iBtnCancelarNome" onclick="showhideNome()"
+                                            class="btn btn-default btn-backoffice-size">
                                             Cancelar
                                         </button>
                                         <div class="form-group"></div>
                                     </div>
-                                    <button id="iBtnAlterarNome" onclick="showhideNome()" class="btn btn-default btn-backoffice-size">
+                                    <button id="iBtnAlterarNome" onclick="showhideNome()"
+                                        class="btn btn-default btn-backoffice-size">
                                         Alterar
                                     </button>
                                     <!-- End Nome -->
@@ -209,8 +183,8 @@ if (!isset($_SESSION['username'])) {
                                             Cancelar
                                         </button>
                                     </div>
-                                    <button id="iBtnAlterarEmail" onclick="showhideEmail()" class="btn btn-default btn-backoffice-size"
-                                        style="margin-bottom:20px">
+                                    <button id="iBtnAlterarEmail" onclick="showhideEmail()"
+                                        class="btn btn-default btn-backoffice-size" style="margin-bottom:20px">
                                         Alterar
                                     </button>
                                     <!-- End Email -->
@@ -270,12 +244,15 @@ if (!isset($_SESSION['username'])) {
                                     <!--Inserir Fotografia-->
                                     <div class="form-group" id="iDivFileFotografia" style="display:none">
                                         <label>Fotografia</label>
-                                        <form id="avatar_file_upload_form" role="form" action="uploadimage.php" method="post"
-                                            enctype='multipart/form-data' style="">
+                                        <form id="avatar_file_upload_form" role="form" action="uploadimage.php"
+                                            method="post" enctype='multipart/form-data' style="">
                                             <div class="form-group">
-                                                <input type="file" name="avatar" id="avatar_file_upload_field" accept="image/jpeg,image/png" />
-                                                <input type="hidden" name="iduser" id="iIdUser" value="<?php echo($id); ?>" />
-                                                <input type="submit" class="btn btn-default btn-backoffice-size" style="margin-top:15px" />
+                                                <input type="file" name="avatar" id="avatar_file_upload_field"
+                                                    accept="image/jpeg,image/png" />
+                                                <input type="hidden" name="iduser" id="iIdUser"
+                                                    value="<?php echo($id); ?>" />
+                                                <input type="submit" class="btn btn-default btn-backoffice-size"
+                                                    style="margin-top:15px" />
                                                 <button id="iBtnCancelarFotografia" onclick="showhideFotografia()"
                                                     class="btn btn-default btn-backoffice-size" style="margin-top:15px">
                                                     Cancelar
@@ -291,7 +268,8 @@ if (!isset($_SESSION['username'])) {
                                         <div class="form-group"></div>
                                     </div>
 
-                                    <button id="iBtnAlterarFotografia" onclick="showhideFotografia()" class="btn btn-default btn-backoffice-size">
+                                    <button id="iBtnAlterarFotografia" onclick="showhideFotografia()"
+                                        class="btn btn-default btn-backoffice-size">
                                         Alterar
                                     </button>
                                     <!-- End Fotografia -->
@@ -354,157 +332,157 @@ if (!isset($_SESSION['username'])) {
 
     <!-- Page-Level Demo Scripts - Notifications - Use for reference -->
     <script>
-        // tooltip demo
-        $('.tooltip-demo').tooltip({
-            selector: "[data-toggle=tooltip]",
-            container: "body"
-        })
-        // popover demo
-        $("[data-toggle=popover]")
-            .popover()
+    // tooltip demo
+    $('.tooltip-demo').tooltip({
+        selector: "[data-toggle=tooltip]",
+        container: "body"
+    })
+    // popover demo
+    $("[data-toggle=popover]")
+        .popover()
 
-        var nomeInputHidden = true;
-        var emailInputHidden = true;
-        var fotografiaInputHidden = true;
+    var nomeInputHidden = true;
+    var emailInputHidden = true;
+    var fotografiaInputHidden = true;
 
-        function showhideNome() {
-            var divLabelNome = document.getElementById("iDivLabelNome");
-            var divInputNome = document.getElementById("iDivInputNome");
-            var btnAlterarNome = document.getElementById("iBtnAlterarNome");
-            var btnSubmeterNome = document.getElementById("iBtnSubmeterNome");
-            var btnCancelarNome = document.getElementById("iBtnCancelarNome");
+    function showhideNome() {
+        var divLabelNome = document.getElementById("iDivLabelNome");
+        var divInputNome = document.getElementById("iDivInputNome");
+        var btnAlterarNome = document.getElementById("iBtnAlterarNome");
+        var btnSubmeterNome = document.getElementById("iBtnSubmeterNome");
+        var btnCancelarNome = document.getElementById("iBtnCancelarNome");
 
-            if (nomeInputHidden) nomeInputHidden = false;
-            else nomeInputHidden = true;
+        if (nomeInputHidden) nomeInputHidden = false;
+        else nomeInputHidden = true;
 
-            if (nomeInputHidden) {
-                divLabelNome.style = "display: block";
-                divInputNome.style = "display: none";
-                btnAlterarNome.style = "display: block";
-                btnSubmeterNome.style = "display: none; margin-top:15px";
-                btnCancelarNome.style = "display: none; margin-top:15px";
-            } else {
-                divLabelNome.style = "display: none";
-                divInputNome.style = "display: block";
-                btnAlterarNome.style = "display: none; margin-top:15px";
-                btnSubmeterNome.style = "display: inline-block; margin-top:15px";
-                btnCancelarNome.style = "display: inline-block; margin-top:15px";
+        if (nomeInputHidden) {
+            divLabelNome.style = "display: block";
+            divInputNome.style = "display: none";
+            btnAlterarNome.style = "display: block";
+            btnSubmeterNome.style = "display: none; margin-top:15px";
+            btnCancelarNome.style = "display: none; margin-top:15px";
+        } else {
+            divLabelNome.style = "display: none";
+            divInputNome.style = "display: block";
+            btnAlterarNome.style = "display: none; margin-top:15px";
+            btnSubmeterNome.style = "display: inline-block; margin-top:15px";
+            btnCancelarNome.style = "display: inline-block; margin-top:15px";
+        }
+    }
+
+    function showhideEmail() {
+        var divLabelEmail = document.getElementById("iDivLabelEmail");
+        var divInputEmail = document.getElementById("iDivInputEmail");
+        var btnAlterarEmail = document.getElementById("iBtnAlterarEmail");
+        var btnSubmeterEmail = document.getElementById("iBtnSubmeterEmail");
+        var btnCancelarEmail = document.getElementById("iBtnCancelarEmail");
+
+        if (emailInputHidden) emailInputHidden = false;
+        else emailInputHidden = true;
+
+        if (emailInputHidden) {
+            divLabelEmail.style = "display: block";
+            divInputEmail.style = "display: none";
+            btnAlterarEmail.style = "display: block";
+            //btnSubmeterEmail.style = "display: none; margin-top:15px";
+            //btnCancelarEmail.style = "display: none; margin-top:15px";
+        } else {
+            divLabelEmail.style = "display: none";
+            divInputEmail.style = "display: block";
+            btnAlterarEmail.style = "display: none";
+            //btnSubmeterEmail.style = "display: none; margin-top:15px";
+            //btnCancelarEmail.style = "display: none; margin-top:15px";
+
+        }
+    }
+
+    function showhideFotografia() {
+        var divImgFotografia = document.getElementById("iDivImgFotografia");
+        var divFileFotografia = document.getElementById("iDivFileFotografia");
+        var btnAlterarFotografia = document.getElementById("iBtnAlterarFotografia");
+        var btnSubmeterFotografia = document.getElementById("iBtnSubmeterFotografia");
+        var btnCancelarFotografia = document.getElementById("iBtnCancelarFotografia");
+
+        if (fotografiaInputHidden) fotografiaInputHidden = false;
+        else fotografiaInputHidden = true;
+
+        if (fotografiaInputHidden) {
+            divImgFotografia.style = "display: block";
+            divFileFotografia.style = "display: none";
+            btnAlterarFotografia.style = "display: block";
+            //btnSubmeterFotografia.style = "display: none; margin-top:15px";
+            //btnCancelarFotografia.style = "display: none; margin-top:15px";
+        } else {
+            divImgFotografia.style = "display: none";
+            divFileFotografia.style = "display: block";
+            btnAlterarFotografia.style = "display: none";
+            //btnSubmeterFotografia.style = "display: none; margin-top:15px";
+            //btnCancelarFotografia.style = "display: none; margin-top:15px";
+
+        }
+    }
+
+    //var inputNome = document.getElementById("iInputNome");
+    //var btnSubmeterNome = document.getElementById("iBtnSubmeterNome");
+    //var novoNome = inputNome.value;
+    /*
+    btnSubmeterNome.onclick = function () {
+        novoNome = $('#iInputNome').val();
+        //$('#iInputNome').val("Fodasse");
+        console.log("Novo nome: ", novoNome);
+        
+        $.ajax({
+            type: "POST",
+            url: 'changeusername.php',
+            data:{'action':'change_name', 'name': novoNome},
+            success:function(html) {
+                alert(html);
             }
-        }
 
-        function showhideEmail() {
-            var divLabelEmail = document.getElementById("iDivLabelEmail");
-            var divInputEmail = document.getElementById("iDivInputEmail");
-            var btnAlterarEmail = document.getElementById("iBtnAlterarEmail");
-            var btnSubmeterEmail = document.getElementById("iBtnSubmeterEmail");
-            var btnCancelarEmail = document.getElementById("iBtnCancelarEmail");
+        });
+    }
+    */
 
-            if (emailInputHidden) emailInputHidden = false;
-            else emailInputHidden = true;
 
-            if (emailInputHidden) {
-                divLabelEmail.style = "display: block";
-                divInputEmail.style = "display: none";
-                btnAlterarEmail.style = "display: block";
-                //btnSubmeterEmail.style = "display: none; margin-top:15px";
-                //btnCancelarEmail.style = "display: none; margin-top:15px";
-            } else {
-                divLabelEmail.style = "display: none";
-                divInputEmail.style = "display: block";
-                btnAlterarEmail.style = "display: none";
-                //btnSubmeterEmail.style = "display: none; margin-top:15px";
-                //btnCancelarEmail.style = "display: none; margin-top:15px";
+    //-- Ajax to submite change of the user name
+    function changeNome() {
+        novoNome = $('#iInputNome').val();
+        console.log("Novo nome: " + novoNome);
 
+        $.ajax({
+            type: "POST",
+            url: 'changeuserdata.php',
+            data: {
+                'action': 'change_name',
+                'name': novoNome
+            },
+            success: function(html) {
+                alert(html);
+                location.reload();
             }
-        }
 
-        function showhideFotografia() {
-            var divImgFotografia = document.getElementById("iDivImgFotografia");
-            var divFileFotografia = document.getElementById("iDivFileFotografia");
-            var btnAlterarFotografia = document.getElementById("iBtnAlterarFotografia");
-            var btnSubmeterFotografia = document.getElementById("iBtnSubmeterFotografia");
-            var btnCancelarFotografia = document.getElementById("iBtnCancelarFotografia");
+        });
+    }
 
-            if (fotografiaInputHidden) fotografiaInputHidden = false;
-            else fotografiaInputHidden = true;
+    //-- Ajax to submite change of the user email
+    function changeEmail() {
+        novoEmail = $('#iInputEmail').val();
+        console.log("Novo Email: " + novoEmail);
 
-            if (fotografiaInputHidden) {
-                divImgFotografia.style = "display: block";
-                divFileFotografia.style = "display: none";
-                btnAlterarFotografia.style = "display: block";
-                //btnSubmeterFotografia.style = "display: none; margin-top:15px";
-                //btnCancelarFotografia.style = "display: none; margin-top:15px";
-            } else {
-                divImgFotografia.style = "display: none";
-                divFileFotografia.style = "display: block";
-                btnAlterarFotografia.style = "display: none";
-                //btnSubmeterFotografia.style = "display: none; margin-top:15px";
-                //btnCancelarFotografia.style = "display: none; margin-top:15px";
-
+        $.ajax({
+            type: "POST",
+            url: 'changeuserdata.php',
+            data: {
+                'action': 'change_email',
+                'email': novoEmail
+            },
+            success: function(html) {
+                alert(html);
+                location.reload();
             }
-        }
 
-        //var inputNome = document.getElementById("iInputNome");
-        //var btnSubmeterNome = document.getElementById("iBtnSubmeterNome");
-        //var novoNome = inputNome.value;
-        /*
-        btnSubmeterNome.onclick = function () {
-            novoNome = $('#iInputNome').val();
-            //$('#iInputNome').val("Fodasse");
-            console.log("Novo nome: ", novoNome);
-            
-            $.ajax({
-                type: "POST",
-                url: 'changeusername.php',
-                data:{'action':'change_name', 'name': novoNome},
-                success:function(html) {
-                    alert(html);
-                }
-
-            });
-        }
-        */
-
-
-        //-- Ajax to submite change of the user name
-        function changeNome() {
-            novoNome = $('#iInputNome').val();
-            console.log("Novo nome: " + novoNome);
-
-            $.ajax({
-                type: "POST",
-                url: 'changeuserdata.php',
-                data: {
-                    'action': 'change_name',
-                    'name': novoNome
-                },
-                success: function(html) {
-                    alert(html);
-                    location.reload();
-                }
-
-            });
-        }
-
-        //-- Ajax to submite change of the user email
-        function changeEmail() {
-            novoEmail = $('#iInputEmail').val();
-            console.log("Novo Email: " + novoEmail);
-
-            $.ajax({
-                type: "POST",
-                url: 'changeuserdata.php',
-                data: {
-                    'action': 'change_email',
-                    'email': novoEmail
-                },
-                success: function(html) {
-                    alert(html);
-                    location.reload();
-                }
-
-            });
-        }
+        });
+    }
     </script>
 
 </body>

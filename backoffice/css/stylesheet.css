@@ -61,6 +61,8 @@ input[type=radio] {
     outline: none;
 }
 
+
+
 /* ------------------------------------ */
 
 
@@ -75,6 +77,11 @@ input[type=radio] {
     background-color: rgb(175, 175, 175);
     background-color: rgb(216, 79, 79);
     background-color: rgb(79, 216, 132);
+    background-color: rgb(13, 140, 243);
+    background-color: rgb(238, 238, 238);
     align-content: center;
     border-right: 1px solid rgba(46, 207, 207, 0.322);
+    overflow: hidden;
+    word-wrap: break-word;
+    text-align: center;
 }

@@ -119,36 +119,7 @@ if (!isset($_SESSION['username'])) {
 
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-
-                        <li>
-                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-
-                        <li>
-                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Meus Projetos</a>
-                        </li>
-
-                        <li>
-                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Projeto</a>
-                        </li>
-
-                        <li>
-                            <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="alterar-password.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
-                                        Passe</a>
-                                </li>
-                                <li>
-                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados
-                                        Pessoais</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-
-                    </ul>
+                    <?php include "sidemenu.php"; ?>
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
@@ -157,7 +128,7 @@ if (!isset($_SESSION['username'])) {
 
         <!-- Page Content -->
         <div id="page-wrapper">
-            <div class="container-fluid">
+            <div class="container-fluid" style="min-height:500px">
                 <!-- /.row -->
                 <div class="row">
                     <div class="col-lg-12">
@@ -179,10 +150,11 @@ if (!isset($_SESSION['username'])) {
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
-                            
+
                             <!-- /.panel-heading -->
                             <div class="panel-body">
-                                <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                <table width="100%" class="table table-striped table-bordered table-hover"
+                                    id="dataTables-example">
 
                                     <!--###### Start of script ######-->
                                     <?php
@@ -230,9 +202,10 @@ if (!isset($_SESSION['username'])) {
 
                                                 //-- Data que o projeto foi finalizado
                                                 $dataProjeto = $row['data'];
-                                                $diaProjetostr = substr($dataProjeto, 0, -6);    //-- substring que limita o tamanho da descrição
-                                                $mesProjetostr = substr($dataProjeto, -6, -4);    //-- substring que limita o tamanho da descrição
-                                                $anoProjetostr = substr($dataProjeto, -4);    //-- substring que limita o tamanho da descrição
+                                                $diaProjetostr = substr($dataProjeto, -2);    //-- substring
+                                                $mesProjetostr = substr($dataProjeto, -4, 2);    //-- substring
+                                                $anoProjetostr = substr($dataProjeto, 0, 4);    //-- substring
+
                                                 $dataProjetostr = $diaProjetostr . "/" . $mesProjetostr . "/" . $anoProjetostr;
 
                                                 //-- 1ª imagem do projeto
@@ -249,9 +222,30 @@ if (!isset($_SESSION['username'])) {
                                                     "<td style='vertical-align: middle'>" . $autoresProjeto . "</td>" .
                                                     "<td style='vertical-align: middle'>" . $nomeUC . "</td>" .
                                                     "<td style='vertical-align: middle'>" .
+                                                    // "<ul class='nav navbar-top-links' style='float: inherit; vertical-align: middle'>" .
+                                                    // "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
+                                                    // "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
+                                                    // "</ul>" .
                                                     "<ul class='nav navbar-top-links' style='float: inherit; vertical-align: middle'>" .
-                                                    "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
-                                                    "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
+                                                        "<div class='form-group form-inline'>" .
+                                                            "<div style ='display:flex;margin-left:auto; margin-right:auto;'>" .
+                                                                "<form id='formEditProjeto[". $idProjeto ."]' action='editar-projeto.php' enctype='multipart/form-data' method='POST'>" .
+                                                                    "<input type = 'hidden' value = '" . $idProjeto ."'name = 'id_projeto' >" .
+                                                                    "<li style='margin-left:auto;'>
+                                                                        <button href='#' id='".$idProjeto."' onclick='editaProjeto(this.id)' style='background: Transparent no-repeat; border: none;'>
+                                                                            <i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96); padding:10px; width: auto;'></i>
+                                                                        </button>
+                                                                    </li>" .
+                                                                "</form>" .
+                                                                // "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
+                                                                "<li style='margin-right:auto;'>
+                                                                    <button class='icon-meus-projetos' id='" . $idProjeto . "' onclick='deleteProjeto(this.id)' style='background: Transparent no-repeat; border: none;'>
+                                                                        <i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45); padding:10px; width: auto;'></i>
+                                                                    </button>
+                                                                </li>" .
+                                                            "</div>" .
+                                                        "</div>" .
+                                                    // "<li><a href='novo-projeto.php'><i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i></a>" .
                                                     "</ul>" .
                                                     "</td>" .
                                                     "</tr>";
@@ -287,9 +281,10 @@ if (!isset($_SESSION['username'])) {
 
                                                 //-- Data que o projeto foi finalizado
                                                 $dataProjeto = $row['data'];
-                                                $diaProjetostr = substr($dataProjeto, 0, -6);    //-- substring que limita o tamanho da descrição
-                                                $mesProjetostr = substr($dataProjeto, -6, -4);    //-- substring que limita o tamanho da descrição
-                                                $anoProjetostr = substr($dataProjeto, -4);    //-- substring que limita o tamanho da descrição
+                                                $diaProjetostr = substr($dataProjeto, -2);    //-- substring
+                                                $mesProjetostr = substr($dataProjeto, -4, 2);    //-- substring
+                                                $anoProjetostr = substr($dataProjeto, 0, 4);    //-- substring
+
                                                 $dataProjetostr = $diaProjetostr . "/" . $mesProjetostr . "/" . $anoProjetostr;
 
                                                 //-- 1ª imagem do projeto
@@ -310,16 +305,16 @@ if (!isset($_SESSION['username'])) {
                                                             "<div style ='display:flex;margin-left:auto; margin-right:auto;'>" .
                                                                 "<form id='formEditProjeto[". $idProjeto ."]' action='editar-projeto.php' enctype='multipart/form-data' method='POST'>" .
                                                                     "<input type = 'hidden' value = '" . $idProjeto ."'name = 'id_projeto' >" .
-                                                                    "<li>
+                                                                    "<li style='margin-left:auto;'>
                                                                         <button href='#' id='".$idProjeto."' onclick='editaProjeto(this.id)' style='background: Transparent no-repeat; border: none;'>
-                                                                            <i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i>
+                                                                            <i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96); padding:10px; width: auto;'></i>
                                                                         </button>
                                                                     </li>" .
                                                                 "</form>" .
                                                                 // "<li><a href='novo-projeto.php'><i class='fa fa-edit fa-fw' style='color: rgb(45, 179, 96)'></i></a>" .
-                                                                "<li style='margin-left:15px'>
+                                                                "<li style='margin-right:auto;'>
                                                                     <button class='icon-meus-projetos' id='" . $idProjeto . "' onclick='deleteProjeto(this.id)' style='background: Transparent no-repeat; border: none;'>
-                                                                        <i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45)'></i>
+                                                                        <i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45); padding:10px; width: auto;'></i>
                                                                     </button>
                                                                 </li>" .
                                                             "</div>" .
@@ -367,9 +362,10 @@ if (!isset($_SESSION['username'])) {
                                                 $descricaoProjetostr = substr($descricaoProjeto, 0, 30) . "...";    //-- substring que limita o tamanho da descrição
 
                                                 $dataProjeto = $row['data'];
-                                                $diaProjetostr = substr($dataProjeto, 0, -6);    //-- substring que limita o tamanho da descrição
-                                                $mesProjetostr = substr($dataProjeto, -6, -4);    //-- substring que limita o tamanho da descrição
-                                                $anoProjetostr = substr($dataProjeto, -4);    //-- substring que limita o tamanho da descrição
+                                                $diaProjetostr = substr($dataProjeto, -2);    //-- substring
+                                                $mesProjetostr = substr($dataProjeto, -4, 2);    //-- substring
+                                                $anoProjetostr = substr($dataProjeto, 0, 4);    //-- substring
+
                                                 $dataProjetostr = $diaProjetostr . "/" . $mesProjetostr . "/" . $anoProjetostr;
 
                                                 //-- Tipo de projeto
@@ -471,8 +467,6 @@ if (!isset($_SESSION['username'])) {
 
     </div>
     <!-- /#wrapper -->
-
-
 
     <!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>

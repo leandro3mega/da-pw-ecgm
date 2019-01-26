@@ -12,7 +12,14 @@ if (!isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
     $tipo = $_SESSION['tipo'];
     $cargo = $_SESSION['cargo'];
-    $id_projeto = $_POST['id_projeto'];
+    // $id_projeto = $_POST['id_projeto'];
+    
+    if (isset($_POST['id_projeto'])) {
+        $_SESSION['edit_projeto_id'] = $_POST['id_projeto'];
+        $id_projeto = $_SESSION['edit_projeto_id'];
+    } else {
+        $id_projeto = $_SESSION['edit_projeto_id'];
+    }
     // echo("ID do projeto: " . $id_projeto);
         
     //--FIXME: este select penso que não seja necessário nesta pagina, pois não usamos o nome ou email do utilizador em lado nenhum
@@ -51,19 +58,19 @@ if (!isset($_SESSION['username'])) {
     $stmt->close();
     */
     $projeto_iduc = $projeto_titulo = $projeto_descricao = $projeto_autores = $projeto_data = $projeto_ano = $projeto_semestre = $projeto_tipo = "";
-    $projeto_palavraschave = $projeto_video = $projeto_unidade_curricular = "";
+    $projeto_palavraschave = $projeto_video = $projeto_unidade_curricular = $projeto_ficheiro = "";
     $ferramentas = array();
 
     //-- Seleciona os dados do projeto
     selectProjeto($connectDB, $id_projeto, $projeto_iduc, $projeto_titulo, $projeto_descricao, $projeto_autores, $projeto_data, $projeto_ano, $projeto_semestre, $projeto_tipo);
     //-- Seleciona as palavras chave deste projeto
     selectPalavrasChave($connectDB, $id_projeto, $projeto_palavraschave);
-    //-- TODO: Seleciona o nome da UC deste projeto
+    //-- Seleciona o nome da UC deste projeto
     selectUC($connectDB, $id_projeto, $projeto_iduc, $projeto_unidade_curricular);
-    
-    //-- TODO:Seleciona o video deste projeto
+    //-- Seleciona o video deste projeto
     selectVideo($connectDB, $id_projeto, $projeto_video);
-    //-- TODO:Seleciona as palavras chave deste projeto
+    //-- Seleciona o ficheiro deste projeto
+    selectFicheiro($connectDB, $id_projeto, $projeto_ficheiro);
 }
 
 //-- Seleciona toda a informação de um projeto
@@ -83,7 +90,6 @@ function selectProjeto($connectDB, $id_projeto, &$projeto_iduc, &$projeto_titulo
             // Store result
             $stmt->store_result();
                 
-            // Check if username exists, if yes then verify password
             if ($stmt->num_rows == 1) {
                 // Bind result variables
                 $stmt->bind_result($r_iduc, $r_titulo, $r_descricao, $r_autores, $r_data, $r_ano, $r_semestre, $r_tipo);
@@ -99,12 +105,13 @@ function selectProjeto($connectDB, $id_projeto, &$projeto_iduc, &$projeto_titulo
                     $projeto_tipo = $r_tipo;
                 }
             } else {
-                echo"Não foi encontrada conta ";
+                echo"Não foi encontrado Projeto ";
             }
         } else {
             echo "Algo correu mal. Por favor tente de novo.";
         }
     }
+    $stmt->close();
 }
 
 //-- seleciona as palavras chave de um projeto
@@ -133,12 +140,13 @@ function selectPalavrasChave($connectDB, $id_projeto, &$projeto_palavraschave)
                     $projeto_palavraschave = $r_palavra;
                 }
             } else {
-                echo"Não foi encontrada conta ";
+                // echo"Não foram encontradas palavras-chave ";
             }
         } else {
             echo "Algo correu mal. Por favor tente de novo.";
         }
     }
+    $stmt->close();
 }
 
 //-- seleciona a UC de um projeto
@@ -173,6 +181,7 @@ function selectUC($connectDB, $id_projeto, $projeto_iduc, &$projeto_unidade_curr
             echo "Algo correu mal. Por favor tente de novo.";
         }
     }
+    $stmt->close();
 }
 
 //-- seleciona o video de um projeto
@@ -201,14 +210,49 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                     $projeto_video = $r_nome;
                 }
             } else {
-                echo"Não foi encontrado video ";
+                // echo"Não foi encontrado video ";
             }
         } else {
             echo "Algo correu mal. Por favor tente de novo.";
         }
     }
+    $stmt->close();
 }
 
+//-- seleciona o FICHEIRO de um projeto
+function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
+{
+    $query = "SELECT nome FROM ficheiro WHERE fk_idprojeto=?";
+
+    if ($stmt = $connectDB->prepare($query)) {
+        // Bind variables to the prepared statement as parameters
+        $stmt->bind_param("i", $param_idprojeto);
+            
+        // Set parameters
+        $param_idprojeto = $id_projeto;
+            
+        // Attempt to execute the prepared statement
+        if ($stmt->execute()) {
+            // Store result
+            $stmt->store_result();
+                
+            // Check if username exists, if yes then verify password
+            if ($stmt->num_rows == 1) {
+                // Bind result variables
+                $stmt->bind_result($r_nome);
+                if ($stmt->fetch()) {
+                    //-- Atribui variaveis
+                    $projeto_ficheiro = $r_nome;
+                }
+            } else {
+                // echo"Não foi encontrado ficheiro ";
+            }
+        } else {
+            echo "Algo correu mal. Por favor tente de novo.";
+        }
+    }
+    $stmt->close();
+}
 
 
 ?>
@@ -250,6 +294,23 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
 
 </head>
 
+<!-- <style>
+    .resp-container {
+        position: relative;
+        overflow: hidden;
+        padding-top: 56.25%;
+    }
+
+    .resp-iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+</style> -->
+
 <body>
 
     <div id="wrapper">
@@ -257,17 +318,17 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
-                <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                </button> -->
+                </button>
                 <a class="navbar-brand" href="#">Area de Utilizador</a>
             </div>
             <!-- /.navbar-header -->
 
-            <ul class="nav navbar-top-links navbar-right">
+            <ul class="nav navbar-top-links navbar-right" style="padding-left:10px">
 
                 <li>
                     <?php echo $cargo; ?>
@@ -281,36 +342,7 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
 
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-
-                        <li>
-                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-
-                        <li>
-                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Meus Projetos</a>
-                        </li>
-
-                        <li>
-                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Projetos</a>
-                        </li>
-
-                        <li>
-                            <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="alterar-password.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
-                                        Passe</a>
-                                </li>
-                                <li>
-                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados
-                                        Pessoais</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-
-                    </ul>
+                    <?php include "sidemenu.php"; ?>
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
@@ -337,47 +369,44 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                                 <?php echo($projeto_titulo); ?>
                             </p>
                             <!-- Trigger/Open The Modal -->
-                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal" data-target="#modalTitulo">
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalTitulo">
                                 Alterar
                             </button>
                         </div>
 
                         <!-- <button id="myBtn" class="btn btn-default btn-backoffice-size" style="margin-top:10px">Alterar</button> -->
                         <!-- Descrição -->
-                        <div class="form-group" style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
+                        <div class="form-group"
+                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
                             <label style="padding-top:10px">Descrição</label>
                             <p class="form-control-static">
                                 <?php echo($projeto_descricao); ?>
                             </p>
                             <!-- Trigger/Open The Modal -->
-                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal" data-target="#modalDescricao">
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalDescricao">
                                 Alterar
                             </button>
                         </div>
 
                         <!-- Autores -->
-                        <div class="form-group" style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
+                        <div class="form-group"
+                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
                             <label style="padding-top:10px">Autor(es) do projeto</label>
 
                             <p class="form-control-static">
                                 <?php echo($projeto_autores); ?>
                             </p>
-                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal" data-target="#modalAutores">
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalAutores">
                                 Alterar
                             </button>
                         </div>
 
                         <!-- Tipo -->
-                        <div class="form-group" style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
-                            <!-- <label>Trabalho...</label>
-                            <div style="display: block;">
-                                <label class="radio-inline">
-                                    <input type="radio" name="tipo" id="tipo1" value="1" checked>Teórico
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="tipo" id="tipo2" value="2">Prático
-                                </label>
-                            </div> -->
+                        <div class="form-group"
+                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
 
                             <div class="form-inline">
                                 <label>Trabalho... </label>
@@ -393,20 +422,17 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                                 </p>
                             </div>
 
-                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal" data-target="#modalTipo">
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalTipo">
                                 Alterar
                             </button>
                         </div>
 
                         <!-- Ano letivo -->
-                        <div class="form-group" style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
+                        <div class="form-group"
+                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
                             <div class="form-inline">
                                 <label style="padding-top:10px">Realizado no... </label>
-                                <!-- <select id="iAnoLetivo" class="form-control" name="selectAnoLetivo" required>
-                                <option value="1">1º ano</option>
-                                <option value="2">2º ano</option>
-                                <option value="3">3º ano</option>
-                            </select> -->
                                 <p class="form-control-static">
                                     <?php
                                     if ($projeto_ano == 1) {
@@ -419,80 +445,78 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                                     ?>
                                 </p>
                             </div>
-                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal" data-target="#modalAnoLetivo">
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalAnoLetivo">
                                 Alterar
                             </button>
                         </div>
 
                         <!-- Semestre -->
-                        <div class="form-group" style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
-                            <!-- <label>Semestre</label>
-                            <div style="display: block;">
-                                <label class="radio-inline">
-                                    <input type="radio" class="semestre" name="semestre" onChange="getUCS()" id="semestre1"
-                                        value="1">1º
-                                    Semestre
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" class="semestre" name="semestre" onChange="getUCS()" id="semestre2"
-                                        value="2">2º Semestre
-                                </label>
-                            </div> -->
-
+                        <div class="form-group"
+                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
                             <div class="form-inline">
                                 <label>Desenvolvido no... </label>
 
                                 <p class="form-control-static">
                                     <?php
-                                if ($projeto_semestre == 1) {
-                                    echo("1º Semestre");
-                                } else {
-                                    echo("2º Semestre");
-                                }
-                                ?>
+                                    if ($projeto_semestre == 1) {
+                                        echo("1º Semestre");
+                                    } else {
+                                        echo("2º Semestre");
+                                    }
+                                    ?>
                                 </p>
                             </div>
-
-
                         </div>
 
                         <!-- Unidade Curricular -->
                         <div class="form-group">
-                            <!-- <label>Na Unidade Curricular... </label> -->
-                            <!-- <select id="iSelectUC" class="form-control" name="selectUC" required> -->
-                            <?php
-                                    /*
-                                    //-- Select do nome das UCs
-                                    $resultUC = mysqli_query($connectDB, "SELECT nome FROM unidade_curricular ORDER BY nome");
-
-                                    if (mysqli_num_rows($resultUC) > 0) {
-                                        while ($row = $resultUC->fetch_assoc()) {
-                                            echo ("<option>" . $row['nome'] . "</option>");
-                                        }
-                                    }*/
-                                    ?>
-                            <!-- </select> -->
                             <div class="form-inline">
                                 <label>Na Unidade Curricular de... </label>
                                 <p class="form-control-static">
                                     <?php echo($projeto_unidade_curricular); ?>
                                 </p>
                             </div>
-                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal" data-target="#modalSemestreUC">
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalSemestreUC">
                                 Alterar
                             </button>
                         </div>
-                    </div>
-                    <!-- End: Coluna 1 -->
-
-                    <!-- Coluna 2 -->
-                    <div class="col-lg-6" style="">
 
                         <!-- Data -->
-                        <div class="form-group">
-                            <label>Data em que o projeto foi finalizado</label>
-                            <input type="date" class="form-control" name="data" required>
-                            <p class="help-block">Exemplo: 12/03/2019</p>
+                        <div class="form-group"
+                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
+                            <div class="form-inline">
+                                <label style="padding-top:10px">Projeto finalizado a...</label>
+                                <p class="form-control-static">
+                                    <?php
+                                    $meses = array(
+                                    "01" => "Janeiro",
+                                    "02" => "Fevereiro",
+                                    "03" => "Março",
+                                    "04" => "Abril",
+                                    "05" => "Maio",
+                                    "06" => "Junho",
+                                    "07" => "Julho",
+                                    "08" => 'Agosto',
+                                    "09" => "Setembro",
+                                    "10" => "Outubro",
+                                    "11" => "Novembro",
+                                    "12" => "Dezembro");
+                                    
+                                    $diaProjetostr = substr($projeto_data, -2);    //-- substring
+                                    $mesProjetostr = substr($projeto_data, -4, 2);    //-- substring
+                                    $anoProjetostr = substr($projeto_data, 0, 4);    //-- substring
+                                    $projeto_data_str = $diaProjetostr . " de " . $meses[$mesProjetostr] . ", " . $anoProjetostr;
+                                    
+                                    echo($projeto_data_str);
+                                    ?>
+                                </p>
+                            </div>
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalData">
+                                Alterar
+                            </button>
                         </div>
 
 
@@ -517,64 +541,131 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                         </div> -->
 
                         <!-- Palavras Chave -->
-                        <div class="form-group" style="margin-top:30px; margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
+                        <div class="form-group"
+                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
                             <label style="padding-top:10px">Palavras-Chave</label>
 
-                            <p class="form-control-static">
-                                <?php echo($projeto_palavraschave); ?>
-                            </p>
-                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal" data-target="#modalPalavrasChave">
+                            <?php
+                            
+                            if (!empty($projeto_palavraschave)) {
+                                echo("<p class='form-control-static'>" . $projeto_palavraschave . "</p>");
+                            } else {
+                                echo("<p class='help-block'>Não existem Palavras Chave!</p>");
+                            }
+                            
+                            ?>
+
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalPalavrasChave">
                                 Alterar
                             </button>
                         </div>
 
-                        <!-- Fotografia -->
-                        <div class="form-group" style="margin-top:30px">
-                            <label>Insira imagem</label>
-                            </br>
-                            <div style="display:inline-flex; margin-bottom: 15px">
-                                <p style="min-width:110px">Nº de Imagens:</p>
-                                <select id="iselectIMG" class="form-control" name="num-fotos" onchange="addRemoveIMG()"
-                                    style="max-width: 100px; max-height:30px">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
+                    </div>
+                    <!-- End: Coluna 1 -->
+
+                    <!-- Coluna 2 -->
+                    <div class="col-lg-6" style="">
+
+                        <!-- Imagens -->
+                        <div class="form-group" style="">
+                            <label style="padding-top:10px; padding-bottom:8px">Imagens do Projeto</label>
+                            <div class="row" style="display: flex; flex-wrap: wrap; margin:0px;">
+
+                                <?php
+                                $num_imagens = 0;   //-- Numero de imagens deste projeto
+                                selectImagens($connectDB, $id_projeto, $num_imagens);
+
+                                //-- Seleciona as IMAGENS de um PROJETO
+                                function selectImagens($connectDB, $id_projeto, &$num_imagens)
+                                {
+                                    $diretorio = "images/projetos/imagens/";
+
+                                    if ($stmt = $connectDB->prepare("SELECT idimagem, nome FROM imagem WHERE fk_idprojeto=?")) {
+                                        // Bind variables to the prepared statement as parameters
+                                        $stmt->bind_param("i", $param_idprojeto);
+                                            
+                                        // Set parameters
+                                        $param_idprojeto = $id_projeto;
+                                            
+                                        // Attempt to execute the prepared statement
+                                        if ($stmt->execute()) {
+                                            $result = $stmt->get_result();
+                                            $num_imagens = $result->num_rows;
+                                            if ($result->num_rows !== 0) {
+                                                while ($row = $result->fetch_assoc()) {
+                                                    $image_id = $row['idimagem'];   //-- ID da IMAGEM
+                                                    $image_nome = $row['nome'];     //-- NOME da IMAGEM
+
+                                                    echo("
+                                                    <div class='col-lg-4 col-md-6 col-xs-12' style='padding-left:2px; padding-right:2px; margin-bottom:20px;'>
+                                                        <div style='background-color:rgb(245, 245, 245); border: 1px solid rgba(154, 234, 234, 0.322); border-radius: 4px;'>   
+                                                            
+                                                            <div style='min-height:150px; display: flex; justify-content: center;'>
+                                                                <div style='display: flex; flex-direction: column; justify-content: center;'>
+                                                                    <img class='img-fluid img-thumbnail' style='max-height:150px' src='" . $diretorio . $image_nome . "' alt=''>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class='form-inline'>
+                                                                <div style ='margin-left:auto; margin-right:auto; margin-top:5px; display: flex;'>
+                                                                    <button class='icon-meus-projetos' id='" . $image_nome . "' onclick='deleteImagem(this.id)' style='background: Transparent no-repeat; border: none; width:60%; margin-right:auto; margin-left: auto;'>
+                                                                        <i class='fa fa-trash-o fa-fw' style='color: rgb(179, 45, 45); font-size: 120%; padding:10px; width: auto;'></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <input type='hidden' value=" . $num_imagens . " name='numero_imagens'>
+                                                    </div>
+                                                    ");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    //-- So pode adicionar se existirem 5 ou menos imagens associadas ao projeto
+                                    if ($num_imagens <= 5) {
+                                        echo("
+                                        <div id='" . $id_projeto . "' class='col-lg-4 col-md-6 col-xs-12' style='padding-left:2px; padding-right:2px;'>
+                                            <div style='background-color:rgb(245, 245, 245); border: 1px solid rgba(154, 234, 234, 0.322); border-radius: 4px;'>
+                                                <button class='btn btn-default btn-backoffice-size' data-toggle='modal' data-target='#modalAddImagem' style='background: Transparent no-repeat; border: none; width:100%'>
+                                                    <div style='display: flex; justify-content: center; width:auto; height:100%;'>
+                                                        <div style='min-height:180px; display: flex; flex-direction: column; justify-content: center; width:auto; height:100%;'>
+                                                            <a><i class='fa fa-plus fa-fw' style='color: rgb(13, 140, 243); font-size: 200%;'></i></a>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        ");
+                                    }
+                                    $stmt->close();
+                                }
+                                ?>
 
                             </div>
-                            <div id="icontainerIMG">
-                                <input type="file" name="imagem">
-                            </div>
-                        </div>
-
-                        <!-- Ficheiro -->
-                        <div class="form-group" style="margin-top:30px">
-                            <label>Insira documento PDF (Opcional)</label>
-
-                            <input type="file" id="iFicheiro" name="ficheiro" onChange="verificaLimitesFicheiro()"
-                                accept="application/pdf">
-
-                            <p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo
-                                de 2MB</p>
-
                         </div>
 
                         <!-- Video -->
-                        <div class="form-group" style="margin-top:30px">
-                            <label>Vídeo - Youtube</label>
-                            <p class="form-control-static">
-                                <!-- Conteúdo do paragrafo -->
+                        <div class="form-group"
+                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
+                            <label style="padding-top:10px">Vídeo - Youtube</label>
+
+                            <div style="margin-bottom: 15px">
                                 <?php
                                 if (empty($projeto_video)) {
-                                    echo("Sem vídeo!");
+                                    echo("<p class='help-block'>Sem vídeo!</p>");
                                 } else {
-                                    echo(" https://www.youtube.com/watch?v=" . $projeto_video);
+                                    echo("
+                                    <div class='embed-responsive embed-responsive-16by9' style='margin-bottom: 15px'>
+                                        <iframe class='embed-responsive-item' src='". "https://www.youtube.com/embed/" . $projeto_video . "' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>
+                                    </div>
+                                    ");
                                 }
                                 ?>
-                            </p>
-                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal" data-target="#modalVideo">
+                            </div>
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalVideo">
                                 <!-- Nome do botão -->
                                 <?php
                                 if (!empty($projeto_video)) {
@@ -584,6 +675,44 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                                 }
                                 ?>
                             </button>
+                            <?php
+                                if (!empty($projeto_video)) {
+                                    echo "<button class='btn btn-default btn-backoffice-size' onclick='removeVideo()'>Remover</button>";
+                                }
+                            ?>
+                        </div>
+
+                        <!-- Ficheiro -->
+                        <div class="form-group" style="margin-top:30px">
+                            <label>Documento PDF</label>
+                            <p class="help-block">
+                                <?php
+                                if (empty($projeto_ficheiro)) {
+                                    echo("Não existe documento PDF!");
+                                } else {
+                                    echo("<a href='images/projetos/ficheiros/" . $projeto_ficheiro . "' download='" . $projeto_titulo . "'>Download</a>");
+                                }
+                                ?>
+
+                            </p>
+
+                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                                data-target="#modalFicheiro">
+                                <!-- Nome do botão -->
+                                <?php
+                                if (!empty($projeto_ficheiro)) {
+                                    echo("Alterar");
+                                } else {
+                                    echo("Inserir");
+                                }
+                                ?>
+                            </button>
+                            <?php
+                                if (!empty($projeto_ficheiro)) {
+                                    echo "<button class='btn btn-default btn-backoffice-size' onclick='removeFicheiro()'>Remover</button>";
+                                }
+                            ?>
+
                         </div>
 
                     </div>
@@ -596,7 +725,8 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
             </div>
             <!-- /#wrapper -->
             <footer class="sticky-footer">
-                <div style="margin: 20px 0; padding-top: 15px; padding-bottom: 15px; padding-right: 15px; padding-left: 15px;text-align:center!important;line-height: 1; font-size: 1.2rem;">
+                <div
+                    style="margin: 20px 0; padding-top: 15px; padding-bottom: 15px; padding-right: 15px; padding-left: 15px;text-align:center!important;line-height: 1; font-size: 1.2rem;">
                     <span>Copyright © <a target="_blank" href="http://www.linkedin.com/in/leandro3mega">Leandro
                             Magalhães</a> 2019</span>
                 </div>
@@ -605,7 +735,8 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
     </div>
 
     <!-- Modal -> TITULO -->
-    <div class="modal fade" id="modalTitulo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalTitulo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom:5px;">
@@ -615,8 +746,8 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                 </div>
                 <!-- <form id='form_titulo' action='delete_edit_projeto.php' enctype='multipart/form-data' method='POST'> -->
                 <div class="modal-body">
-                    <input type="text" class="form-control" name="titulo_projeto" maxlength="50" required placeholder="Insira o título do projeto"
-                        value="<?php echo($projeto_titulo); ?>">
+                    <input type="text" class="form-control" name="titulo_projeto" maxlength="50" required
+                        placeholder="Insira o título do projeto" value="<?php echo($projeto_titulo); ?>">
                     <!-- atributos hidden para enviar no submit do form -->
                     <input type='hidden' value="change_titulo" name='action'>
                 </div>
@@ -634,7 +765,8 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
     <!-- /.modal -> TITULO -->
 
     <!-- Modal -> DESCRICAO -->
-    <div class="modal fade" id="modalDescricao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalDescricao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom:5px;">
@@ -642,8 +774,9 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <textarea id="idescricao" class="form-control" name="descricao_projeto" pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}"
-                        rows="10" maxlength="1000" required placeholder="Insira a descrição do projeto"><?php echo($projeto_descricao); ?></textarea>
+                    <textarea id="idescricao" class="form-control" name="descricao_projeto"
+                        pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}" rows="10" maxlength="1000" required
+                        placeholder="Insira a descrição do projeto"><?php echo($projeto_descricao); ?></textarea>
                     <p id="helpDescricao" class="help-block">Carateres: 0 de 1000</p>
                 </div>
                 <div class="modal-footer">
@@ -658,7 +791,8 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
     <!-- /.modal -> DESCRICAO -->
 
     <!-- Modal -> AUTORES -->
-    <div class="modal fade" id="modalAutores" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalAutores" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom:5px;">
@@ -667,9 +801,11 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                 </div>
                 <div class="modal-body">
                     <input type="text" class="form-control" name="autores_projeto" minlength="8" maxlength="100"
-                        placeholder="Insira os autores do projeto (separados por ponto e vígula)" value="<?php echo($projeto_autores); ?>">
+                        placeholder="Insira os autores do projeto (separados por ponto e vígula)"
+                        value="<?php echo($projeto_autores); ?>">
                     <p class="help-block tooltip-demo">Exemplo: Luís Mota;João Almeida
-                        <a><i class="fa fa-info-circle fa-fw" data-toggle="tooltip" data-placement="right" title="De modo a que outros autores possam editar o projeto, insira o nome tal como estes estão registados no site."></i></a>
+                        <a><i class="fa fa-info-circle fa-fw" data-toggle="tooltip" data-placement="right"
+                                title="De modo a que outros autores possam editar o projeto, insira o nome tal como estes estão registados no site."></i></a>
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -684,7 +820,8 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
     <!-- /.modal -> AUTORES -->
 
     <!-- Modal -> TIPO -->
-    <div class="modal fade" id="modalTipo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalTipo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom:5px;">
@@ -714,8 +851,9 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
     </div>
     <!-- /.modal -> TIPO -->
 
-    <!-- Modal -> SEMESTRE -->
-    <div class="modal fade" id="modalSemestreUC" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- Modal -> SEMESTRE & UC -->
+    <div class="modal fade" id="modalSemestreUC" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom:5px;">
@@ -727,12 +865,12 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                     <div class="form-group">
                         <div style="display: block;">
                             <label class="radio-inline">
-                                <input type="radio" class="semestre" name="semestre_projeto" onChange="getUCS()" id="semestre1"
-                                    value="1">1º Semestre
+                                <input type="radio" class="semestre" name="semestre_projeto" onChange="getUCS()"
+                                    id="semestre1" value="1">1º Semestre
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" class="semestre" name="semestre_projeto" onChange="getUCS()" id="semestre2"
-                                    value="2">2º Semestre
+                                <input type="radio" class="semestre" name="semestre_projeto" onChange="getUCS()"
+                                    id="semestre2" value="2">2º Semestre
                             </label>
                         </div>
                     </div>
@@ -754,10 +892,11 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal -> SEMESTRE -->
+    <!-- /.modal -> SEMESTRE & UC -->
 
     <!-- Modal -> ANO LETIVO -->
-    <div class="modal fade" id="modalAnoLetivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalAnoLetivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom:5px;">
@@ -783,6 +922,35 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
     </div>
     <!-- /.modal -> ANO LETIVO -->
 
+    <!-- Modal -> DATA -->
+    <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom:5px;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <label>Projeto finalizado a...</label>
+                </div>
+                <div class="modal-body">
+                    <?php
+                    $dataValue = $anoProjetostr . '-' . $mesProjetostr . '-' . $diaProjetostr;
+                    ?>
+                    <input type="date" class="form-control" name="data_projeto" required
+                        value="<?php echo($dataValue);?>">
+                    <p class="help-block">Exemplo: 12/03/2019</p>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="changeData()">Alterar</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -> DATA -->
+
     <!-- Modal -> PALAVRAS-CHAVE -->
     <div class="modal fade" id="modalPalavrasChave" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true">
@@ -793,8 +961,9 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                     <label>Palavras-Chave</label>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" name="palavraschave_projeto" value="<?php echo($projeto_palavraschave); ?>"
-                        minlength="5" maxlength="50" placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
+                    <input type="text" class="form-control" name="palavraschave_projeto"
+                        value="<?php echo($projeto_palavraschave); ?>" minlength="5" maxlength="50"
+                        placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
                     <p class="help-block">Exemplo: Desenho; Mockup</p>
                 </div>
                 <div class="modal-footer">
@@ -809,7 +978,8 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
     <!-- /.modal -> PALAVRAS-CHAVE -->
 
     <!-- Modal -> VIDEO -->
-    <div class="modal fade" id="modalVideo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalVideo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom:5px;">
@@ -826,8 +996,9 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
                     }
 
                     ?>
-                    <input type="url" class="form-control" name="video_projeto" value="<?php echo($input_video_value); ?>"
-                        minlength="10" maxlength="50" placeholder="https://www.youtube.com/watch?v=Cq54GSWDaYI" />
+                    <input type="url" class="form-control" name="video_projeto"
+                        value="<?php echo($input_video_value); ?>" minlength="10" maxlength="50"
+                        placeholder="https://www.youtube.com/watch?v=Cq54GSWDaYI" />
 
                     <p class="help-block" id="help_video">Exemplo: https://www.youtube.com/watch?v=Cq54GSWDaYI</p>
                 </div>
@@ -842,6 +1013,72 @@ function selectVideo($connectDB, $id_projeto, &$projeto_video)
     </div>
     <!-- /.modal -> VIDEO -->
 
+    <!-- Modal -> FICHEIRO -->
+    <div class="modal fade" id="modalFicheiro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom:5px;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <label>Documento PDF</label>
+                </div>
+                <form role="form" id="form_ficheiro" action="delete_edit_projeto.php" method="post"
+                    enctype="multipart/form-data">
+                    <div class=" modal-body">
+                        <input type="file" id="iFicheiro" name="ficheiro_projeto" onChange="verificaLimitesFicheiro()"
+                            accept="application/pdf">
+
+                        <input type='hidden' value="change_ficheiro" name='action'>
+                        <input type='hidden' value="<?php echo($id_projeto) ?>" name='form_id_projeto'>
+
+                        <p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo
+                            de 2MB</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <!-- <button type="button" class="btn btn-primary" onclick="changeFicheiro()">Alterar</button> -->
+                        <input type="submit" class="btn btn-primary" value="Submeter">
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -> FICHEIRO -->
+
+    <!-- Modal -> ADICIONA IMAGEM -->
+    <div class="modal fade" id="modalAddImagem" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom:5px;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <label>Adicionar Imagem</label>
+                </div>
+                <form role="form" action="delete_edit_projeto.php" method="post"
+                    enctype='multipart/form-data'">
+                    <div class=" modal-body">
+                    <input type="file" id="iAddImagem" name="new_imagem_projeto" onChange="verificaLimitesImagem()"
+                        accept="image/jpeg, image/png">
+
+                    <input type='hidden' value="add_imagem_projeto" name='action'>
+                    <input type='hidden' value="<?php echo($id_projeto) ?>" name='form_add_image_id_projeto'>
+
+                    <p class="help-block" id="iHintImagem">Insira uma Imagem PNG/JPEG com tamanho máximo de 1MB</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <!-- <button type="button" class="btn btn-primary" onclick="changeFicheiro()">Alterar</button> -->
+                <input type="submit" class="btn btn-primary" value="Submeter">
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -> ADICIONA IMAGEM -->
 
     <!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -888,107 +1125,76 @@ $("#idescricao").keyup(function() {
     $("#helpDescricao").text($(this).val().length + "/1000");
 });
 
-//-- Adiciona ou remove imagens dependendo do numero selecionado
-function addRemoveIMG() {
-    var containerIMG = document.getElementById('icontainerIMG');
-    var selector = document.getElementById('iselectIMG');
-    var value = selector[selector.selectedIndex].value;
+//-- Verifica Limites da IMAGEM (se é PNG/JPG, e se o tamanho é abaixo do limite)
+function verificaLimitesImagem() {
+    var input_imagem = document.getElementById("iAddImagem");
+    var hint_imagem = document.getElementById("iHintImagem");
 
-    containerIMG.innerHTML = "";
+    var limiteSize = 1020; // 1 Megabyte
+    var file = input_imagem.files[0];
+    // console.log("ficheiro: " + file);
+    // console.log("Tipo: " + file.type);
 
-    for (var i = 1; i <= value; i++) {
-        var tempimg = document.createElement("input");
-        tempimg.setAttribute("type", "file");
-        tempimg.name = "image[]";
-        tempimg.required = true;
-        tempimg.accept = "image/jpeg, image/png";
-        tempimg.multiple = true;
+    if (file.type === "image/png" || file.type === "image/jpeg") {
+        // console.log("Ficheiro é png ou jpeg!");
+    } else {
+        // console.log("Ficheiro não é png ou jpeg!");
+        alert("A imagem não é de tipo suportado.");
+        input_imagem.value = "";
 
-        tempimg.onchange = function() {
-            var limiteSize = 1020; // 1 Megabyte
-            var file = this.files[0];
-            var input = this;
-            console.log(file);
+        return;
+    }
 
-            if (file.type === "image/png" || file.type === "image/jpeg") {
-                console.log("Ficheiro é png ou jpeg!");
+    //##### Start of reader
+    var reader = new FileReader(); // CREATE AN NEW INSTANCE.
 
+    reader.onload = function(e) {
+        var img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function() {
+            var valido = true;
+            var w = this.width;
+            var h = this.height;
+            var size = Math.round((file.size / 1024));
+
+            if (file.type == "image/png" || file.type == "image/jpeg") {
+                console.log("A imagem é png ou jpeg");
+                valido = true;
+                //-- Check size and dimensions of image
+                if (w > 1980 || h > 1080 || size > limiteSize) {
+                    alert(
+                        "A imagem tem tamanho superior a 1MB ou dimensões superiores a 1960*1080."
+                    );
+                    // console.log("A imagem tem tamanho superior a 1mb ou dimensoes superiores a 1960*1080");
+                    valido = false;
+
+                } else {
+                    console.log("A imagem não tem tamanho superior a 1mb");
+                    valido = true;
+                }
             } else {
-                console.log("Ficheiro não é png ou jpeg!");
-                alert("A imagem não é de tipo suportado.");
-                this.value = "";
+                // console.log("A imagem não é png ou jpeg");
+                alert("Imagens não é de tipo suportado!");
 
-
-                return;
+                valido = false;
             }
 
-            //##### Start of reader
-            var reader = new FileReader(); // CREATE AN NEW INSTANCE.
+            if (!valido) {
+                // console.log("Imagem não valida");
+                input_imagem.value = "";
+                hint_imagem.innerHTML = "Insira uma PNG/JPEG com tamanho máximo de 1MB";
+                hint_imagem.style = "color:rgb(216, 79, 79);";
 
-            reader.onload = function(e) {
-                var img = new Image();
-                img.src = e.target.result;
-
-                img.onload = function() {
-                    var valido = true;
-                    var w = this.width;
-                    var h = this.height;
-                    var size = Math.round((file.size / 1024));
-
-
-                    if (file.type == "image/png" || file.type == "image/jpeg") {
-                        console.log("A imagem é png ou jpeg");
-                        valido = true;
-                        //-- Check size and dimensions of image
-                        //readImageFile(file, );
-                        if (w > 1980 || h > 1080 || size > limiteSize) {
-                            alert(
-                                "A imagem tem tamanho superior a 1MB ou dimensões superiores a 1960*1080."
-                            );
-
-                            console.log(
-                                "A imagem tem tamanho superior a 1mb ou dimensoes superiores a 1960*1080"
-                            );
-                            valido = false;
-
-                        } else {
-                            console.log("A imagem não tem tamanho superior a 1mb");
-                            valido = true;
-                        }
-                    } else {
-                        console.log("A imagem não é png ou jpeg");
-                        alert("Imagens não é de tipo suportado!");
-
-                        valido = false;
-                    }
-
-                    if (!valido) {
-                        console.log("Imagem não valida");
-                        input.value = "";
-
-                    } else {
-                        console.log("Imagem é valida");
-                    }
-                }
-            };
-            reader.readAsDataURL(file, input);
-            //##### End of reader
-
+            } else {
+                // console.log("Imagem é valida");
+                hint_imagem.innerHTML = "Imagem válida";
+                hint_imagem.style = "color:rgb(79, 216, 132);";
+            }
         }
-
-        if (i > 1)
-            tempimg.style = "margin-top:15px; margin-bottom:15px";
-
-        containerIMG.appendChild(tempimg);
-
-        //<p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo de 500KB</p>
-        var tempHint = document.createElement("p");
-        tempHint.name = "hintImage";
-        tempHint.id = "hintImage";
-        tempHint.className = "help-block";
-        tempHint.innerHTML = "Insira uma PNG/JPEG com tamanho máximo de 1MB";
-        containerIMG.appendChild(tempHint);
-    }
+    };
+    reader.readAsDataURL(file, input_imagem);
+    //##### End of reader
 }
 
 //-- Verifica se o ficheiro obdece aos limites estabelecidos
@@ -1021,7 +1227,7 @@ function verificaLimitesFicheiro() {
     }
 }
 
-//## NOT USED
+//## FIXME: NOT USED
 // GET THE IMAGE WIDTH AND HEIGHT USING fileReader() API.
 function readImageFile(file) {
     var reader = new FileReader(); // CREATE AN NEW INSTANCE.
@@ -1050,33 +1256,6 @@ $('.tooltip-demo').tooltip({
     selector: "[data-toggle=tooltip]",
     container: "body"
 })
-/*
-// Get the modal
-var modal = document.getElementById("myModal");
-
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on the button, open the modal
-btn.onclick = function() {
-    modal.style.display = "block";
-};
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-};
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-};
-*/
 
 //-- Pedido AJAX para alterar titulo do projeto
 function changeTitulo() {
@@ -1128,7 +1307,7 @@ function changeAutores() {
     var idprojeto = $('input[name="id_projeto"]').val();
     var autoresprojeto = $('input[name="autores_projeto"]').val();
 
-    console.log("autores: " + autoresprojeto);
+    // console.log("autores: " + autoresprojeto);
 
     $.ajax({
         type: "POST",
@@ -1151,7 +1330,7 @@ function changePalavrasChave() {
     var idprojeto = $('input[name="id_projeto"]').val();
     var palavras_chave_projeto = $('input[name="palavraschave_projeto"]').val();
 
-    console.log("Palavras-chave: " + palavras_chave_projeto);
+    // console.log("Palavras-chave: " + palavras_chave_projeto);
 
     $.ajax({
         type: "POST",
@@ -1174,7 +1353,7 @@ function changeVideo() {
     var idprojeto = $('input[name="id_projeto"]').val();
     var video_projeto = $('input[name="video_projeto"]').val();
 
-    console.log("video: " + video_projeto);
+    // console.log("video: " + video_projeto);
 
     if (video_projeto != undefined || video_projeto != '') {
         var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
@@ -1203,19 +1382,18 @@ function changeVideo() {
             'video_projeto': video_projeto
         },
         success: function(response) {
-            // alert(response);
+            alert(response);
             location.reload();
         }
     });
 }
 
 //-- Pedido AJAX para alterar o Tipo do projeto
-// TODO: Pronto a enviar por ajax
 function changeTipo() {
     var idprojeto = $('input[name="id_projeto"]').val();
     var tipo_projeto = $('input[name="tipo_projeto"]:checked').val();
 
-    console.log("Tipo: " + tipo_projeto);
+    // console.log("Tipo: " + tipo_projeto);
 
     $.ajax({
         type: "POST",
@@ -1233,59 +1411,146 @@ function changeTipo() {
 }
 
 //-- Pedido AJAX para alterar o Ano Letivo do projeto
-// TODO: Pronto a enviar pedido ajax
 function changeAnoLetivo() {
     var idprojeto = $('input[name="id_projeto"]').val();
     var ano_letivo_projeto = $('select[name="selectAnoLetivo_projeto"]').val();
 
-    console.log("Ano_Letivo: " + ano_letivo_projeto);
+    // console.log("Ano_Letivo: " + ano_letivo_projeto);
 
-    // $.ajax({
-    //     type: "POST",
-    //     url: 'delete_edit_projeto.php',
-    //     data: {
-    //         'action': 'change_video',
-    //         'id_projeto': idprojeto,
-    //         'video_projeto': video_projeto
-    //     },
-    //     success: function(response) {
-    //         // alert(response);
-    //         location.reload();
-    //     }
-    // });
+    $.ajax({
+        type: "POST",
+        url: 'delete_edit_projeto.php',
+        data: {
+            'action': 'change_anoletivo',
+            'id_projeto': idprojeto,
+            'anoletivo_projeto': ano_letivo_projeto
+        },
+        success: function(response) {
+            // alert(response);
+            location.reload();
+        }
+    });
 }
 
 //-- Pedido AJAX para alterar o semestre e unidade curricular do projeto
 function changeSemestreUC() {
     var idprojeto = $('input[name="id_projeto"]').val();
-    var semestre_projeto = $('input[name="video_projeto"]').val();
-    var uc_projeto = $('input[name="video_projeto"]').val();
+    var semestre_projeto = $('input[name="semestre_projeto"]:checked').val();
+    var uc_projeto = $('select[name="selectUC_projeto"]').val();
 
-    console.log("video: " + video_projeto);
+    // console.log("Semestre: " + semestre_projeto);
+    // console.log("UCS: " + uc_projeto);
 
-    // $.ajax({
-    //     type: "POST",
-    //     url: 'delete_edit_projeto.php',
-    //     data: {
-    //         'action': 'change_video',
-    //         'id_projeto': idprojeto,
-    //         'video_projeto': video_projeto
-    //     },
-    //     success: function(response) {
-    //         // alert(response);
-    //         location.reload();
-    //     }
-    // });
+    $.ajax({
+        type: "POST",
+        url: 'delete_edit_projeto.php',
+        data: {
+            'action': 'change_semestre_uc',
+            'id_projeto': idprojeto,
+            'semestre_projeto': semestre_projeto,
+            'uc_projeto': uc_projeto
+        },
+        success: function(response) {
+            // alert(response);
+            location.reload();
+        }
+    });
+}
+
+//-- Pedido AJAX para alterar o semestre e unidade curricular do projeto
+function changeData() {
+    var idprojeto = $('input[name="id_projeto"]').val();
+    var data_projeto = $('input[name="data_projeto"]').val();
+
+    console.log("Data: " + data_projeto);
+
+    $.ajax({
+        type: "POST",
+        url: 'delete_edit_projeto.php',
+        data: {
+            'action': 'change_data',
+            'id_projeto': idprojeto,
+            'data_projeto': data_projeto
+        },
+        success: function(response) {
+            // alert(response);
+            location.reload();
+        }
+    });
+}
+
+//-- Pedido AJAX para alterar o semestre e unidade curricular do projeto
+function removeFicheiro() {
+    var idprojeto = $('input[name="id_projeto"]').val();
+
+    $.ajax({
+        type: "POST",
+        url: 'delete_edit_projeto.php',
+        data: {
+            'action': 'change_remove_ficheiro',
+            'id_projeto': idprojeto,
+        },
+        success: function(response) {
+            // alert(response);
+            location.reload();
+        }
+    });
+}
+
+//-- Pedido AJAX para alterar o semestre e unidade curricular do projeto
+function removeVideo() {
+    var idprojeto = $('input[name="id_projeto"]').val();
+
+    $.ajax({
+        type: "POST",
+        url: 'delete_edit_projeto.php',
+        data: {
+            'action': 'change_remove_video',
+            'id_projeto': idprojeto,
+        },
+        success: function(response) {
+            alert(response);
+            location.reload();
+        }
+    });
+}
+
+//-- Pedido AJAX para REMOVER IMAGEM de um projeto
+function deleteImagem(nome) {
+    var idprojeto = $('input[name="id_projeto"]').val();
+    var num_imagens = $('input[name="numero_imagens"]').val();
+
+    // console.log("Imagem: " + nome);
+    // console.log("Numero Imagens: " + num_imagens);
+
+    if (num_imagens == 1) {
+        alert("O projeto tem de possuir pelo menos uma imagem!");
+    } else if (confirm('Tem a certeza que pretende remover a imagem?')) {
+        // console.log("A imagem será removida!");
+
+        $.ajax({
+            type: "POST",
+            url: 'delete_edit_projeto.php',
+            data: {
+                'action': 'remove_image_projeto',
+                'id_projeto': idprojeto,
+                'nome_imagem_projeto': nome
+            },
+            success: function(response) {
+                // alert(response);
+                location.reload();
+            }
+        });
+    }
 }
 
 //##FIXME: LIXO
 $(document).ready(function() {
 
-    $('#btnInsert').click(function() {
-        addCheckbox2($('#txtNameCat').val());
-    });
+    // $('#btnInsert').click(function() {
+    //     addCheckbox2($('#txtNameCat').val());
+    // });
 
-    addRemoveIMG();
 });
 
 

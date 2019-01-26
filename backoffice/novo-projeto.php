@@ -98,36 +98,7 @@ if (!isset($_SESSION['username'])) {
 
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-
-                        <li>
-                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-
-                        <li>
-                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Meus Projetos</a>
-                        </li>
-
-                        <li>
-                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Projetos</a>
-                        </li>
-
-                        <li>
-                            <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="alterar-password.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
-                                        Passe</a>
-                                </li>
-                                <li>
-                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados
-                                        Pessoais</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-
-                    </ul>
+                    <?php include "sidemenu.php"; ?>
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
@@ -149,14 +120,16 @@ if (!isset($_SESSION['username'])) {
                         <div class="form-group">
                             <label>Título</label>
                             <input type="text" class="form-control" name="titulo" minlength="10" maxlength="50"
-                                autofocus required placeholder="Insira o título do projeto">
+                                autofocus required placeholder="Insira o título do projeto"
+                                oninvalid="this.setCustomValidity('ERROR_TEXT')" oninput="this.setCustomValidity('')">
                         </div>
 
                         <!-- Descrição -->
                         <div class="form-group">
                             <label>Descrição</label>
-                            <textarea id="idescricao" class="form-control" name="descricao" pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}"
-                                rows="10" minlength="10" maxlength="1000" required placeholder="Insira a descrição do projeto"></textarea>
+                            <textarea id="idescricao" class="form-control" name="descricao"
+                                pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}" rows="10" minlength="10" maxlength="1000"
+                                required placeholder="Insira a descrição do projeto"></textarea>
                             <p id="helpDescricao" class="help-block">Carateres: 0 de 1000</p>
                         </div>
 
@@ -193,13 +166,13 @@ if (!isset($_SESSION['username'])) {
                                     <label>Semestre</label>
                                     <div style="display: block;">
                                         <label class="radio-inline">
-                                            <input type="radio" class="semestre" name="semestre" onChange="getUCS()" id="semestre1"
-                                                value="1">1º
+                                            <input type="radio" class="semestre" name="semestre" onChange="getUCS()"
+                                                id="semestre1" value="1">1º
                                             Semestre
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" class="semestre" name="semestre" onChange="getUCS()" id="semestre2"
-                                                value="2">2º Semestre
+                                            <input type="radio" class="semestre" name="semestre" onChange="getUCS()"
+                                                id="semestre2" value="2">2º Semestre
                                         </label>
                                     </div>
                                 </div>
@@ -217,8 +190,8 @@ if (!isset($_SESSION['username'])) {
                                     </br>
                                     <div style="display:inline-flex; margin-bottom: 15px">
                                         <p style="min-width:110px">Nº de Imagens:</p>
-                                        <select id="iselectIMG" class="form-control" name="num-fotos" onchange="addRemoveIMG()"
-                                            style="max-width: 100px; max-height:30px">
+                                        <select id="iselectIMG" class="form-control" name="num-fotos"
+                                            onchange="addRemoveIMG()" style="max-width: 100px; max-height:30px">
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -236,8 +209,8 @@ if (!isset($_SESSION['username'])) {
                                 <div class="form-group" style="margin-top:30px">
                                     <label>Insira documento PDF (Opcional)</label>
 
-                                    <input type="file" id="iFicheiro" name="ficheiro" onChange="verificaLimitesFicheiro()"
-                                        accept="application/pdf">
+                                    <input type="file" id="iFicheiro" name="ficheiro"
+                                        onChange="verificaLimitesFicheiro()" accept="application/pdf">
 
                                     <p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo
                                         de 2MB</p>
@@ -314,7 +287,9 @@ if (!isset($_SESSION['username'])) {
                                 <!-- Palavras Chave -->
                                 <div class="form-group" style="margin-top:30px">
                                     <label>Palavras-Chave</label>
-                                    <input type="text" class="form-control" name="palavras-chave" placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
+                                    <input type="text" class="form-control" name="palavras-chave" minlength="4"
+                                        maxlength="50" required
+                                        placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
                                     <p class="help-block">Exemplo: Desenho; Mockup</p>
                                 </div>
 
@@ -356,7 +331,8 @@ if (!isset($_SESSION['username'])) {
                             </div>
 
                         </div>
-                        <div style="width: 200px; display: block; margin-left:auto; margin-right: auto; margin-top:20px; margin-bottom:80px">
+                        <div
+                            style="width: 200px; display: block; margin-left:auto; margin-right: auto; margin-top:20px; margin-bottom:80px">
                             <input type="submit" class="btn btn-default btn-backoffice-size" style="min-width:200px"
                                 value="Submeter">
                         </div>
@@ -519,7 +495,7 @@ function addRemoveIMG() {
         tempHint.name = "hintImage";
         tempHint.id = "hintImage";
         tempHint.className = "help-block";
-        tempHint.innerHTML = "Insira uma PNG/JPEG com tamanho máximo de 1MB";
+        tempHint.innerHTML = "Insira uma Imagem PNG/JPEG com tamanho máximo de 1MB";
         containerIMG.appendChild(tempHint);
     }
 }

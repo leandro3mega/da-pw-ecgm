@@ -13,12 +13,12 @@ if (!isset($_SESSION['username'])) {
     $email;
     $tipo = $_SESSION['tipo'];
     $cargo = $_SESSION['cargo'];
-/*
-    //-- Converte int em string para mostrar o cargo do user no menu superior
-    if ($tipo == 0) $cargo = "Administrador";
-    else if ($tipo == 1) $cargo = "Aluno";
-    else $cargo = "Professor";
-     */  
+    /*
+        //-- Converte int em string para mostrar o cargo do user no menu superior
+        if ($tipo == 0) $cargo = "Administrador";
+        else if ($tipo == 1) $cargo = "Aluno";
+        else $cargo = "Professor";
+         */
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
     $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
     if (mysqli_num_rows($result) == 1) {
@@ -88,50 +88,19 @@ if (!isset($_SESSION['username'])) {
             </div>
             <!-- /.navbar-header -->
 
-            <ul class="nav navbar-top-links navbar-right">
-
+            <ul class="nav navbar-top-links navbar-right" style="padding-left:10px">
                 <li>
                     <?php echo $cargo; ?>
                 </li>
                 <li><a><i class="fa fa-user fa-fw"></i>
                         <?php echo $username; ?> </a>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
-
             </ul>
             <!-- /.navbar-top-links -->
 
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-
-                        <li>
-                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-
-                        <li>
-                            <a href="meus-projetos.php"><i class="fa fa-th-list fa-fw"></i> Meus Projetos</a>
-                        </li>
-
-                        <li>
-                            <a href="novo-projeto.php"><i class="fa fa-file-o fa-fw"></i> Novo Projeto</a>
-                        </li>
-
-                        <li>
-                            <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="alterar-password.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
-                                        Passe</a>
-                                </li>
-                                <li>
-                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados
-                                        Pessoais</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-
-                    </ul>
+                    <?php include "sidemenu.php"; ?>
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
@@ -178,21 +147,25 @@ if (!isset($_SESSION['username'])) {
                                     -->
                                     <div class="form-group">
                                         <label>Palavra Passe Atual</label>
-                                        <input type="password" id="iInputPass1" class="form-control" placeholder="Insira a sua palavra passe">
+                                        <input type="password" id="iInputPass1" class="form-control"
+                                            placeholder="Insira a sua palavra passe">
                                     </div>
 
                                     <div class="form-group div-margin-separa">
                                         <label>Nova Palavra Passe</label>
-                                        <input type="password" id="iInputPass2" class="form-control" placeholder="Insira a nova palavra passe">
+                                        <input type="password" id="iInputPass2" class="form-control"
+                                            placeholder="Insira a nova palavra passe">
                                     </div>
 
                                     <div class="form-group">
                                         <label>Confirmar a Nova Palavra Passe</label>
-                                        <input type="password" id="iInputPass3" class="form-control" placeholder="Confirme a nova palavra passe">
+                                        <input type="password" id="iInputPass3" class="form-control"
+                                            placeholder="Confirme a nova palavra passe">
                                     </div>
 
                                     <div class="form-group div-margin-separa">
-                                        <button class="btn btn-default btn-backoffice-size" onclick="changePassword()">Alterar</button>
+                                        <button class="btn btn-default btn-backoffice-size"
+                                            onclick="changePassword()">Alterar</button>
                                         <button class="btn btn-default btn-backoffice-size" style="margin-left: 10px"
                                             onclick="clearFields()">Limpar</button>
                                     </div>
@@ -225,46 +198,46 @@ if (!isset($_SESSION['username'])) {
 
 </body>
 <script>
-    //-- Clear the input text on button click
-    function clearFields() {
-        var inputPass1 = document.getElementById("iInputPass1");
-        var inputPass2 = document.getElementById("iInputPass2");
-        var inputPass3 = document.getElementById("iInputPass3");
+//-- Clear the input text on button click
+function clearFields() {
+    var inputPass1 = document.getElementById("iInputPass1");
+    var inputPass2 = document.getElementById("iInputPass2");
+    var inputPass3 = document.getElementById("iInputPass3");
 
-        inputPass1.value = "";
-        inputPass2.value = "";
-        inputPass3.value = "";
+    inputPass1.value = "";
+    inputPass2.value = "";
+    inputPass3.value = "";
+}
+
+//-- Ajax to submite change of the user email
+function changePassword() {
+
+    //-- Compara se a nova pass é igual nos 2 campos
+    if ($('#iInputPass2').val() === $('#iInputPass3').val()) {
+        passAntiga = $('#iInputPass1').val();
+        passNova = $('#iInputPass2').val();
+        //alert("Pass 2 e 3 são iguais");
+
+        $.ajax({
+            type: "POST",
+            url: 'changeuserdata.php',
+            data: {
+                'action': 'change_password',
+                'password_old': passAntiga,
+                'password_new': passNova
+            },
+            success: function(html) {
+                alert(html);
+                location.reload();
+            }
+
+        });
+    } else {
+        alert("Confirme que a nova password que pretende inserir é igual à que está a confirmar.");
     }
-
-    //-- Ajax to submite change of the user email
-    function changePassword() {
-
-        //-- Compara se a nova pass é igual nos 2 campos
-        if ($('#iInputPass2').val() === $('#iInputPass3').val()) {
-            passAntiga = $('#iInputPass1').val();
-            passNova = $('#iInputPass2').val();
-            //alert("Pass 2 e 3 são iguais");
-
-            $.ajax({
-                type: "POST",
-                url: 'changeuserdata.php',
-                data: {
-                    'action': 'change_password',
-                    'password_old': passAntiga,
-                    'password_new': passNova
-                },
-                success: function (html) {
-                    alert(html);
-                    location.reload();
-                }
-
-            });
-        } else {
-            alert("Confirme que a nova password que pretende inserir é igual à que está a confirmar.");
-        }
-        /*
-         */
-    }
+    /*
+     */
+}
 </script>
 
 </html>

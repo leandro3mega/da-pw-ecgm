@@ -48,9 +48,9 @@ if (isset($_POST['titulo']) && isset($_POST['descricao']) && isset($_POST['autor
     if ($sucesso) {
         getFerramentas($connectDB, $sucesso, $idprojeto);
     }
-    if ($sucesso) {
-        getDocente($connectDB, $sucesso, $idprojeto, $fk_iduc);
-    }
+    // if ($sucesso) {
+    //     getDocente($connectDB, $sucesso, $idprojeto, $fk_iduc);
+    // }
     if ($sucesso) {
         insertPalavrasChave($connectDB, $sucesso, $idprojeto);
     }
@@ -423,90 +423,90 @@ function insertFerramentaProjeto($connectDB, &$sucesso, $idferramenta, $idprojet
 }
 
 //-- Obtem o id de um docente que leciona uma determinada UC
-function getDocente($connectDB, &$sucesso, $idprojeto, $iduc)
-{
-    // inicializar prepared statement
-    $stmt = $connectDB->prepare("SELECT fk_idutilizador FROM unidade_curricular WHERE idunidade_curricular=?");
+// function getDocente($connectDB, &$sucesso, $idprojeto, $iduc)
+// {
+//     // inicializar prepared statement
+//     $stmt = $connectDB->prepare("SELECT fk_idutilizador FROM unidade_curricular WHERE idunidade_curricular=?");
 
-    $stmt->bind_param("s", $iduc);
+//     $stmt->bind_param("s", $iduc);
 
-    // executar
-    $stmt->execute();
+//     // executar
+//     $stmt->execute();
 
-    // associar os parametros de output
-    $stmt->bind_result($r_idutilizador);
+//     // associar os parametros de output
+//     $stmt->bind_result($r_idutilizador);
 
-    // transfere o resultado da última query : obrigatorio para ter num_rows
-    $stmt->store_result();
+//     // transfere o resultado da última query : obrigatorio para ter num_rows
+//     $stmt->store_result();
 
-    // iterar / obter resultados
-    $stmt->fetch();
+//     // iterar / obter resultados
+//     $stmt->fetch();
 
-    if ($stmt->num_rows > 0) { // seleciona o resultado da base de dados
-        echo("</br>(getDocente) Encontrado docente: " . $r_idutilizador);
-        $stmt->close();
-        insertDocenteProjeto($connectDB, $sucesso, $r_idutilizador, $idprojeto);
-    } else {
-        echo("</br>(getDocente) Não encontrou nenhum docente");
-        $stmt->close();
+//     if ($stmt->num_rows > 0) { // seleciona o resultado da base de dados
+//         echo("</br>(getDocente) Encontrado docente: " . $r_idutilizador);
+//         $stmt->close();
+//         insertDocenteProjeto($connectDB, $sucesso, $r_idutilizador, $idprojeto);
+//     } else {
+//         echo("</br>(getDocente) Não encontrou nenhum docente");
+//         $stmt->close();
 
-        /* When Fail: Remove previous content */
-        removeProjeto($connectDB, $idprojeto);
-    }
-}
+//         /* When Fail: Remove previous content */
+//         removeProjeto($connectDB, $idprojeto);
+//     }
+// }
 
 //-- Insere ligação entre o docente e um Projeto
-function insertDocenteProjeto($connectDB, &$sucesso, $iddocente, $idprojeto)
-{
-    // -- If statement is prepared
-    if ($stmt = mysqli_prepare($connectDB, "INSERT INTO docente_projeto (fk_docente, fk_projeto) VALUES (?, ?)")) {
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "ss", $iddocente, $idprojeto);
+// function insertDocenteProjeto($connectDB, &$sucesso, $iddocente, $idprojeto)
+// {
+//     // -- If statement is prepared
+//     if ($stmt = mysqli_prepare($connectDB, "INSERT INTO docente_projeto (fk_docente, fk_projeto) VALUES (?, ?)")) {
+//         // Bind variables to the prepared statement as parameters
+//         mysqli_stmt_bind_param($stmt, "ss", $iddocente, $idprojeto);
             
-        // Attempt to execute the prepared statement
-        if (mysqli_stmt_execute($stmt)) {
-            echo "</br>(insertDocenteProjeto) Dados inseridos em docente_projeto com sucesso. -> Docente: " . $iddocente;
-            $sucesso = true;
-        } else {
-            echo "</br>(insertDocenteProjeto) Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
-            $sucesso = false;
+//         // Attempt to execute the prepared statement
+//         if (mysqli_stmt_execute($stmt)) {
+//             echo "</br>(insertDocenteProjeto) Dados inseridos em docente_projeto com sucesso. -> Docente: " . $iddocente;
+//             $sucesso = true;
+//         } else {
+//             echo "</br>(insertDocenteProjeto) Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
+//             $sucesso = false;
 
-            /* When Fail: Remove previous content */
-            removeProjeto($connectDB, $idprojeto);
-        }
-    } else {
-        echo "</br>(insertDocenteProjeto) Ocurreu um erro: Não conseguiu preparar a query: " . mysqli_error($connectDB) . " . ";
-        $sucesso = false;
+//             /* When Fail: Remove previous content */
+//             removeProjeto($connectDB, $idprojeto);
+//         }
+//     } else {
+//         echo "</br>(insertDocenteProjeto) Ocurreu um erro: Não conseguiu preparar a query: " . mysqli_error($connectDB) . " . ";
+//         $sucesso = false;
 
-        /* When Fail: Remove previous content */
-        removeProjeto($connectDB, $idprojeto);
-    }
+//         /* When Fail: Remove previous content */
+//         removeProjeto($connectDB, $idprojeto);
+//     }
     
-    // Close statement
-    mysqli_stmt_close($stmt);
-}
+//     // Close statement
+//     mysqli_stmt_close($stmt);
+// }
 
 //-- remove ligações em docente_projeto com o id do projeto
-function removeDocenteProjeto($connectDB, $idprojeto)
-{
-    // inicializar prepared statement
-    $stmt = $connectDB->prepare("DELETE FROM docente_projeto WHERE fk_projeto=?");
+// function removeDocenteProjeto($connectDB, $idprojeto)
+// {
+//     // inicializar prepared statement
+//     $stmt = $connectDB->prepare("DELETE FROM docente_projeto WHERE fk_projeto=?");
     
-    if (false === $stmt) {
-        echo "</br>(removeDocenteProjeto) Não conseguiu preparar a query";
-    }
+//     if (false === $stmt) {
+//         echo "</br>(removeDocenteProjeto) Não conseguiu preparar a query";
+//     }
     
-    $stmt->bind_param("s", $idprojeto);
+//     $stmt->bind_param("s", $idprojeto);
 
-    // executar
-    if ($stmt->execute()) {
-        echo "</br>(removeDocenteProjeto) Ligações em ferramenta_projeto removidas com sucesso.";
-    } else {
-        echo "</br>(removeDocenteProjeto) Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
-    }
+//     // executar
+//     if ($stmt->execute()) {
+//         echo "</br>(removeDocenteProjeto) Ligações em ferramenta_projeto removidas com sucesso.";
+//     } else {
+//         echo "</br>(removeDocenteProjeto) Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
+//     }
 
-    $stmt->close();
-}
+//     $stmt->close();
+// }
 
 //-- Insere palavras chave para um determinado id de projeto
 function insertPalavrasChave($connectDB, &$sucesso, $idprojeto)
@@ -624,7 +624,7 @@ function insertImagens($connectDB, &$sucesso, $idprojeto)
             //Setup our new file path
             // $newFilePath = $diretorio . $_FILES['image']['name'][$i];
 
-            $id_imagem = $idprojeto . "_" . $i . $mimeExt[$_FILES["image"]["type"][$i]]; //Get image extension
+            $id_imagem = $idprojeto . "_" . md5(uniqid(time())) . $i . $mimeExt[$_FILES["image"]["type"][$i]]; //Get image extension
             echo "</br> id_foto: " . $id_imagem;
             $user_foto_dir = $diretorio . $id_imagem; //Path file
             //$param_fotografia = $id_fotografia;
