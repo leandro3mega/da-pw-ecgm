@@ -1,13 +1,35 @@
 <?php
 session_start();
+
+require_once("connectdb.php");
+
 if (!isset($_SESSION['username'])) {
     header("location:iniciar-sessao.php");
     exit();
 } else {
-    header("location:meus-projetos.php");
+    // header("location:meus-projetos.php");
 
+    $id = $_SESSION['id'];
+    $username = $_SESSION['username'];
+    $nome;
+    $email;
+    $tipo = $_SESSION['tipo'];
+    $cargo = $_SESSION['cargo'];
+    /*
+    //-- Converte int em string para mostrar o cargo do user no menu superior
+    if ($tipo == 0) $cargo = "Administrador";
+    else if ($tipo == 1) $cargo = "Aluno";
+    else $cargo = "Professor";
+     */
+    //-- vai buscar o nome do utilizador que corresponde ao id da sessão
+    $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
+    if (mysqli_num_rows($result) == 1) {
+        $row = $result->fetch_assoc();
+        $nome = ($row['nome']);
+        $email = ($row['email']);
+    }
 }
-$username = $_SESSION['username'];
+
 
 ?>
 
@@ -22,7 +44,10 @@ $username = $_SESSION['username'];
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+    <title>Página Inicial</title>
+
+    <!-- Icon image -->
+    <link rel="icon" href="images/website/logotipo_transparente.png">
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -45,6 +70,18 @@ $username = $_SESSION['username'];
 
 </head>
 
+<style>
+.btn-index-page {
+    margin-left: auto;
+    margin-right: auto;
+    width: -webkit-fill-available;
+    min-width: 100px;
+    max-width: 400px;
+    min-height: 100px;
+    font-size: 26px;
+}
+</style>
+
 <body>
 
     <div id="wrapper">
@@ -58,12 +95,15 @@ $username = $_SESSION['username'];
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="">Area de Utilizador</a>
+                <a class="navbar-brand" href="index.php">Area de Utilizador</a>
             </div>
             <!-- /.navbar-header -->
 
-            <ul class="nav navbar-top-links navbar-right">
+            <ul class="nav navbar-top-links navbar-right" style="padding-left:10px">
 
+                <li>
+                    <?php echo $cargo; ?>
+                </li>
                 <li><a><i class="fa fa-user fa-fw"></i>
                         <?php echo $username; ?> </a>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
@@ -73,36 +113,7 @@ $username = $_SESSION['username'];
 
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-
-                        <li>
-                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-
-                        <li>
-                            <a href="trabalhospage.php"><i class="fa fa-th-list fa-fw"></i> Todos Trabalhos</a>
-                        </li>
-
-                        <li>
-                            <a href="novotrabalhopage.php"><i class="fa fa-file-o fa-fw"></i> Novo Trabalho</a>
-                        </li>
-
-                        <li>
-                            <a href="#"><i class="fa fa-gear fa-fw"></i> Editar Conta<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="alterarpasswordpage.php"><i class="fa fa-key fa-fw"></i> Alterar Palavra
-                                        Passe</a>
-                                </li>
-                                <li>
-                                    <a href="dados-pessoais.php"><i class="fa fa-edit fa-fw"></i> Alterar Dados
-                                        Pessoais</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-
-                    </ul>
+                    <?php include "sidemenu.php";?>
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
@@ -111,16 +122,128 @@ $username = $_SESSION['username'];
 
         <!-- Page Content -->
         <div id="page-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
+            <div class="container-fluid" style="min-height:500px">
+                <div class="row" style="display: flex; flex-wrap: wrap; margin-top:30px; margin-bottom:30px;">
+                    <!-- <div class="col-lg-12">
                         <h1 class="page-header">Página Vazia</h1>
+                    </div> -->
+                    <div class="col-lg-12" style="width:100%;">
+
+                        <div style="width:100%; text-align: center;">
+                            <h1>
+                                <?php
+                            if ($cargo == "Administrador") {
+                                echo("Olá " . $cargo . "!");
+                            } else {
+                                echo("Olá " . $nome . "!");
+                            }
+                            ?>
+                            </h1>
+                        </div>
                     </div>
                     <!-- /.col-lg-12 -->
                 </div>
                 <!-- /.row -->
+                <div class="row" style="display: flex; flex-wrap: wrap; margin:0px; margin-top:50px">
+                    <?php
+
+                    if ($cargo == "Administrador") {
+                        echo "
+                        <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
+                            <div style='display: flex;'>
+                                <a class='btn-index-page' href='meus-projetos.php' style=''>
+                                    <button class='btn btn-default btn-index-page' style=''>
+                                        Projetos
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
+                            <div style='display: flex;'>
+                                <a class='btn-index-page' href='gerir-docentes.php' style=''>
+                                    <button class='btn btn-default btn-index-page' style=''>
+                                        Docentes
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
+                            <div style='display: flex;'>
+                                <a class='btn-index-page' href='gerir-alunos.php' style=''>
+                                    <button class='btn btn-default btn-index-page' style=''>
+                                        Alunos
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
+                            <div style='display: flex;'>
+                                <a class='btn-index-page' href='gerir-ucs.php' style=''>
+                                    <button class='btn btn-default btn-index-page'
+                                        style='overflow: hidden; word-wrap: break-word;'>
+                                        Unidades Curriculares
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        ";
+                    } elseif ($cargo == "Professor") {
+                        echo "
+                        <div class='col-lg-12 col-md-12 col-xs-12' style='margin-top:30px'>
+                            <div style='display: flex;'>
+                                <a class='btn-index-page' href='meus-projetos.php' style=''>
+                                    <button class='btn btn-default btn-index-page' style=''>
+                                        Projetos
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!--<div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
+                            <div style='display: flex;'>
+                                <a class='btn-index-page' href='gerir-ucs.php' style=''>
+                                    <button class='btn btn-default btn-index-page'
+                                        style='overflow: hidden; word-wrap: break-word;'>
+                                        Unidades Curriculares
+                                    </button>
+                                </a>
+                            </div>
+                        </div>-->
+                        ";
+                    } elseif ($cargo == "Aluno") {
+                        echo "
+                        <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
+                            <div style='display: flex;'>
+                                <a class='btn-index-page' href='meus-projetos.php' style=''>
+                                    <button class='btn btn-default btn-index-page' style=''>
+                                        Meus Projetos
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
+                            <div style='display: flex;'>
+                                <a class='btn-index-page' href='gerir-ucs.php' style=''>
+                                    <button class='btn btn-default btn-index-page'
+                                        style='overflow: hidden; word-wrap: break-word;'>
+                                        Novo Projeto
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        ";
+                    }
+                    ?>
+                    <!-- <div class="col-lg-3" style="margin-top:30px"></div> -->
+                </div>
             </div>
             <!-- /.container-fluid -->
+
+            <?php
+                include 'footer.html';
+            ?>
+
         </div>
         <!-- /#page-wrapper -->
 

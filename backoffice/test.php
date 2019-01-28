@@ -7,8 +7,12 @@ $data_split = explode("-", $data);
 // for($i=0; $i < sizeof($data_split); $i++){
 //     echo($data_split[$i]);
 // }
-echo $data_split[0] . $data_split[1] . $data_split[2];
+echo "</br>" . $data_split[0] . $data_split[1] . $data_split[2];
 
+// $password = "luis";
+// $param_password = password_hash($password, PASSWORD_DEFAULT);
+
+// echo "</br>" . $param_password;
 
 
 

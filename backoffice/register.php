@@ -5,273 +5,181 @@ require_once("connectdb.php");
 
 // verifica se existe login/sessão
 if (isset($_SESSION['username'])) {
-  header("location:index.php");
-  session_write_close();
+    header("location:index.php");
+    session_write_close();
 
-  exit();
+    exit();
 }
 
-// Output variavel
-$result = "";
-$encontrado = false;
-//$sucessoUserCriado = false;
-$username = $_REQUEST['username'];
-//$idUtilizador;
+// Define variables and initialize with empty values
+$password = $confirm_password = $username = $tipo = $resultado = "";
 
-//-- 1º: Select users para verificar se já existe
-$selectUserQuery = "SELECT * FROM utilizador";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    //-- 1º Verifica se já existe um utilizador com o mesmo username ou email
+    // Validate username
+    if (!empty(trim($_POST["email"])) && !empty(trim($_POST["username"]))) {
 
-if ($usersResult = mysqli_query($connectDB, $selectUserQuery)) {
-  if (mysqli_num_rows($usersResult) > 0) {
-    while (!$encontrado && $row = mysqli_fetch_array($usersResult)) {
-      if ($username === $row['username']) {
-        $encontrado = true;
-      } else {
-        $encontrado = false;
-      }
-    }
-  } else {
-    $result .= "</br>(1) Não Existem users na DB; ";
-  }
-  //-- Se não existir da DB insere user
-  if (!$encontrado) {
-    //-- 2º: Insert user in DB
-    $result .= "</br>(1) User " . $username . " não existe na DB";
-    insertUtilizador($username, $connectDB, $result);
+        // Prepare a select statement
+        $sql = "SELECT idutilizador FROM utilizador WHERE username = ?";
 
-  } else {
-    $result .= "</br>(1) User " . $username . " existe na DB";
-  }
-}
+        if ($stmt = $connectDB->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bind_param("s", $param_username);
 
-//-- 2º: Insert user in DB (result passed by reference)
-function insertUtilizador($username, $connectDB, &$result)
-{
-  //-- Prepared Statment: high efficiency; Protection against sql injection
-  // Prepare an insert statement
-  //-- insert into utilizador
-  $createUserQuery = "INSERT INTO utilizador (username, password, tipo) VALUES (?, ?, ?)";
+            // Set parameters
+            $param_username = trim($_POST["username"]);
 
-  if ($stmt = mysqli_prepare($connectDB, $createUserQuery)) {
-      // Bind variables to the prepared statement as parameters
-    mysqli_stmt_bind_param($stmt, "sss", $username, $password, $tipo);
-      
-    // Set parameters
-    //$username = $_REQUEST['username'];  // ja recebido no inicio
-    $password = $_REQUEST['password'];
-    $tipo = $_REQUEST['profissao'];
-  
-      //echo ('user: ' . $username . ' | pass: ' . $password);
-  
-      // Attempt to execute the prepared statement
-    if (mysqli_stmt_execute($stmt)) {
-      $result .= "</br>(2)Dados inseridos em Utilizador com sucesso. ";
-      //$sucessoUserCriado = true;
-      selectUser($username, $connectDB, $result);
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // store result
+                $stmt->store_result();
 
+                if ($stmt->num_rows == 1) {
+                    echo "</br>Já se encontra um utilizador registado com o username";
+                } else {
+                    //-- Se não existir guarda informação nas variaveis
+                    $username = trim($_POST["username"]);
+                    $tipo = trim($_POST["profissao"]);
+
+                    // echo "</br>Não existe utilizador com o email";
+                }
+            } else {
+                echo "</br>Oops! Something went wrong. Please try again later.";
+            }
+        }
+        // Close statement
+        $stmt->close();
     } else {
-      $result .= "</br>(2) Ocurreu um erro: Não conseguiu executar a query: $createUserQuery" . mysqli_error($connectDB) . ". ";
-      //$sucessoUserCriado = false;
+        header("location: iniciar-sessao.php");
     }
-  } else {
-    $result .= "</br>(2) Ocurreu um erro: Não conseguiu preparar a query query: $createUserQuery" . mysqli_error($connectDB) . ". ";
-    //$sucessoUserCriado = false;
-  }
-   
-  // Close statement
-  mysqli_stmt_close($stmt);
 
-}
+    $password = trim($_POST["password"]);
+    $confirm_password = trim($_POST["confirmPassword"]);
 
-//-- 3: Select user based on username -> id and profissao to insert data
-function selectUser($username, $connectDB, &$result)
-{
-  $id = null;
-  $profissao = null;
-  $result .= "</br>(3) $username";
-  //-- Next
-  //-- Select of the inserted user
-  //if ($sucessoUserCriado) {
-  $selectUserQuery = "SELECT * FROM utilizador where username = '$username'";
+    // se na verificação anterior não existia user com o mesmo email na DB, continua no script
+    if (!empty($username) && !empty($password) && !empty($confirm_password) && ($password === $confirm_password)) {
 
-  if ($usersResult = mysqli_query($connectDB, $selectUserQuery)) {
+    // Prepare an insert statement
+        $sql = "INSERT INTO utilizador (username, password, tipo) VALUES (?,?,?)";
 
-    if (mysqli_num_rows($usersResult) > 0) {
+        if ($stmt = $connectDB->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bind_param("ssi", $param_username, $param_password, $param_tipo);
 
-      while ($row = mysqli_fetch_array($usersResult)) {
-        $id = $row['idutilizador'];
-        $profissao = $row['tipo'];
-        $result .= "</br>(3) Encontrado com ID: " . $id . ". ";
-        $result .= "</br>(3) UsernameDB: " . $row['username'] . ". ";
-        $result .= "</br>(3) ProfissaoDB: " . $profissao . ". ";
-        insertData($connectDB, $result, $id, $username, $profissao);
-      }
+            // Set parameters
+            $param_username = $username;
+            $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+            $param_tipo = $tipo;
+
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                $stmt->close();
+                // echo "</br>Conta de utilizador criada";
+                insertUtilizadorData($connectDB, $username, $tipo, $resultado);
+            } else {
+                $stmt->close();
+                echo "</br>Something went wrong. Please try again later.";
+            }
+        }
     } else {
-      $result .= "</br>(3) User não encontrado; ";
+        $msg = "As palavras passe não são iguais!";
+        echo '<script language="javascript">';
+        echo 'alert("' . $msg . '");';
+        echo 'window.location.replace("gerir-ucs.php");';
+        echo '</script>';
     }
-  }
-
-  //}
 }
 
-//-- 4º: Insert user data in Aluno/Docente
-function insertData($connectDB, &$result, $id, $username, $profissao)
+function insertUtilizadorData($connectDB, $username, $tipo, &$resultado)
 {
-  $result .= "</br>(4) ID: " . $id;
-  $result .= "</br>(4) Username: " . $username;
-  $result .= "</br>(4) Profissao: " . $profissao;
-  //-- First select user to obtain id
-  
-  //-- If there is no existent aluno with the same user id, insert data
-  //-- Next
-  //-- Insert into Aluno/Docente
-  //-- é aluno
-  if ($profissao == 1) {
-    if (!selectAlunos($connectDB, $result, $id, $username)) {
+    $idutilizador = $email = $nome = $fotografia = "";
+    $nome = trim($_POST["nome"]);
+    $email = trim($_POST["email"]);
+    $fotografia = "logotipo_white.png";
 
-      $createUserQuery = "INSERT INTO aluno (fk_idutilizador, nome, email, fotografia) VALUES (?, ?, ?, ?)";
-
-      if ($stmt2 = mysqli_prepare($connectDB, $createUserQuery)) {
+    //-- 1º Vai buscar o id do utilizador inserido
+    if ($stmt = $connectDB->prepare("SELECT idutilizador FROM utilizador WHERE username = ?")) {
         // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt2, "ssss", $fk_idutilizador, $nome, $email, $fotografia);
-  
+        $stmt->bind_param("s", $param_username);
+
         // Set parameters
-        $fk_idutilizador = $id;
-        $nome = $_REQUEST['nome'];
-        $email = $_REQUEST['email'];
-        $fotografia = 'logotipo_white.png';
+        $param_username = $username;
 
-        echo ("Imagem: " . $fotografia);
-
-        $result .= '</br>(4) Imagem: ' . $fotografia;
-        
         // Attempt to execute the prepared statement
-        if (mysqli_stmt_execute($stmt2)) {
-          $result .= '</br>(4) Dados inseridos em Aluno com sucesso. ';
+        if ($stmt->execute()) {
+            $stmt->bind_result($r_idutilizador);
+            $stmt->store_result();
+            $stmt->fetch();
+
+            if ($stmt->num_rows == 1) {
+                $idutilizador = $r_idutilizador;
+            // echo "</br>Utilizador Encontrado.";
+            } else {
+                echo "</br>Não encontrou utilizador";
+            }
         } else {
-          $result .= "</br>(4) Ocurreu um erro: Não conseguiu executar a query: $createUserQuery" . mysqli_error($connectDB) . ". ";
-          deleteUser($connectDB, $result, $username);
+            echo "</br>Oops! Something went wrong. Please try again later.";
         }
-      } else {
-        $result .= "</br>(4) Ocurreu um erro: Não conseguiu preparar a query query: $createUserQuery" . mysqli_error($connectDB) . " . ";
-        deleteUser($connectDB, $result, $username);
-      }
-
-      // Close statement
-      mysqli_stmt_close($stmt2);
-    } else {
-      //-- Delete utilizador
-      deleteUser($connectDB, $result, $username);
-
     }
-  } else if ($profissao == 2) {
-    //-- é professor
-    if (!selectDocentes($connectDB, $result, $id, $username)) {
+    // Close statement
+    $stmt->close();
 
-      $createUserQuery = "INSERT INTO docente (fk_idutilizador, nome, email, fotografia) VALUES (?, ?, ?, ?)";
-
-      if ($stmt2 = mysqli_prepare($connectDB, $createUserQuery)) {
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt2, "ssss", $fk_idutilizador, $nome, $email, $fotografia);
+    //-- 2º Insere info do utilizador em aluno/docente
+    if (!empty($idutilizador)) {
+        echo("tipo: " . $tipo);
+        if ($tipo == 1) {
+            $sql = "INSERT INTO aluno (fk_idutilizador, nome, email, fotografia) VALUES (?,?,?,?)";
+        } elseif ($tipo == 2) {
+            $sql = "INSERT INTO docente (fk_idutilizador, nome, email, fotografia) VALUES (?,?,?,?)";
+        }
   
-        // Set parameters
-        $fk_idutilizador = $id;
-        $nome = $_REQUEST['nome'];
-        $email = $_REQUEST['email'];
-        $fotografia = 'logotipo_white.png';
+        if ($stmt = $connectDB->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bind_param("ssss", $param_idutilizador, $param_nome, $param_email, $param_fotografia);
 
-        echo ("Imagem: " . $fotografia);
+            $param_idutilizador = $idutilizador;
+            $param_nome = $nome;
+            $param_email = $email;
+            $param_fotografia = $fotografia;
+            
 
-        $result .= '</br>(4) Imagem: ' . $fotografia;
-      
-        // Attempt to execute the prepared statement
-        if (mysqli_stmt_execute($stmt2)) {
-          $result .= '</br>(4) Dados inseridos em Docente com sucesso. ';
-        } else {
-          $result .= "</br>(4) Ocurreu um erro: Não conseguiu executar a query: $createUserQuery" . mysqli_error($connectDB) . ". ";
-          deleteUser($connectDB, $result, $username);
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // echo "</br>Informação inseridda!";
+                $resultado = "Conta criada com sucesso.";
+            } else {
+                echo "</br>Something went wrong. Please try again later.";
+                removerUtilizador($connectDB, $idutilizador);
+                $resultado = "Ocorreu um erro ao criar a conta.";
+            }
         }
-      } else {
-        $result .= "</br>(4) Ocurreu um erro: Não conseguiu preparar a query query: $createUserQuery" . mysqli_error($connectDB) . " . ";
-        deleteUser($connectDB, $result, $username);
-      }
-
-      // Close statement
-      mysqli_stmt_close($stmt2);
     } else {
-      //-- Delete utilizador
-      deleteUser($connectDB, $result, $username);
+        removerUtilizador($connectDB, $idutilizador);
+        $resultado = "Ocorreu um erro ao criar a conta.";
     }
-  }
+    $stmt->close();
 }
 
-//-- 5º: Select of alunos -> if idUser exists return true so we dont insert data into alunos
-function selectAlunos($connectDB, &$result, $id, $username)
+function removerUtilizador($connectDB, $idutilizador)
 {
-  $encontrado = false;
-  $selectUserQuery = "SELECT * FROM aluno";
-
-  if ($usersResult = mysqli_query($connectDB, $selectUserQuery)) {
-    if (mysqli_num_rows($usersResult) > 0) {
-      while (!$encontrado && $row = mysqli_fetch_array($usersResult)) {
-        if ($id === $row['fk_idutilizador']) {
-          $result .= "</br>(5) Aluno com " . $username . " existe na DB. Não pode inserir data";
-          $encontrado = true;
-        } else {
-          $result .= "</br>(5) Aluno com " . $username . " não existe na DB. Pode inserir data";
-          $encontrado = false;
-        }
-      }
-    } else {
-      $result .= "</br>(5) Não Existem Alunos na DB; ";
-      $encontrado = false;
+    // inicializar prepared statement
+    $stmt = $connectDB->prepare("DELETE FROM utilizador WHERE idutilizador=?");
+    
+    if (false === $stmt) {
+        echo "</br>Não conseguiu preparar a query";
     }
-  }
+    
+    $stmt->bind_param("s", $idutilizador);
 
-  //-- Se existe ou não user com mesmo id em Alunos
-  if ($encontrado) return true;
-  else return false;
-}
-
-//-- 5º: Select of docentes -> if idUser exists return true so we dont insert data into docente
-function selectDocentes($connectDB, &$result, $id, $username)
-{
-  $encontrado = false;
-  $selectUserQuery = "SELECT * FROM docente";
-
-  if ($usersResult = mysqli_query($connectDB, $selectUserQuery)) {
-    if (mysqli_num_rows($usersResult) > 0) {
-      while (!$encontrado && $row = mysqli_fetch_array($usersResult)) {
-        if ($id === $row['fk_idutilizador']) {
-          $result .= "</br>(5) Docente com " . $username . " existe na DB. Não pode inserir data";
-          $encontrado = true;
-        } else {
-          $result .= "</br>(5) Docente com " . $username . " não existe na DB. Pode inserir data";
-          $encontrado = false;
-        }
-      }
+    // executar
+    if ($stmt->execute()) {
+        // echo "</br>Utilizador removidos com sucesso.";
     } else {
-      $result .= "</br>(5) Não Existem Docentes na DB; ";
-      $encontrado = false;
+        echo "</br>Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
     }
-  }
 
-  //-- Se existe ou não user com mesmo id em Alunos
-  if ($encontrado) return true;
-  else return false;
-}
-
-//-- 6º: delete new user data if failed to insert data into Aluno/Docente
-function deleteUser($connectDB, &$result, $username)
-{
-  $deleteUserQuery = "DELETE FROM utilizador WHERE username = '$username'";
-  if (mysqli_query($connectDB, $deleteUserQuery)) {
-    $result .= '</br>(6) Dados do utilizador eliminados com sucesso. ';
-        //echo "Records were deleted successfully.";
-  } else {
-    $result .= "Ocurreu um erro: Não conseguiu executar a query: $deleteUserQuery. " . mysqli_error($connectDB);
-        //echo "Ocurreu um erro: Não conseguiu executar a query: $deleteUserQuery. " . mysqli_error($connectDB);
-  }
+    $stmt->close();
 }
 
 // Close connection
@@ -282,7 +190,7 @@ mysqli_close($connectDB);
 <!DOCTYPE html>
 <html lang="pt">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -302,30 +210,24 @@ mysqli_close($connectDB);
     <link href="css/sb-admin.css" rel="stylesheet">
 
     <!-- estilos desenvolvidos -->
-    <link rel="stylesheet" href="css/stylesheet.css"
-
-  </head>
-
-  <body class="bg-dark">
+    <link rel="stylesheet" href="css/stylesheet.css" </head> <body class="bg-dark">
 
     <div class="container">
-      <div class="card card-register mx-auto mt-5">
-        <div class="card-header">Resultado</div>
-        <div class="card-body" style="padding-top:0.5rem">
-          <form id="formregister" action="register.php" method="post">
-            <div class="form-group">
-                <div class="text-center">
-                    
-                    <label class="label-bold" style="margin-top:10px; margin-bottom:30px"> <?php echo $result ?></label>
-                
-              </div>
+        <div class="card card-register mx-auto mt-5">
+            <div class="card-header"><?php echo($resultado); ?></div>
+            <div class="card-body" style="padding-top:0.5rem">
+                <form id="formregister" action="register.php" method="post">
+                    <div class="form-group">
+                        <div class="text-center">
+
+                        </div>
+                    </div>
+
+                    <a href="iniciar-sessao.php" class="btn btn-lg btn-success btn-block">Iniciar Sessão</a>
+
+                </form>
             </div>
-
-            <a href="iniciar-sessao.php" class="btn btn-lg btn-success btn-block">Iniciar Sessão</a>    
-
-          </form>
         </div>
-      </div>
     </div>
 
     <!-- Bootstrap core JavaScript-->
@@ -335,6 +237,6 @@ mysqli_close($connectDB);
     <!-- Core plugin JavaScript-->
     <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
 
-  </body>
+    </body>
 
 </html>

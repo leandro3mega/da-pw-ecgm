@@ -3,91 +3,108 @@ session_start();
 
 require_once("connectdb.php");
 
-// -- if user was found or not
-$found = false;
+// verifica se existe login/sessão
+if (isset($_SESSION['username'])) {
+    header("location:index.php");
+    session_write_close();
 
-//-- query para obter utilizadores
-$usersQuery = "select * from utilizador";
-
-$usersResult = $connectDB->query($usersQuery);
-
-// check for errors
-if ($connectDB->errno) {
-    exit("query error");
-} else {
-    /*
-    // fetch results
-    while($user = $usersResult->fetch_row()) {
-        echo "<li>".$user[1]." : ".$user[2]."</li>";
-    }
-     */
-    // fetch results as object
-    $usersResult->data_seek(0);
-    while (!$found && $user = $usersResult->fetch_object()) {
-        echo "<li>" . $user->idutilizador . " | " . $user->username . " | " . $user->password . " | " . $user->tipo . "</li>";
-
-        $USER = $user->username;
-        $PASS = $user->password;
-        $ID = $user->idutilizador;
-        $TIPO = $user->tipo;
-
-
-        if (isset($_SESSION['username'])) {
-            header("location:iniciar-sessao.php");
-        } else if (!(isset($_POST['username']) || !(isset($_POST['password'])))) {
-            // se recebeu post com username e password vazios
-            header("location:iniciar-sessao.php");
-        } else if ($_POST['username'] !== $USER || $_POST['password'] !== $PASS) {
-            // se o post é diferente do existente na DB
-            header("location:iniciar-sessao.php");
-        } else {
-            $_SESSION['username'] = $_POST['username'];
-            $_SESSION['id'] = $ID;
-            $_SESSION['tipo'] = $TIPO;
-
-            //-- Converte int em string para mostrar o cargo do user no menu superior
-            if ($TIPO == 0) $_SESSION['cargo'] = "Administrador";
-            else if ($TIPO == 1) $_SESSION['cargo'] = "Aluno";
-            else $_SESSION['cargo'] = "Professor";
-
-            //-- Get the data to add into the SESSION
-            getData($connectDB, $ID, $TIPO);
-
-            //echo ("(1) Nome na sessão: " . $_SESSION['nome']);
-
-            //echo "</br><li>" . $USER . " | " . $PASS . "</li>";
-            $found = true;
-            header("location:iniciar-sessao.php");
-        }
-    }
+    exit();
 }
 
-function getData($connectDB, $ID, $TIPO)
-{
-    //-- é aluno
-    if ($TIPO == 1) {
-        $dataQuery = "select * from aluno where fk_idutilizador = '$ID'";
+// Define variables and initialize with empty values
+$email = $password = "";
 
-        $dataResult = $connectDB->query($dataQuery);
+//echo(password_hash("admin", PASSWORD_DEFAULT));
+
+// Processing form data when form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+ 
+    // Check if username is empty
+    if (!empty(trim($_POST["username"]))) {
+        $username = trim($_POST["username"]);
+        echo("</br>" . $email);
+    }
     
-        // check for errors
-        if ($connectDB->errno) {
-            exit("query error");
-        } else {
-            $dataResult->data_seek(0);
-            while ($data = $dataResult->fetch_object()) {
-                //echo "<li>" . $user->idutilizador . " | " . $user->username . " | " . $user->password . " | " . $user->tipo . "</li>";
-                $_SESSION['nome'] = $data->nome;
-                //echo ("(2) Nome na sessão: " . $_SESSION['nome']);
-                //$_SESSION['fotografia'] = $data->fotografia;
+    // Check if password is empty
+    if (!empty(trim($_POST["password"]))) {
+        $password = trim($_POST["password"]);
+        echo("</br>" . $password);
+    }
+    
+    // Validate credentials
+    // Prepare a select statement
+    $sql = "SELECT idutilizador, username, password, tipo FROM utilizador WHERE username = ?";
+        
+    if ($stmt = $connectDB->prepare($sql)) {
+        // Bind variables to the prepared statement as parameters
+        $stmt->bind_param("s", $param_username);
+            
+        // Set parameters
+        $param_username = $username;
+            
+        // Attempt to execute the prepared statement
+        if ($stmt->execute()) {
+            // Store result
+            $stmt->store_result();
+                
+            // Check if username exists, if yes then verify password
+            if ($stmt->num_rows == 1) {
+                // Bind result variables
+                $stmt->bind_result($r_id, $r_username, $r_hashed_password, $r_tipo);
+                if ($stmt->fetch()) {
+                    if (password_verify($password, $r_hashed_password)) {
+                            
+                        // Store data in session variables
+                        $_SESSION["id"] = $r_id;
+                        $_SESSION["username"] = $r_username;
+                        $_SESSION["tipo"] = $r_tipo;
 
+                        //-- Converte int em string para mostrar o cargo do user no menu superior
+                        if ($r_tipo == 0) {
+                            $_SESSION['cargo'] = "Administrador";
+                        } elseif ($r_tipo == 1) {
+                            $_SESSION['cargo'] = "Aluno";
+                        } else {
+                            $_SESSION['cargo'] = "Professor";
+                        }
+                            
+                        // Redirect user to index page
+                        header("location: index.php");
+                    } else {
+                        // Display an error message if password is not valid
+                        $msg = "A palavra passe inserida não é valida.";
+                        echo '<script language="javascript">';
+                        echo 'alert("' . $msg . '");';
+                        echo 'window.location.replace("iniciar-sessao.php");';
+                        echo '</script>';
+                    }
+                }
+            } else {
+                $msg = "Não foi encontrada conta com o email: " . $email;
+                echo '<script language="javascript">';
+                echo 'alert("' . $msg . '");';
+                echo 'window.location.replace("iniciar-sessao.php");';
+                echo '</script>';
             }
+        } else {
+            $msg = "Algo correu mal. Por favor tente de novo.";
+            echo '<script language="javascript">';
+            echo 'alert("' . $msg . '");';
+            echo 'window.location.replace("iniciar-sessao.php");';
+            echo '</script>';
         }
     }
+        
+    // Close statement
+    $stmt->close();
 }
+
+
+
+
 
 session_write_close();
 // Close connection
-$connectDB->close();;
+$connectDB->close();
+
 exit();
-?>

@@ -109,7 +109,7 @@ if (!isset($_SESSION['username'])) {
 
         <!-- Page Content -->
         <div id="page-wrapper">
-            <div class="container-fluid">
+            <div class="container-fluid" style="min-height:500px">
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">Alterar Palavra Passe</h1>
@@ -161,14 +161,18 @@ if (!isset($_SESSION['username'])) {
                                         <label>Confirmar a Nova Palavra Passe</label>
                                         <input type="password" id="iInputPass3" class="form-control"
                                             placeholder="Confirme a nova palavra passe">
+                                        <p id="ihelpPass" name="helpPass" class="help-block"
+                                            style="color:#555555; padding:5px"></p>
                                     </div>
 
+
                                     <div class="form-group div-margin-separa">
-                                        <button class="btn btn-default btn-backoffice-size"
+                                        <button class="btn btn-default btn-backoffice-size" name="btn_submit_form"
                                             onclick="changePassword()">Alterar</button>
                                         <button class="btn btn-default btn-backoffice-size" style="margin-left: 10px"
                                             onclick="clearFields()">Limpar</button>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -178,6 +182,10 @@ if (!isset($_SESSION['username'])) {
 
             </div>
             <!-- /.container-fluid -->
+
+            <?php
+                include 'footer.html';
+            ?>
         </div>
         <!-- /#page-wrapper -->
 
@@ -198,45 +206,76 @@ if (!isset($_SESSION['username'])) {
 
 </body>
 <script>
+$(document).ready(function() {
+    $('button[name="btn_submit_form"]').attr("disabled", "disabled");
+});
+
 //-- Clear the input text on button click
 function clearFields() {
-    var inputPass1 = document.getElementById("iInputPass1");
-    var inputPass2 = document.getElementById("iInputPass2");
-    var inputPass3 = document.getElementById("iInputPass3");
+    $('#iInputPass1').val("");
+    $('#iInputPass2').val("");
+    $('#iInputPass3').val("");
+}
 
-    inputPass1.value = "";
-    inputPass2.value = "";
-    inputPass3.value = "";
+var comfirma_pass2 = document.getElementById("iInputPass2");
+var comfirma_pass3 = document.getElementById("iInputPass3");
+comfirma_pass2.addEventListener("keyup", comparaPassword);
+comfirma_pass3.addEventListener("keyup", comparaPassword);
+
+function comparaPassword() {
+    if ($('#iInputPass2').val().length >= 5) {
+        //-- Compara se a nova pass é igual nos 2 campos
+        if ($('#iInputPass2').val() === $('#iInputPass3').val()) {
+            $('button[name="btn_submit_form"]').removeAttr("disabled");
+            $("#ihelpPass").text("Palavra passe válida!");
+            $("#ihelpPass").css({
+                "color": "rgb(79, 216, 132)",
+                "padding": "5px"
+            });
+        } else {
+            $('button[name="btn_submit_form"]').attr("disabled", "disabled");
+            $("#ihelpPass").text("As palavras passe não são iguais!");
+            $("#ihelpPass").css({
+                "color": "rgb(216, 79, 79)",
+                "padding": "5px"
+            });
+        }
+    }
+
+    if ($('#iInputPass2').val().length >= 5 && $('#iInputPass3').val().length <= 5) {
+        $("#ihelpPass").text("");
+    }
+
 }
 
 //-- Ajax to submite change of the user email
 function changePassword() {
 
-    //-- Compara se a nova pass é igual nos 2 campos
-    if ($('#iInputPass2').val() === $('#iInputPass3').val()) {
-        passAntiga = $('#iInputPass1').val();
-        passNova = $('#iInputPass2').val();
-        //alert("Pass 2 e 3 são iguais");
+    if ($('#iInputPass2').val().length > 5) {
+        //-- Compara se a nova pass é igual nos 2 campos
+        if ($('#iInputPass2').val() === $('#iInputPass3').val()) {
+            passAntiga = $('#iInputPass1').val();
+            passNova = $('#iInputPass2').val();
+            passNova2 = $('#iInputPass3').val();
+            //alert("Pass 2 e 3 são iguais");
 
-        $.ajax({
-            type: "POST",
-            url: 'changeuserdata.php',
-            data: {
-                'action': 'change_password',
-                'password_old': passAntiga,
-                'password_new': passNova
-            },
-            success: function(html) {
-                alert(html);
-                location.reload();
-            }
+            $.ajax({
+                type: "POST",
+                url: 'changeuserdata.php',
+                data: {
+                    'action': 'change_password',
+                    'password_old': passAntiga,
+                    'password_new': passNova,
+                    'password_new_2': passNova2
+                },
+                success: function(html) {
+                    alert(html);
+                    location.reload();
+                }
 
-        });
-    } else {
-        alert("Confirme que a nova password que pretende inserir é igual à que está a confirmar.");
+            });
+        }
     }
-    /*
-     */
 }
 </script>
 

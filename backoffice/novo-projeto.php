@@ -80,7 +80,7 @@ if (!isset($_SESSION['username'])) {
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="">Area de Utilizador</a>
+                <a class="navbar-brand" href="index.php">Area de Utilizador</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -128,9 +128,9 @@ if (!isset($_SESSION['username'])) {
                         <div class="form-group">
                             <label>Descrição</label>
                             <textarea id="idescricao" class="form-control" name="descricao"
-                                pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}" rows="10" minlength="10" maxlength="1000"
-                                required placeholder="Insira a descrição do projeto"></textarea>
-                            <p id="helpDescricao" class="help-block">Carateres: 0 de 1000</p>
+                                pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}" rows="10" minlength="10" maxlength="600" required
+                                placeholder="Insira a descrição do projeto"></textarea>
+                            <p id="helpDescricao" class="help-block">Carateres: 0 de 600</p>
                         </div>
 
                         <!-- Autores -->
@@ -140,14 +140,14 @@ if (!isset($_SESSION['username'])) {
                                 placeholder="Insira os autores do projeto (separados por ponto e vígula)">
                             <p class="help-block tooltip-demo">Exemplo: Luís Mota;João Almeida
                                 <a><i class="fa fa-info-circle fa-fw" data-toggle="tooltip" data-placement="right"
-                                        title="De modo a que outros autores possam editar o projeto, insira o nome tal como estes estão registados no site."></i></a>
+                                        title="Insira o nome de todos os autores, incluindo o seu."></i></a>
                             </p>
 
                         </div>
                         <div class="row" style="margin-top:20px; border-top: 1px solid #eee;">
 
                             <!-- Coluna 1 -->
-                            <div class="col-lg-6" style=" padding-top:20px; border-right: 1px solid #eee;">
+                            <div class="col-lg-6" style=" padding-top:20px;">
                                 <!-- Tipo -->
                                 <div class="form-group">
                                     <label>Trabalho...</label>
@@ -369,13 +369,15 @@ if (!isset($_SESSION['username'])) {
 //-- Semestre selecionado
 function getUCS() {
     var semestre = $('.semestre:checked').val();
+    // var ano_curricular = $('.iAnoLetivo').val();
 
-    //console.log("Semestre: " + semestre);
+    console.log("Semestre: " + semestre);
+    // console.log("Ano: " + ano_curricular);
     $('#iSelectUC').empty();
 
     $.ajax({
         type: "GET",
-        url: 'novoprojeto_ucs.php',
+        url: 'fetch_ucs_users.php',
         data: {
             'action': 'get_ucs',
             'semestre': semestre
@@ -387,14 +389,14 @@ function getUCS() {
                 $("#iSelectUC").append("<option value='" + element.idunidade_curricular + "'>" +
                     element.nome + "</option>");
             });
-            //alert(response);
+            // alert(response);
         }
     });
 }
 
 //-- Mostra o numero de letras na descrição (textarea)
 $("#idescricao").keyup(function() {
-    $("#helpDescricao").text($(this).val().length + "/1000");
+    $("#helpDescricao").text($(this).val().length + "/600");
 });
 
 //-- Adiciona ou remove imagens dependendo do numero selecionado

@@ -130,25 +130,26 @@ function changeAutoresProjeto($connectDB)
     }
 
     //--remove conections between all users and the project
-    removeConectionsAlunoProjeto($connectDB);
+    // removeConectionsAlunoProjeto($connectDB);
 
+    //-- 1º recebe info
     $autores = trim($_POST['autores_projeto']);
     $idprojeto = trim($_POST['id_projeto']);
     $autores_org = "";
-    $enc = false;
+    // $enc = false;
     
 
-    //-- Separa os autores e guarda em um array
+    //-- 2º Separa os autores e guarda num array
     $autores_split = multiexplode(array("; ", ";", " ;", ",", ".", ", ", ". ", " ,", " ."), $autores);  // usa o metodo para separar a string quando aparecem simbolos
            
     //-- Verifica se o user está na lista de autores
-    for ($i=0; $i < sizeof($autores_split); $i++) {
-        if ($autores_split[$i] == $_SESSION['nome']) {
-            $enc = true;
-        }
-    }
+    // for ($i=0; $i < sizeof($autores_split); $i++) {
+    //     if ($autores_split[$i] == $_SESSION['nome']) {
+    //         $enc = true;
+    //     }
+    // }
     
-    //-- Organiza a lista de autores
+    //-- 3º Organiza a lista de autores -> separa cada autor por "; " e no fim coloca "."
     for ($i=0; $i <= sizeof($autores_split); $i++) {
         if (isset($autores_split[$i]) && !empty($autores_split[$i])) {
             // echo("</br>Autor: " . $autores_split[$i]);
@@ -163,11 +164,11 @@ function changeAutoresProjeto($connectDB)
     $autores = $autores_org;
 
     //-- Se o user não estiver na lista adiciona-o
-    if (!$enc) {
-        $temp = $autores;
-        $autores = $_SESSION['nome'] . "; ";
-        $autores .= $temp;
-    }
+    // if (!$enc) {
+    //     $temp = $autores;
+    //     $autores = $_SESSION['nome'] . "; ";
+    //     $autores .= $temp;
+    // }
 
     echo("</br>Autores: " . $autores);
 
@@ -181,8 +182,8 @@ function changeAutoresProjeto($connectDB)
 
         // Attempt to execute the prepared statement
         if ($stmt->execute()) {
-            echo "Autores mudado com sucesso";
-            prepareConectionAutorProjeto($connectDB, $idprojeto, $autores);
+            echo "</br>Autores alterados com sucesso";
+            // prepareConectionAutorProjeto($connectDB, $idprojeto, $autores);
         } else {
             echo "</br>Something went wrong. Please try again later.";
         }
@@ -192,106 +193,106 @@ function changeAutoresProjeto($connectDB)
 }
 
 //-- Faz a ligação entre o aluno e os autores
-function prepareConectionAutorProjeto($connectDB, $idprojeto, $autores)
-{
-    //-- retira os nomes dos autores da string
-    $autores_array = multiexplode(array(";", ",", ".", "; ", ", ", ". ", " ;", " ,", " ."), $autores);  // usa o metodo para separar a string quando aparecem simbolos
+// function prepareConectionAutorProjeto($connectDB, $idprojeto, $autores)
+// {
+//     //-- retira os nomes dos autores da string
+//     $autores_array = multiexplode(array(";", ",", ".", "; ", ", ", ". ", " ;", " ,", " ."), $autores);  // usa o metodo para separar a string quando aparecem simbolos
     
-    for ($i=0; $i < sizeof($autores_array); $i++) {
-        if ($autores_array[$i]) {
-            // echo("</br>" . $autores_split[$i]);
-            echo("</br>" . $autores_array[$i]);
-            insertConectionAutorProjeto($connectDB, $autores_array[$i], $idprojeto);
-        }
-    }
-}
+//     for ($i=0; $i < sizeof($autores_array); $i++) {
+//         if ($autores_array[$i]) {
+//             // echo("</br>" . $autores_split[$i]);
+//             echo("</br>" . $autores_array[$i]);
+//             insertConectionAutorProjeto($connectDB, $autores_array[$i], $idprojeto);
+//         }
+//     }
+// }
 
 //-- Verifica se o autor está registado
 //-- Se estiver insere coneção entre o aluno e o projeto
-function insertConectionAutorProjeto($connectDB, $autor, $idprojeto)
-{
-    $encontrado = false;
-    $idutilizador;
+// function insertConectionAutorProjeto($connectDB, $autor, $idprojeto)
+// {
+//     $encontrado = false;
+//     $idutilizador;
 
-    // inicializar prepared statement
-    $stmt = $connectDB->prepare("SELECT fk_idutilizador FROM aluno WHERE nome=?");
+//     // inicializar prepared statement
+//     $stmt = $connectDB->prepare("SELECT fk_idutilizador FROM aluno WHERE nome=?");
     
-    $stmt->bind_param("s", $param_autor);
+//     $stmt->bind_param("s", $param_autor);
     
-    $param_autor = trim($autor);
+//     $param_autor = trim($autor);
 
-    // executar
-    $stmt->execute();
+//     // executar
+//     $stmt->execute();
     
-    // associar os parametros de output
-    $stmt->bind_result($r_idutilizador);
+//     // associar os parametros de output
+//     $stmt->bind_result($r_idutilizador);
     
-    // transfere o resultado da última query : obrigatorio para ter num_rows
-    $stmt->store_result();
+//     // transfere o resultado da última query : obrigatorio para ter num_rows
+//     $stmt->store_result();
     
-    // iterar / obter resultados
-    $stmt->fetch();
+//     // iterar / obter resultados
+//     $stmt->fetch();
     
-    if ($stmt->num_rows == 1) { // seleciona o resultado da base de dados
-        $idutilizador = $r_idutilizador;
-        $encontrado = true;
-        echo "</br>(Select Aluno) ID do aluno encontrado: " . $r_idutilizador;
-    } else {
-        echo "</br>(Select Aluno) Aluno não encontrado.";
-        $encontrado = false;
-    }
-    $stmt->close();
+//     if ($stmt->num_rows == 1) { // seleciona o resultado da base de dados
+//         $idutilizador = $r_idutilizador;
+//         $encontrado = true;
+//         echo "</br>(Select Aluno) ID do aluno encontrado: " . $r_idutilizador;
+//     } else {
+//         echo "</br>(Select Aluno) Aluno não encontrado.";
+//         $encontrado = false;
+//     }
+//     $stmt->close();
 
-    //-- Se existe ou não user com mesmo id em Alunos
-    if ($encontrado) {
+//     //-- Se existe ou não user com mesmo id em Alunos
+//     if ($encontrado) {
 
-        // -- If statement is prepared
-        if ($stmt = mysqli_prepare($connectDB, "INSERT INTO aluno_projeto (fk_aluno, fk_projeto) VALUES (?, ?)")) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $idutilizador, $idprojeto);
+//         // -- If statement is prepared
+//         if ($stmt = mysqli_prepare($connectDB, "INSERT INTO aluno_projeto (fk_aluno, fk_projeto) VALUES (?, ?)")) {
+//             // Bind variables to the prepared statement as parameters
+//             mysqli_stmt_bind_param($stmt, "ss", $idutilizador, $idprojeto);
 
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                echo "</br>(insertUserIntoAutorProjeto) Dados inseridos em aluno_projeto com sucesso. -> Aluno: " . $autor;
-                $sucesso = true;
-            } else {
-                echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
-                $sucesso = false;
-            }
-        } else {
-            echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu preparar a query: " . mysqli_error($connectDB) . " . ";
-            $sucesso = false;
-        }
+//             // Attempt to execute the prepared statement
+//             if (mysqli_stmt_execute($stmt)) {
+//                 echo "</br>(insertUserIntoAutorProjeto) Dados inseridos em aluno_projeto com sucesso. -> Aluno: " . $autor;
+//                 $sucesso = true;
+//             } else {
+//                 echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
+//                 $sucesso = false;
+//             }
+//         } else {
+//             echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu preparar a query: " . mysqli_error($connectDB) . " . ";
+//             $sucesso = false;
+//         }
     
-        // Close statement
-        mysqli_stmt_close($stmt);
-    }
-}
+//         // Close statement
+//         mysqli_stmt_close($stmt);
+//     }
+// }
 
 //-- Remove as ligações entre aluno e o projeto
-function removeConectionsAlunoProjeto($connectDB)
-{
-    $idprojeto = $_POST['id_projeto'];
+// function removeConectionsAlunoProjeto($connectDB)
+// {
+//     $idprojeto = $_POST['id_projeto'];
 
-    // inicializar prepared statement
-    $stmt = $connectDB->prepare("DELETE FROM aluno_projeto WHERE fk_projeto=?");
+//     // inicializar prepared statement
+//     $stmt = $connectDB->prepare("DELETE FROM aluno_projeto WHERE fk_projeto=?");
     
-    if (false === $stmt) {
-        echo "Não conseguiu preparar a query";
-    }
+//     if (false === $stmt) {
+//         echo "Não conseguiu preparar a query";
+//     }
     
-    $stmt->bind_param("s", $param_projeto);
+//     $stmt->bind_param("s", $param_projeto);
 
-    $param_projeto = $idprojeto;
+//     $param_projeto = $idprojeto;
 
-    // executar
-    if ($stmt->execute()) {
-        echo "</br>Ligações removidas com sucesso.";
-    } else {
-        echo "</br>Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
-    }
-    $stmt->close();
-}
+//     // executar
+//     if ($stmt->execute()) {
+//         echo "</br>Ligações removidas com sucesso.";
+//     } else {
+//         echo "</br>Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
+//     }
+//     $stmt->close();
+// }
 
 function changePalavrasChave($connectDB)
 {
@@ -792,64 +793,6 @@ function removeImageProjeto($connectDB, $imagem_nome, $idprojeto){
 
     $stmt->close();
 }
-
-//--TODO: Alterar Imagem -> remover a imagem (usar removeImageProjeto) -> adicionar nova imagem (user addImagemProjeto)
-function editImagemProjeto($connectDB){
-    
-}
-
-// function addImageProjeto($connectDB, $imagem){
-//     //--TODO: Verificar se atingiu o número máximo de 5 imagens
-
-//     $mimeExt = array();
-//     $mimeExt['image/jpeg'] = '.jpg';
-//     $mimeExt['image/pjpeg'] = '.jpg';
-//     $mimeExt['image/png'] = '.png';
-
-//     $existe = $query = $idprojeto = $tmpFilePath = "";
-//     $idprojeto = $_POST['form_add_image_id_projeto'];
-
-//     // echo("ID do Projeto: " . $idprojeto);
-
-//     //Get the temp file path
-//     $tmpFilePath = $_FILES['new_imagem_projeto']['tmp_name'];
-
-//     // echo "</br>tempFilePath: " . $tmpFilePath;
-
-//     if (isset($_FILES["new_imagem_projeto"]) && $tmpFilePath != "") {
-//         $query = "INSERT INTO imagem (fk_idprojeto, nome) VALUES (?,?)";
-//         if ($stmt = $connectDB->prepare($query)) {
-//             $diretorio = "images/projetos/imagens/";
-//             $type = mime_content_type($_FILES['new_imagem_projeto']['tmp_name']);
-//             $id_imagem = $idprojeto . "_" . md5(uniqid(time())) . $mimeExt[$_FILES["new_imagem_projeto"]["type"]]; //Get image extension
-//             $user_foto_dir = $diretorio . $id_imagem; //Path file
-
-//             // Bind variables to the prepared statement as parameters
-//             $stmt->bind_param("is", $param_idprojeto, $param_nome);
-
-//             $param_idprojeto = $idprojeto;
-//             $param_nome = $id_imagem;
-            
-//             move_uploaded_file($_FILES["new_imagem_projeto"]["tmp_name"], $user_foto_dir);
-            
-//             // Attempt to execute the prepared statement
-//             if ($stmt->execute()) {
-//                 echo "</br>Imagens inserida";
-//                 header("location:editar-projeto.php");
-//             } else {
-//                 echo "</br>Something went wrong. Please try again later.";
-//             }
-//         } else {
-//             header("location:editar-projeto.php");
-//             return;
-//         }
-//         // Close statement
-//         $stmt->close();
-//     }
-
-// }
-
-
 
 function multiexplode($delimiters, $string)
 {

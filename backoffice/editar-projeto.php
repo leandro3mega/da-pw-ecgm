@@ -324,7 +324,7 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Area de Utilizador</a>
+                <a class="navbar-brand" href="index.php">Area de Utilizador</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -754,7 +754,6 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" onclick="changeTitulo()">Alterar</button>
-                    <!-- <input type="submit" class="btn btn-primary" value="Alterar"> -->
                 </div>
                 <!-- </form> -->
             </div>
@@ -775,9 +774,9 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                 </div>
                 <div class="modal-body">
                     <textarea id="idescricao" class="form-control" name="descricao_projeto"
-                        pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}" rows="10" maxlength="1000" required
+                        pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}" rows="10" minlength="10" maxlength="600" required
                         placeholder="Insira a descrição do projeto"><?php echo($projeto_descricao); ?></textarea>
-                    <p id="helpDescricao" class="help-block">Carateres: 0 de 1000</p>
+                    <p id="helpDescricao" class="help-block">Carateres: 0 de 600</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -803,9 +802,9 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                     <input type="text" class="form-control" name="autores_projeto" minlength="8" maxlength="100"
                         placeholder="Insira os autores do projeto (separados por ponto e vígula)"
                         value="<?php echo($projeto_autores); ?>">
-                    <p class="help-block tooltip-demo">Exemplo: Luís Mota;João Almeida
+                    <p class="help-block tooltip-demo">Exemplo: Luís Mota; Maria Inês Pinto
                         <a><i class="fa fa-info-circle fa-fw" data-toggle="tooltip" data-placement="right"
-                                title="De modo a que outros autores possam editar o projeto, insira o nome tal como estes estão registados no site."></i></a>
+                                title="Insira o nome de todos os autores, incluindo o seu."></i></a>
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -1103,7 +1102,7 @@ function getUCS() {
 
     $.ajax({
         type: "GET",
-        url: 'novoprojeto_ucs.php',
+        url: 'fetch_ucs_users.php',
         data: {
             'action': 'get_ucs',
             'semestre': semestre
@@ -1122,7 +1121,7 @@ function getUCS() {
 
 //-- Mostra o numero de letras na descrição (textarea)
 $("#idescricao").keyup(function() {
-    $("#helpDescricao").text($(this).val().length + "/1000");
+    $("#helpDescricao").text($(this).val().length + "/600");
 });
 
 //-- Verifica Limites da IMAGEM (se é PNG/JPG, e se o tamanho é abaixo do limite)
@@ -1318,7 +1317,7 @@ function changeAutores() {
             'autores_projeto': autoresprojeto
         },
         success: function(response) {
-            // alert(response);
+            alert(response);
             location.reload();
 
         }

@@ -174,8 +174,12 @@ if (!isset($_SESSION['username'])) {
                                         <label>Email</label>
                                         <input type="email" name="email" id="iInputEmail" class="form-control"
                                             placeholder="Insira novo e-mail" value="<?php echo $email; ?>">
-                                        <button id="iBtnSubmeterEmail" class="btn btn-default btn-backoffice-size"
-                                            style="margin-top:15px" onclick="changeEmail()">
+                                        <p id="ihelpEmail" name="helpEmail" class="help-block"
+                                            style="color:#555555; padding:5px">
+                                            Exemplo: user@ipvc.pt</p>
+                                        <button id="iBtnSubmeterEmail" name="btn_submeter_email"
+                                            class="btn btn-default btn-backoffice-size" style="margin-top:15px"
+                                            onclick="changeEmail()">
                                             Submeter
                                         </button>
                                         <button id="iBtnCancelarEmail" class="btn btn-default btn-backoffice-size"
@@ -189,31 +193,6 @@ if (!isset($_SESSION['username'])) {
                                     </button>
                                     <!-- End Email -->
 
-
-                                    <!--
-                                    <div class="form-group div-margin-separa">
-                                        <label>Email</label>
-                                        <p class="form-control-static">email@example.com</p>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Novo E-mail</label>
-                                        <input type="text" class="form-control" placeholder="Insira novo e-mail">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Confirme Novo E-mail</label>
-                                        <input class="form-control" placeholder="Confirme o novo e-mail">
-                                    </div>
-                                    -->
-
-                                    <!--
-                                    <div class="form-group div-margin-separa">
-                                        <button type="submit" class="btn btn-default btn-backoffice-size">Alterar</button>
-                                        <button type="reset" class="btn btn-default btn-backoffice-size" style="margin-left: 10px">Limpar</button>
-                                    </div>
-                                -->
-                                    <!--</form>-->
                                 </div>
                                 <div class="col-lg-6">
                                     <!--Fotografia-->
@@ -341,6 +320,11 @@ if (!isset($_SESSION['username'])) {
     $("[data-toggle=popover]")
         .popover()
 
+    $(document).ready(function() {
+        $('button[name="btn_submeter_email"]').attr("disabled", "disabled");
+
+    });
+
     var nomeInputHidden = true;
     var emailInputHidden = true;
     var fotografiaInputHidden = true;
@@ -422,32 +406,10 @@ if (!isset($_SESSION['username'])) {
         }
     }
 
-    //var inputNome = document.getElementById("iInputNome");
-    //var btnSubmeterNome = document.getElementById("iBtnSubmeterNome");
-    //var novoNome = inputNome.value;
-    /*
-    btnSubmeterNome.onclick = function () {
-        novoNome = $('#iInputNome').val();
-        //$('#iInputNome').val("Fodasse");
-        console.log("Novo nome: ", novoNome);
-        
-        $.ajax({
-            type: "POST",
-            url: 'changeusername.php',
-            data:{'action':'change_name', 'name': novoNome},
-            success:function(html) {
-                alert(html);
-            }
-
-        });
-    }
-    */
-
-
     //-- Ajax to submite change of the user name
     function changeNome() {
         novoNome = $('#iInputNome').val();
-        console.log("Novo nome: " + novoNome);
+        // console.log("Novo nome: " + novoNome);
 
         $.ajax({
             type: "POST",
@@ -464,24 +426,91 @@ if (!isset($_SESSION['username'])) {
         });
     }
 
+    var comfirma_pass = document.getElementById("iInputEmail");
+    comfirma_pass.addEventListener("keyup", buscaEmails);
+    var email_valido = false;
+
+    function buscaEmails() {
+        var email = $('input[name="email"]').val()
+        console.log("Input: " + email);
+
+        if (validateEmail(email)) {
+            console.log("Funciona");
+
+            $.ajax({
+                type: "POST",
+                url: 'fetch_ucs_users.php',
+                data: {
+                    'action': 'fetch_emails',
+                    'input_email': email
+                },
+                success: function(response) {
+                    console.log(response);
+
+                    if (response == "True") {
+                        console.log("Encontrou");
+                        email_valido = false;
+                        // $("input[type=submit]").attr("disabled", "disabled");
+                        $('button[name="btn_submeter_email"]').attr("disabled", "disabled");
+                        $("#ihelpEmail").text("O email já está atribuido a um utilizador");
+                        $("#ihelpEmail").css({
+                            "color": "rgb(216, 79, 79)",
+                            "padding": "5px"
+                        });
+
+                    } else if (response == "False") {
+                        email_valido = true;
+                        console.log("Não Encontrou");
+                        // $("input[type=submit]").removeAttr("disabled");
+                        $('button[name="btn_submeter_email"]').removeAttr("disabled");
+                        $("#ihelpEmail").text("Email válido");
+                        $("#ihelpEmail").css({
+                            "color": "rgb(79, 216, 132)",
+                            "padding": "5px"
+                        });
+                    }
+                }
+            });
+        } else {
+            email_valido = false;
+            // $("input[type=submit]").attr("disabled", "disabled");
+            $('button[name="btn_submeter_email"]').attr("disabled", "disabled");
+            $("#ihelpEmail").text("Exemplo: user@ipvc.pt");
+            $("#ihelpEmail").css({
+                "color": "#555555",
+                "padding": "5px"
+            });
+
+        }
+    }
+
+    //-- Verifica o padrão do email -> exemplo: user@hotmail.com
+    function validateEmail(email) {
+        var re =
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
     //-- Ajax to submite change of the user email
     function changeEmail() {
         novoEmail = $('#iInputEmail').val();
-        console.log("Novo Email: " + novoEmail);
+        // console.log("Novo Email: " + novoEmail);
 
-        $.ajax({
-            type: "POST",
-            url: 'changeuserdata.php',
-            data: {
-                'action': 'change_email',
-                'email': novoEmail
-            },
-            success: function(html) {
-                alert(html);
-                location.reload();
-            }
+        if (email_valido == true) {
+            $.ajax({
+                type: "POST",
+                url: 'changeuserdata.php',
+                data: {
+                    'action': 'change_email',
+                    'email': novoEmail
+                },
+                success: function(html) {
+                    alert(html);
+                    location.reload();
+                }
 
-        });
+            });
+        }
     }
     </script>
 

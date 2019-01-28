@@ -3,15 +3,6 @@ session_start();
 
 require_once("connectdb.php");
 
-//--Variaveis
-/*
-$image = $_FILES["img1"]['tmp_name'];
-$ficheiro = $_FILES["ficheiro"]['tmp_name'];
-$video = $_POST['video'];
-
-*/
-
-
 if (isset($_POST['titulo']) && isset($_POST['descricao']) && isset($_POST['autores']) && isset($_POST['tipo']) &&
     isset($_POST['semestre']) && isset($_POST['selectUC']) && isset($_POST['data'])) {
 
@@ -43,7 +34,8 @@ if (isset($_POST['titulo']) && isset($_POST['descricao']) && isset($_POST['autor
         obterIdProjeto($connectDB, $sucesso, $idprojeto, $titulo, $descricao, $autores, $data);
     }
     if ($sucesso) {
-        prepareInsertAutores($connectDB, $sucesso, $idprojeto, $autores);
+        // insertAutores($connectDB, $sucesso, $idprojeto, $autores);
+        insertPermicaoEdicao($connectDB, $sucesso, $idprojeto);
     }
     if ($sucesso) {
         getFerramentas($connectDB, $sucesso, $idprojeto);
@@ -125,14 +117,14 @@ function returnAutoresOrganizados($autores){
     //-- Separa os autores e guarda em um array
     $autores_split = multiexplode(array("; ", ";", " ;", ",", ".", ", ", ". ", " ,", " ."), $autores);  // usa o metodo para separar a string quando aparecem simbolos
     $autores_org = "";
-    $enc = false;
+    // $enc = false;
        
-    //-- Verifica se o user está na lista de autores
-    for ($i=0; $i < sizeof($autores_split); $i++) {
-        if ($autores_split[$i] == $_SESSION['nome']) {
-            $enc = true;
-        }
-    }
+    // //-- Verifica se o user está na lista de autores
+    // for ($i=0; $i < sizeof($autores_split); $i++) {
+    //     if ($autores_split[$i] == $_SESSION['nome']) {
+    //         $enc = true;
+    //     }
+    // }
     
     //-- Organiza a lista de autores
     for ($i=0; $i <= sizeof($autores_split); $i++) {
@@ -149,11 +141,11 @@ function returnAutoresOrganizados($autores){
     $autores = $autores_org;
 
     //-- Se o user não estiver na lista adiciona-o
-    if (!$enc) {
-        $temp = $autores;
-        $autores = $_SESSION['nome'] . "; ";
-        $autores .= $temp;
-    }
+    // if (!$enc) {
+    //     $temp = $autores;
+    //     $autores = $_SESSION['nome'] . "; ";
+    //     $autores .= $temp;
+    // }
 
     return $autores;
 }
@@ -252,129 +244,39 @@ function removeProjeto($connectDB, $idprojeto)
     $stmt->close();
 }
 
-//-- Faz a ligação entre o aluno e os autores
-function prepareInsertAutores($connectDB, &$sucesso, $idprojeto, $autores)
-{
-    //-- retira os nomes dos autores da string
-    $autores_split = multiexplode(array("; ", ";", " ;", ",", ".", ", ", ". ", " ,", " ."), trim($autores));  // usa o metodo para separar a string quando aparecem simbolos
-    $autores_org = "";
-    $encontrou_user = false;
-    
-    // for ($i=0; $i < sizeof($autores_split); $i++) {
-    //     if ($autores_split[$i]) {
-    //         echo("</br>" . $autores_split[$i]);
-    //         //-- Verifica se o nome do user está na lista de autores
-    //         if ($autores_split[$i] === $_SESSION['nome']) {
-    //             $encontrou_user = true;
-    //         }
-    //         insertAlunoProjeto($connectDB, $sucesso, $autores_split[$i], $idprojeto);
-    //     }
-    // }
+//-- Insere ligação entre utilizador e projeto, deste modo este aluno pode editar o projeto
+function insertPermicaoEdicao($connectDB, $sucesso, $idprojeto){
+    //-- If statement is prepared
+    if ($stmt = mysqli_prepare($connectDB, "INSERT INTO aluno_projeto (fk_aluno, fk_projeto) VALUES (?, ?)")) {
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "ii", $param_user_id, $param_id_projeto);
 
-    // if (!$encontrou_user) {
-    //     insertUserIntoAutorProjeto($connectDB, $sucesso, $idprojeto);
-    // }
-
-    //-- Organiza a lista de autores
-    for ($i=0; $i <= sizeof($autores_split); $i++) {
-        if (isset($autores_split[$i]) && !empty($autores_split[$i])) {
-            insertAutor($connectDB, $sucesso, $autores_split[$i], $idprojeto);
-        }
-    }
-
-
-}
-
-//-- Verifica se o autor está registado
-//-- Se estiver inser coneção entre o aluno e o projeto
-function insertAutor($connectDB, &$sucesso, $autor, $idprojeto)
-{
-    $encontrado = false;
-    $idutilizador;
-
-    // inicializar prepared statement
-    $stmt = $connectDB->prepare("SELECT fk_idutilizador FROM aluno WHERE nome=?");
-    
-    $stmt->bind_param("s", $autor);
-    
-    // executar
-    $stmt->execute();
-    
-    // associar os parametros de output
-    $stmt->bind_result($r_idutilizador);
-    
-    // transfere o resultado da última query : obrigatorio para ter num_rows
-    $stmt->store_result();
-    
-    // iterar / obter resultados
-    $stmt->fetch();
-    
-    if ($stmt->num_rows > 0) { // seleciona o resultado da base de dados
-        $idutilizador = $r_idutilizador;
-        $encontrado = true;
-        echo "</br>(Select Aluno) ID do aluno encontrado: " . $r_idutilizador;
-    } else {
-        echo "</br>(Select Aluno) Aluno não encontrado.";
-        $encontrado = false;
-    }
-    $stmt->close();
-
-    //-- Se existe ou não user com mesmo id em Alunos
-    if ($encontrado) {
-
-        // -- If statement is prepared
-        if ($stmt = mysqli_prepare($connectDB, "INSERT INTO aluno_projeto (fk_aluno, fk_projeto) VALUES (?, ?)")) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $idutilizador, $idprojeto);
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                echo "</br>(insertUserIntoAutorProjeto) Dados inseridos em aluno_projeto com sucesso. -> Aluno: " . $autor;
-                $sucesso = true;
-            } else {
-                echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
-                $sucesso = false;
-            }
-        } else {
-            echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu preparar a query: " . mysqli_error($connectDB) . " . ";
-            $sucesso = false;
-        }
-    
-        // Close statement
-        mysqli_stmt_close($stmt);
-    }
-}
-
-//-- Se o user não estiver na lista de autores é adicionado
-// function insertUserIntoAutorProjeto($connectDB, &$sucesso, $idprojeto)
-// {
-//     // -- If statement is prepared
-//     if ($stmt = mysqli_prepare($connectDB, "INSERT INTO aluno_projeto (fk_aluno, fk_projeto) VALUES (?, ?)")) {
-//         // Bind variables to the prepared statement as parameters
-//         mysqli_stmt_bind_param($stmt, "ss", $_SESSION['id'], $idprojeto);
+        $param_user_id = $_SESSION['id'];
+        $param_id_projeto = $idprojeto;
             
-//         // Attempt to execute the prepared statement
-//         if (mysqli_stmt_execute($stmt)) {
-//             echo "</br>(insertUserIntoAutorProjeto) Dados inseridos em aluno_projeto com sucesso. -> (USER)Aluno: " . $_SESSION['nome'];
-//             $sucesso = true;
-//         } else {
-//             echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
-//             $sucesso = false;
+        // Attempt to execute the prepared statement
+        if (mysqli_stmt_execute($stmt)) {
+            echo "</br>(insertUserIntoAutorProjeto) Dados inseridos em aluno_projeto com sucesso. -> (USER)Aluno: " . $_SESSION['nome'];
+            $sucesso = true;
+        } else {
+            echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu executar a query: " . mysqli_error($connectDB) . ". ";
+            $sucesso = false;
 
-//             /* When Fail: Remove previous content */
-//             removeProjeto($connectDB, $idprojeto);
-//         }
-//     } else {
-//         echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu preparar a query: " . mysqli_error($connectDB) . " . ";
-//         $sucesso = false;
+            /* When Fail: Remove previous content */
+            removeProjeto($connectDB, $idprojeto);
+        }
+    } else {
+        echo "</br>(insertUserIntoAutorProjeto) Ocurreu um erro: Não conseguiu preparar a query: " . mysqli_error($connectDB) . " . ";
+        $sucesso = false;
 
-//         /* When Fail: Remove previous content */
-//         removeProjeto($connectDB, $idprojeto);
-//     }
+        /* When Fail: Remove previous content */
+        removeProjeto($connectDB, $idprojeto);
+    }
     
-//     // Close statement
-//     mysqli_stmt_close($stmt);
-// }
+    // Close statement
+    mysqli_stmt_close($stmt);
+
+}
 
 //-- Obtem as ferramentas com check no formulário
 function getFerramentas($connectDB, &$sucesso, $idprojeto)
@@ -705,21 +607,21 @@ function insertFicheiro($connectDB, &$sucesso, $idprojeto)
 }
 
 
-echo("</br>Titulo: " . $_POST['titulo'] . " | ");
-echo("</br>Descricao: " . $_POST['descricao'] . " | ");
-echo("</br>Autores: " . $_POST['autores'] . " | ");
-echo("</br>Tipo: " . $_POST['tipo'] . " | ");
-echo("</br>Semestre: " . $_POST['semestre'] . " | ");
-echo("</br>UC: " . $_POST['selectUC'] . " | ");
-//echo("</br>Fotografia: " . $_FILES["img1"]['tmp_name'] . " | ");
-echo("</br>Data: " . $_POST['data'] . " | ");
-echo("</br>PDF: " . $_FILES["ficheiro"]['tmp_name'] . " | ");
-echo("</br>Video: " . $_POST['video'] . " | ");
-echo("</br>Palavras chave: " . $_POST['palavras-chave'] . " | ");
-//echo ("</br>Categorias: " . $_POST['categorias'] . " | ");
-foreach ($_REQUEST['cb'] as $check) {
-    echo("</br>Ferramentas: " . $check . " | ");
-}
+// echo("</br>Titulo: " . $_POST['titulo'] . " | ");
+// echo("</br>Descricao: " . $_POST['descricao'] . " | ");
+// echo("</br>Autores: " . $_POST['autores'] . " | ");
+// echo("</br>Tipo: " . $_POST['tipo'] . " | ");
+// echo("</br>Semestre: " . $_POST['semestre'] . " | ");
+// echo("</br>UC: " . $_POST['selectUC'] . " | ");
+// echo("</br>Fotografia: " . $_FILES["img1"]['tmp_name'] . " | ");
+// echo("</br>Data: " . $_POST['data'] . " | ");
+// echo("</br>PDF: " . $_FILES["ficheiro"]['tmp_name'] . " | ");
+// echo("</br>Video: " . $_POST['video'] . " | ");
+// echo("</br>Palavras chave: " . $_POST['palavras-chave'] . " | ");
+// echo ("</br>Categorias: " . $_POST['categorias'] . " | ");
+// foreach ($_REQUEST['cb'] as $check) {
+//     echo("</br>Ferramentas: " . $check . " | ");
+// }
 
 function multiexplode($delimiters, $string)
 {

@@ -74,7 +74,7 @@ if (!isset($_SESSION['username'])) {
 
     <title>Docente - UC</title>
 
-    <!-- Browser image -->
+    <!-- Icon image -->
     <link rel="icon" href="images/website/logotipo_transparente.png">
 
     <script src="js/jquery-3.1.1.js"></script>
@@ -121,7 +121,7 @@ if (!isset($_SESSION['username'])) {
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="">Area de Utilizador</a>
+                <a class="navbar-brand" href="index.php">Area de Utilizador</a>
             </div>
             <!-- /.navbar-header -->
 

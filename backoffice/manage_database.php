@@ -175,8 +175,6 @@ function verificaExisteNomeUC($connectDB, $nome)
         }
     }
     
-    
-    
 
     // if ($stmt->num_rows > 0) { // seleciona o resultado da base de dados
     //     $stmt->close();
