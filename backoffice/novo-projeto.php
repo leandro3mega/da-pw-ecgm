@@ -72,38 +72,7 @@ if (!isset($_SESSION['username'])) {
     <div id="wrapper">
 
         <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.php">Area de Utilizador</a>
-            </div>
-            <!-- /.navbar-header -->
-
-            <ul class="nav navbar-top-links navbar-right">
-
-                <li>
-                    <?php echo $cargo; ?>
-                </li>
-                <li><a><i class="fa fa-user fa-fw"></i>
-                        <?php echo $username; ?> </a>
-                <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
-
-            </ul>
-            <!-- /.navbar-top-links -->
-
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <?php include "sidemenu.php"; ?>
-                </div>
-                <!-- /.sidebar-collapse -->
-            </div>
-            <!-- /.navbar-static-side -->
-        </nav>
+        <?php include "sidemenu.php"; ?>
 
         <!-- Page Content -->
         <div id="page-wrapper">
@@ -128,7 +97,7 @@ if (!isset($_SESSION['username'])) {
                         <div class="form-group">
                             <label>Descrição</label>
                             <textarea id="idescricao" class="form-control" name="descricao"
-                                pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}" rows="10" minlength="10" maxlength="600" required
+                                pattern="[a-zA-Z0-9!@#$%^*_|]{6,1000}" rows="6" minlength="10" maxlength="600" required
                                 placeholder="Insira a descrição do projeto"></textarea>
                             <p id="helpDescricao" class="help-block">Carateres: 0 de 600</p>
                         </div>
@@ -161,13 +130,40 @@ if (!isset($_SESSION['username'])) {
                                     </div>
                                 </div>
 
+                                <!-- Ano letivo -->
+                                <!-- <div class="form-group">
+                                    <label>O projeto foi realizado no...</label>
+                                    <select id="iAnoLetivo" class="form-control" name="selectAnoLetivo" required>
+                                        <option value="1">1º ano</option>
+                                        <option value="2">2º ano</option>
+                                        <option value="3">3º ano</option>
+                                    </select>
+                                </div> -->
+                                <div class="form-group" style="margin-top:30px">
+                                    <label>O projeto foi realizado no...</label>
+                                    <div style="display: block;">
+                                        <label class="radio-inline">
+                                            <input type="radio" class="ano_curricular" name="ano_curricular"
+                                                onChange="getUCS()" id="ano_curricular1" value="1" checked>1º Ano
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" class="ano_curricular" name="ano_curricular"
+                                                onChange="getUCS()" id="ano_curricular2" value="2">2º Ano
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" class="ano_curricular" name="ano_curricular"
+                                                onChange="getUCS()" id="ano_curricular3" value="3">3º Ano
+                                        </label>
+                                    </div>
+                                </div>
+
                                 <!-- Semestre -->
                                 <div class="form-group">
                                     <label>Semestre</label>
                                     <div style="display: block;">
                                         <label class="radio-inline">
                                             <input type="radio" class="semestre" name="semestre" onChange="getUCS()"
-                                                id="semestre1" value="1">1º
+                                                id="semestre1" value="1" checked>1º
                                             Semestre
                                         </label>
                                         <label class="radio-inline">
@@ -184,37 +180,13 @@ if (!isset($_SESSION['username'])) {
                                     </select>
                                 </div>
 
-                                <!-- Fotografia -->
+                                <!-- Palavras Chave -->
                                 <div class="form-group" style="margin-top:30px">
-                                    <label>Insira imagem</label>
-                                    </br>
-                                    <div style="display:inline-flex; margin-bottom: 15px">
-                                        <p style="min-width:110px">Nº de Imagens:</p>
-                                        <select id="iselectIMG" class="form-control" name="num-fotos"
-                                            onchange="addRemoveIMG()" style="max-width: 100px; max-height:30px">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-
-                                    </div>
-                                    <div id="icontainerIMG">
-                                        <input type="file" name="imagem">
-                                    </div>
-                                </div>
-
-                                <!-- Ficheiro -->
-                                <div class="form-group" style="margin-top:30px">
-                                    <label>Insira documento PDF (Opcional)</label>
-
-                                    <input type="file" id="iFicheiro" name="ficheiro"
-                                        onChange="verificaLimitesFicheiro()" accept="application/pdf">
-
-                                    <p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo
-                                        de 2MB</p>
-
+                                    <label>Palavras-Chave</label>
+                                    <input type="text" class="form-control" name="palavras-chave" minlength="4"
+                                        maxlength="50" required
+                                        placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
+                                    <p class="help-block">Exemplo: Desenho; Mockup</p>
                                 </div>
 
                                 <!-- Video -->
@@ -236,15 +208,7 @@ if (!isset($_SESSION['username'])) {
                                     <p class="help-block">Exemplo: 12/03/2019</p>
                                 </div>
 
-                                <!-- Ano letivo -->
-                                <div class="form-group">
-                                    <label>O projeto foi realizado no...</label>
-                                    <select id="iAnoLetivo" class="form-control" name="selectAnoLetivo" required>
-                                        <option value="1">1º ano</option>
-                                        <option value="2">2º ano</option>
-                                        <option value="3">3º ano</option>
-                                    </select>
-                                </div>
+
 
                                 <!-- Categorias -->
                                 <!--
@@ -265,33 +229,24 @@ if (!isset($_SESSION['username'])) {
                                 -->
 
                                 <!-- Ferramentas -->
-                                <div class="form-group" style="margin-top:30px">
+                                <!-- <div class="form-group" style="margin-top:30px">
                                     <label>Ferramentas utilizadas</label>
                                     <div>
                                         <?php
                                         //-- Script de selecionar ferramentas
 
-                                        $resultCategoria = mysqli_query($connectDB, "SELECT idferramenta, nome, descricao, empresa FROM ferramenta ORDER BY nome");
+                                        // $resultCategoria = mysqli_query($connectDB, "SELECT idferramenta, nome, descricao, empresa FROM ferramenta ORDER BY nome");
 
-                                        if (mysqli_num_rows($resultCategoria) > 0) {
-                                            while ($row = $resultCategoria->fetch_assoc()) {
-                                                echo("
-                                                <input type='checkbox' name='cb[]' value='" . $row['idferramenta'] . "'/> " . $row['nome'] . "<br/>
-                                                ");
-                                            }
-                                        }
+                                        // if (mysqli_num_rows($resultCategoria) > 0) {
+                                        //     while ($row = $resultCategoria->fetch_assoc()) {
+                                        //         echo("
+                                        //         <input type='checkbox' name='cb[]' value='" . $row['idferramenta'] . "'/> " . $row['nome'] . "<br/>
+                                        //         ");
+                                        //     }
+                                        // }
                                         ?>
                                     </div>
-                                </div>
-
-                                <!-- Palavras Chave -->
-                                <div class="form-group" style="margin-top:30px">
-                                    <label>Palavras-Chave</label>
-                                    <input type="text" class="form-control" name="palavras-chave" minlength="4"
-                                        maxlength="50" required
-                                        placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
-                                    <p class="help-block">Exemplo: Desenho; Mockup</p>
-                                </div>
+                                </div> -->
 
                                 <!--
                                 <div class="form-group">
@@ -328,6 +283,38 @@ if (!isset($_SESSION['username'])) {
                                     </iframe>
                                 </div>
                                 -->
+
+                                <!-- Ficheiro -->
+                                <div class="form-group" style="margin-top:30px">
+                                    <label>Insira documento PDF (Opcional)</label>
+
+                                    <input type="file" id="iFicheiro" name="ficheiro"
+                                        onChange="verificaLimitesFicheiro()" accept="application/pdf">
+
+                                    <p class="help-block" id="iHintFicheito">Insira um ficheiro PDF com tamanho máximo
+                                        de 2MB</p>
+                                </div>
+
+                                <!-- Fotografia -->
+                                <div class="form-group" style="margin-top:30px">
+                                    <label>Insira imagem</label>
+                                    </br>
+                                    <div style="display:inline-flex; margin-bottom: 15px">
+                                        <p style="min-width:110px">Nº de Imagens:</p>
+                                        <select id="iselectIMG" class="form-control" name="num-fotos"
+                                            onchange="addRemoveIMG()" style="max-width: 100px; max-height:30px">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+
+                                    </div>
+                                    <div id="icontainerIMG">
+                                        <input type="file" name="imagem">
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
@@ -366,12 +353,18 @@ if (!isset($_SESSION['username'])) {
 
 </body>
 <script>
+$(document).ready(function() {
+    getUCS();
+});
+
 //-- Semestre selecionado
 function getUCS() {
     var semestre = $('.semestre:checked').val();
+    var ano = $('.ano_curricular:checked').val();
     // var ano_curricular = $('.iAnoLetivo').val();
 
     console.log("Semestre: " + semestre);
+    console.log("Ano: " + ano);
     // console.log("Ano: " + ano_curricular);
     $('#iSelectUC').empty();
 
@@ -380,16 +373,20 @@ function getUCS() {
         url: 'fetch_ucs_users.php',
         data: {
             'action': 'get_ucs',
-            'semestre': semestre
+            'semestre': semestre,
+            'ano_curricular': ano
         },
         dataType: 'json',
         success: function(response) {
+            console.log("Funciona");
+
             $.each(response, function(index, element) {
                 console.log(element); // print json code
                 $("#iSelectUC").append("<option value='" + element.idunidade_curricular + "'>" +
                     element.nome + "</option>");
             });
             // alert(response);
+            console.log(response);
         }
     });
 }
@@ -413,7 +410,7 @@ function addRemoveIMG() {
         tempimg.name = "image[]";
         tempimg.required = true;
         tempimg.accept = "image/jpeg, image/png";
-        tempimg.multiple = true;
+        // tempimg.multiple = true;
 
         tempimg.onchange = function() {
             var limiteSize = 2024; // 2 Megabyte
@@ -488,7 +485,7 @@ function addRemoveIMG() {
         }
 
         if (i > 1)
-            tempimg.style = "margin-top:15px; margin-bottom:15px";
+            tempimg.style = "margin-top:15px;";
 
         containerIMG.appendChild(tempimg);
 

@@ -39,7 +39,31 @@ if (isset($_SESSION['username'])) {
     <link href="css/sb-admin.css" rel="stylesheet">
 
     <!-- estilos desenvolvidos -->
-    <link rel="stylesheet" href="css/stylesheet.css" </head> <body>
+    <link rel="stylesheet" href="css/stylesheet.css">
+</head>
+
+<style>
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.btn-success-v2 {
+    color: #333;
+    background-color: #f5f5f5;
+    border-color: #c8c8c8;
+}
+
+.btn-success-v2:hover {
+    background-color: #c8c8c8;
+}
+</style>
+
+<body>
 
     <div class="container">
         <div class="card card-register mx-auto mt-5">
@@ -133,14 +157,13 @@ if (isset($_SESSION['username'])) {
                         </div>
                     </div>
 
-                    <input type="submit" id="iSubmitForm" class="btn btn-lg btn-success btn-block" value="Submeter">
+                    <input type="submit" id="iSubmitForm" class="btn btn-lg btn-success-v2 btn-block" value="Submeter">
 
                 </form>
                 <div class="text-center">
                     <a class="d-block small mt-3" href="iniciar-sessao.php">Iniciar Sessão</a>
                     <!-- <a class="d-block small" href="">Esqueceu-se da Palavra Passe?</a> -->
-                    <!--
-            -->
+
                 </div>
             </div>
         </div>
@@ -153,179 +176,180 @@ if (isset($_SESSION['username'])) {
     <!-- Core plugin JavaScript-->
     <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
 
-    </body>
+</body>
 
-    <script>
-    var input_username = document.getElementById("iusername");
-    var input_email = document.getElementById("iemail");
-    // var input_username = $("#iusername").text($(this).val().length;
-    // var input_username = $('input[name="username"]').val();
+<script>
+var input_username = document.getElementById("iusername");
+var input_email = document.getElementById("iemail");
+// var input_username = $("#iusername").text($(this).val().length;
+// var input_username = $('input[name="username"]').val();
 
-    $(document).ready(function() {
-        buscaUtilizadores();
-        buscaEmails();
-        comparaPassword();
-        verificaNome();
+$(document).ready(function() {
+    buscaUtilizadores();
+    buscaEmails();
+    comparaPassword();
+    verificaNome();
 
-        $("input[type=submit]").attr("disabled", "disabled");
-    });
+    $("input[type=submit]").attr("disabled", "disabled");
+});
 
-    input_username.addEventListener("keyup", buscaUtilizadores);
-    input_email.addEventListener("keyup", buscaEmails);
+input_username.addEventListener("keyup", buscaUtilizadores);
+input_email.addEventListener("keyup", buscaEmails);
 
-    function buscaUtilizadores() {
-        // console.log("Input: " + input_username.value);
+function buscaUtilizadores() {
+    // console.log("Input: " + input_username.value);
 
-        if ($('input[name="username"]').val().length >= 5) {
-            $.ajax({
-                type: "POST",
-                url: 'fetch_ucs_users.php',
-                data: {
-                    'action': 'fetch_users',
-                    'input_utilizador': input_username.value
-                },
-                success: function(response) {
-                    if (response == "True") {
-                        // console.log("Encontrou");
-                        // $('p[name="helpUsername"]').val("Nome de utilizador inválido");
-                        $("input[type=submit]").attr("disabled", "disabled");
-                        $("#ihelpUsername").text("Nome de utilizador já existe");
-                        $("#ihelpUsername").css({
-                            "color": "rgb(216, 79, 79)",
-                            "padding": "5px"
-                        });
+    if ($('input[name="username"]').val().length >= 5) {
+        $.ajax({
+            type: "POST",
+            url: 'fetch_ucs_users.php',
+            data: {
+                'action': 'fetch_users',
+                'input_utilizador': input_username.value
+            },
+            success: function(response) {
+                if (response == "True") {
+                    // console.log("Encontrou");
+                    // $('p[name="helpUsername"]').val("Nome de utilizador inválido");
+                    $("input[type=submit]").attr("disabled", "disabled");
+                    $("#ihelpUsername").text("Nome de utilizador já existe");
+                    $("#ihelpUsername").css({
+                        "color": "rgb(216, 79, 79)",
+                        "padding": "5px"
+                    });
 
 
-                    } else if (response == "False") {
-                        // console.log("Não Encontrou");
-                        // $("input[type=submit]").removeAttr("disabled");
-                        $("#ihelpUsername").text("Nome de utilizador válido");
-                        $("#ihelpUsername").css({
-                            "color": "rgb(79, 216, 132)",
-                            "padding": "5px"
-                        });
-
-                    }
+                } else if (response == "False") {
+                    // console.log("Não Encontrou");
+                    // $("input[type=submit]").removeAttr("disabled");
+                    $("#ihelpUsername").text("Nome de utilizador válido");
+                    $("#ihelpUsername").css({
+                        "color": "rgb(79, 216, 132)",
+                        "padding": "5px"
+                    });
 
                 }
-            });
-        } else {
-            // $("#iSubmitForm").attr("disabled", "disabled");
-            $("input[type=submit]").attr("disabled", "disabled");
-            $("#ihelpUsername").text("Insira um nome de utilizador com pelo menos 5 carateres.");
-            $("#ihelpUsername").css({
-                "color": "#555555",
-                "padding": "5px"
-            });
 
-        }
-    }
-
-    function buscaEmails() {
-        // console.log("Input: " + input_email.value);
-        var email = $('input[name="email"]').val()
-
-        if (validateEmail(email)) {
-
-            $.ajax({
-                type: "POST",
-                url: 'fetch_ucs_users.php',
-                data: {
-                    'action': 'fetch_emails',
-                    'input_email': input_email.value
-                },
-                success: function(response) {
-                    console.log(response);
-
-                    if (response == "True") {
-                        // console.log("Encontrou");
-                        $("input[type=submit]").attr("disabled", "disabled");
-                        $("#ihelpEmail").text("O email já está atribuido a um utilizador");
-                        $("#ihelpEmail").css({
-                            "color": "rgb(216, 79, 79)",
-                            "padding": "5px"
-                        });
-
-                    } else if (response == "False") {
-                        // console.log("Não Encontrou");
-                        // $("input[type=submit]").removeAttr("disabled");
-                        $("#ihelpEmail").text("Email válido");
-                        $("#ihelpEmail").css({
-                            "color": "rgb(79, 216, 132)",
-                            "padding": "5px"
-                        });
-                    }
-                }
-            });
-        } else {
-            // $("#iSubmitForm").attr("disabled", "disabled");
-            $("input[type=submit]").attr("disabled", "disabled");
-            $("#ihelpEmail").text("Exemplo: user@ipvc.pt");
-            $("#ihelpEmail").css({
-                "color": "#555555",
-                "padding": "5px"
-            });
-
-        }
-    }
-
-    //-- Verifica o padrão do email -> exemplo: user@hotmail.com
-    function validateEmail(email) {
-        var re =
-            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-    }
-
-    var comfirma_pass = document.getElementById("iconfirmPassword");
-    comfirma_pass.addEventListener("keyup", comparaPassword);
-
-    //-- Verifica se as palavras pass são iguais
-    function comparaPassword() {
-        // console.log($('input[name="password"]').val());
-        // console.log($('input[name="confirmPassword"]').val());
-
-        if ($('input[name="password"]').val().length >= 5) {
-            if ($('input[name="password"]').val() === $('input[name="confirmPassword"]').val()) {
-                // console.log("As passwords são iguais!");
-
-                $("input[type=submit]").removeAttr("disabled");
-                $("#ihelpPass").text("Palavra passe válida!");
-                $("#ihelpPass").css({
-                    "color": "rgb(79, 216, 132)",
-                    "padding": "5px"
-                });
-
-            } else {
-                // console.log("As passwords não são iguais!");
-
-                $("input[type=submit]").attr("disabled", "disabled");
-                $("#ihelpPass").text("As palavras passe não são iguais!");
-                $("#ihelpPass").css({
-                    "color": "rgb(216, 79, 79)",
-                    "padding": "5px"
-                });
             }
-        }
-
-
+        });
+    } else {
+        // $("#iSubmitForm").attr("disabled", "disabled");
+        $("input[type=submit]").attr("disabled", "disabled");
+        $("#ihelpUsername").text("Insira um nome de utilizador com pelo menos 5 carateres.");
+        $("#ihelpUsername").css({
+            "color": "#555555",
+            "padding": "5px"
+        });
 
     }
+}
 
-    var nome_utilizador = document.getElementById("inome");
-    nome_utilizador.addEventListener("keyup", verificaNome);
+function buscaEmails() {
+    // console.log("Input: " + input_email.value);
+    var email = $('input[name="email"]').val()
 
-    //-- Verifica se as palavras pass são iguais
-    function verificaNome() {
-        // console.log($('input[name="nome"]').val());
-        // console.log($('input[name="confirmPassword"]').val());
+    if (validateEmail(email)) {
 
-        if ($('input[name="nome"]').val().length > 10) {
-            // $("input[type=submit]").removeAttr("disabled");
+        $.ajax({
+            type: "POST",
+            url: 'fetch_ucs_users.php',
+            data: {
+                'action': 'fetch_emails',
+                'input_email': input_email.value
+            },
+            success: function(response) {
+                console.log(response);
+
+                if (response == "True") {
+                    // console.log("Encontrou");
+                    $("input[type=submit]").attr("disabled", "disabled");
+                    $("#ihelpEmail").text("O email já está atribuido a um utilizador");
+                    $("#ihelpEmail").css({
+                        "color": "rgb(216, 79, 79)",
+                        "padding": "5px"
+                    });
+
+                } else if (response == "False") {
+                    // console.log("Não Encontrou");
+                    // $("input[type=submit]").removeAttr("disabled");
+                    $("#ihelpEmail").text("Email válido");
+                    $("#ihelpEmail").css({
+                        "color": "rgb(79, 216, 132)",
+                        "padding": "5px"
+                    });
+                }
+            }
+        });
+    } else {
+        // $("#iSubmitForm").attr("disabled", "disabled");
+        $("input[type=submit]").attr("disabled", "disabled");
+        $("#ihelpEmail").text("Exemplo: user@ipvc.pt");
+        $("#ihelpEmail").css({
+            "color": "#555555",
+            "padding": "5px"
+        });
+
+    }
+}
+
+//-- Verifica o padrão do email -> exemplo: user@hotmail.com
+function validateEmail(email) {
+    var re =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
+var comfirma_pass = document.getElementById("iconfirmPassword");
+comfirma_pass.addEventListener("keyup", comparaPassword);
+
+//-- Verifica se as palavras pass são iguais
+function comparaPassword() {
+    // console.log($('input[name="password"]').val());
+    // console.log($('input[name="confirmPassword"]').val());
+
+    if ($('input[name="password"]').val().length >= 5) {
+        if ($('input[name="password"]').val() === $('input[name="confirmPassword"]').val()) {
+            // console.log("As passwords são iguais!");
+
+            $("input[type=submit]").removeAttr("disabled");
+            $("#ihelpPass").text("Palavra passe válida!");
+            $("#ihelpPass").css({
+                "color": "rgb(79, 216, 132)",
+                "padding": "5px"
+            });
 
         } else {
+            // console.log("As passwords não são iguais!");
+
             $("input[type=submit]").attr("disabled", "disabled");
+            $("#ihelpPass").text("As palavras passe não são iguais!");
+            $("#ihelpPass").css({
+                "color": "rgb(216, 79, 79)",
+                "padding": "5px"
+            });
         }
+        verificaNome();
     }
-    </script>
+
+
+
+}
+
+var nome_utilizador = document.getElementById("inome");
+nome_utilizador.addEventListener("keyup", verificaNome);
+
+//-- Verifica se as palavras pass são iguais
+function verificaNome() {
+    // console.log($('input[name="nome"]').val());
+    // console.log($('input[name="confirmPassword"]').val());
+
+    if ($('input[name="nome"]').val().length > 10) {
+        $("input[type=submit]").removeAttr("disabled");
+
+    } else {
+        $("input[type=submit]").attr("disabled", "disabled");
+    }
+}
+</script>
 
 </html>

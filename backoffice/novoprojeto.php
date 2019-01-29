@@ -37,9 +37,9 @@ if (isset($_POST['titulo']) && isset($_POST['descricao']) && isset($_POST['autor
         // insertAutores($connectDB, $sucesso, $idprojeto, $autores);
         insertPermicaoEdicao($connectDB, $sucesso, $idprojeto);
     }
-    if ($sucesso) {
-        getFerramentas($connectDB, $sucesso, $idprojeto);
-    }
+    // if ($sucesso) {
+    //     getFerramentas($connectDB, $sucesso, $idprojeto);
+    // }
     // if ($sucesso) {
     //     getDocente($connectDB, $sucesso, $idprojeto, $fk_iduc);
     // }

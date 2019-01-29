@@ -18,24 +18,46 @@ if (!isset($_SESSION['username'])) {
 } else {
     $id = $_SESSION['id'];
     $username = $_SESSION['username'];
-    $nome;
-    $email;
+    $nome = $email = "";
     $tipo = $_SESSION['tipo'];
     $cargo = $_SESSION['cargo'];
-    /*
-    //-- Converte int em string para mostrar o cargo do user no menu superior
-    if ($tipo == 0) $cargo = "Administrador";
-    else if ($tipo == 1) $cargo = "Aluno";
-    else $cargo = "Professor";
-     */
+
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
-    $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
-    if (mysqli_num_rows($result) == 1) {
-        $row = $result->fetch_assoc();
-        $nome = ($row['nome']);
-        $email = ($row['email']);
-        $_SESSION['nome'] = $nome;
+    if ($tipo == 1) {
+        $sql = "SELECT nome, email, fotografia FROM aluno WHERE fk_idutilizador=?";
+    } elseif ($tipo == 2) {
+        $sql = "SELECT nome, email, fotografia FROM docente WHERE fk_idutilizador=?";
     }
+
+    if ($stmt = $connectDB->prepare($sql)) {
+        // Bind variables to the prepared statement as parameters
+        $stmt->bind_param("i", $param_idutilizador);
+            
+        // Set parameters
+        $param_idutilizador = $id;
+            
+        // Attempt to execute the prepared statement
+        if ($stmt->execute()) {
+            // Store result
+            $stmt->store_result();
+            // Check if username exists, if yes then verify password
+            if ($stmt->num_rows == 1) {
+                // Bind result variables
+                $stmt->bind_result($r_nome, $r_email, $r_foto);
+                if ($stmt->fetch()) {
+                    //-- Atribui variaveis
+                    $nome = $r_nome;
+                    $email = $r_email;
+                    $_SESSION['nome'] = $nome;
+                }
+            } else {
+                // echo"Não foi encontrado video ";
+            }
+        } else {
+            echo "Algo correu mal. Por favor tente de novo.";
+        }
+    }
+    $stmt->close();
 }
 ?>
 
@@ -88,36 +110,7 @@ if (!isset($_SESSION['username'])) {
     <div id="wrapper">
 
         <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="">Area de Utilizador</a>
-            </div>
-            <!-- /.navbar-header -->
-
-            <ul class="nav navbar-top-links navbar-right" style="padding-left:10px">
-                <li>
-                    <?php echo $cargo; ?>
-                </li>
-                <li><a><i class="fa fa-user fa-fw"></i>
-                        <?php echo $username; ?> </a>
-                <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
-            </ul>
-            <!-- /.navbar-top-links -->
-
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <?php include "sidemenu.php"; ?>
-                </div>
-                <!-- /.sidebar-collapse -->
-            </div>
-            <!-- /.navbar-static-side -->
-        </nav>
+        <?php include "sidemenu.php"; ?>
 
         <!-- Page Content -->
         <div id="page-wrapper">
@@ -200,34 +193,62 @@ if (!isset($_SESSION['username'])) {
                                     <div class="form-group" id="iDivImgFotografia" style="display:block;">
                                         <label>Fotografia</label>
 
-                                        <div class="form-control-static" style="width:50%; heigth:auto;">
+                                        <!-- <div class="form-control-static" style="width:50%; heigth:auto;"> -->
+                                        <div class="form-control-static" style="width:auto; heigth:200px;">
                                             <?php
-                                            $resultIMG;
                                             $diretorioIMG = "images/utilizadores/";
 
                                             if ($tipo == 1) {
-                                                $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM aluno WHERE fk_idutilizador=$id");
+                                                $sql = "SELECT fotografia FROM aluno WHERE fk_idutilizador=?";
                                             } elseif ($tipo == 2) {
-                                                $resultIMG = mysqli_query($connectDB, "SELECT fotografia FROM docente WHERE    fk_idutilizador=$id");
+                                                $sql = "SELECT fotografia FROM docente WHERE fk_idutilizador=?";
                                             }
 
-                                            if (mysqli_num_rows($resultIMG) == 1) {
-                                                $row = $resultIMG->fetch_assoc();
-                                                $nomeIMG = ($row['fotografia']);
+                                            if ($stmt = $connectDB->prepare($sql)) {
+                                                // Bind variables to the prepared statement as parameters
+                                                $stmt->bind_param("i", $param_idutilizador);
+            
+                                                // Set parameters
+                                                $param_idutilizador = $id;
+            
+                                                // Attempt to execute the prepared statement
+                                                if ($stmt->execute()) {
+                                                    // Store result
+                                                    $stmt->store_result();
+                                                    // Check if username exists, if yes then verify password
+                                                    if ($stmt->num_rows == 1) {
+                                                        // Bind result variables
+                                                        $stmt->bind_result($r_nome);
+                                                        if ($stmt->fetch()) {
+                                                            echo("<img class=' img-fluid img-thumbnail' src='" . $diretorioIMG . $r_nome . "' alt=''>");
+                                                        }
+                                                    } else {
+                                                        // echo"Não foi encontrado video ";
+                                                    }
+                                                } else {
+                                                    echo "Algo correu mal. Por favor tente de novo.";
+                                                }
                                             }
-
-                                            echo("<img class=' img-fluid img-thumbnail' src='" . $diretorioIMG . $nomeIMG . "' alt=''>");
+                                            $stmt->close();
+                                            
                                             ?>
                                         </div>
                                     </div>
                                     <!--Inserir Fotografia-->
                                     <div class="form-group" id="iDivFileFotografia" style="display:none">
                                         <label>Fotografia</label>
-                                        <form id="avatar_file_upload_form" role="form" action="uploadimage.php"
+                                        <!-- <form id="avatar_file_upload_form" role="form" action="uploadimage.php" -->
+                                        <form id="avatar_file_upload_form" role="form" action="changeuserdata.php"
                                             method="post" enctype='multipart/form-data' style="">
                                             <div class="form-group">
-                                                <input type="file" name="avatar" id="avatar_file_upload_field"
-                                                    accept="image/jpeg,image/png" />
+                                                <input type="file" id="ifotografia" name="fotografia" required
+                                                    id="avatar_file_upload_field" accept="image/jpeg,image/png"
+                                                    onChange="verificaLimitesImagem()" />
+                                                <!-- <input type="file" id="fotografia" name="avatar" id="avatar_file_upload_field"
+                                                    accept="image/jpeg,image/png" onChange="verificaLimitesImagem()" /> -->
+                                                <p class="help-block" id="iHintImagem">Insira uma Imagem PNG/JPEG com
+                                                    tamanho máximo de 1MB</p>
+                                                <input type="hidden" name="action" value="change_fotografia" />
                                                 <input type="hidden" name="iduser" id="iIdUser"
                                                     value="<?php echo($id); ?>" />
                                                 <input type="submit" class="btn btn-default btn-backoffice-size"
@@ -511,6 +532,78 @@ if (!isset($_SESSION['username'])) {
 
             });
         }
+    }
+
+    //-- Verifica Limites da IMAGEM (se é PNG/JPG, e se o tamanho é abaixo do limite)
+    function verificaLimitesImagem() {
+        var input_imagem = document.getElementById("ifotografia");
+        var hint_imagem = document.getElementById("iHintImagem");
+
+        var limiteSize = 1020; // 1 Megabyte
+        var file = input_imagem.files[0];
+        // console.log("ficheiro: " + file);
+        // console.log("Tipo: " + file.type);
+
+        if (file.type === "image/png" || file.type === "image/jpeg") {
+            // console.log("Ficheiro é png ou jpeg!");
+        } else {
+            // console.log("Ficheiro não é png ou jpeg!");
+            alert("A imagem não é de tipo suportado.");
+            input_imagem.value = "";
+
+            return;
+        }
+
+        //##### Start of reader
+        var reader = new FileReader(); // CREATE AN NEW INSTANCE.
+
+        reader.onload = function(e) {
+            var img = new Image();
+            img.src = e.target.result;
+
+            img.onload = function() {
+                var valido = true;
+                var w = this.width;
+                var h = this.height;
+                var size = Math.round((file.size / 1024));
+
+                if (file.type == "image/png" || file.type == "image/jpeg") {
+                    console.log("A imagem é png ou jpeg");
+                    valido = true;
+                    //-- Check size and dimensions of image
+                    if (w > 1960 || h > 1080 || size > limiteSize) {
+                        alert(
+                            "A imagem tem tamanho superior a 1MB ou dimensões superiores a 1960*1080."
+                        );
+                        // console.log("A imagem tem tamanho superior a 1mb ou dimensoes superiores a 1960*1080");
+                        valido = false;
+
+                    } else {
+                        console.log("A imagem não tem tamanho superior a 1mb");
+                        valido = true;
+                    }
+                } else {
+                    // console.log("A imagem não é png ou jpeg");
+                    alert("Imagens não é de tipo suportado!");
+
+                    valido = false;
+                }
+
+                if (!valido) {
+                    // console.log("Imagem não valida");
+                    input_imagem.value = "";
+                    hint_imagem.innerHTML = "Insira uma PNG/JPEG com tamanho máximo de 1MB";
+                    hint_imagem.style = "color:rgb(216, 79, 79);";
+
+                } else {
+                    // console.log("Imagem é valida");
+                    hint_imagem.innerHTML = "Imagem válida";
+                    hint_imagem.style = "color:rgb(79, 216, 132);";
+                }
+            }
+        };
+        reader.readAsDataURL(file, input_imagem);
+        //##### End of reader
     }
     </script>
 

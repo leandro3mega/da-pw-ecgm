@@ -7,20 +7,13 @@ if (!isset($_SESSION['username'])) {
     header("location:iniciar-sessao.php");
     exit();
 } else {
-    // header("location:meus-projetos.php");
-
     $id = $_SESSION['id'];
     $username = $_SESSION['username'];
     $nome;
     $email;
     $tipo = $_SESSION['tipo'];
     $cargo = $_SESSION['cargo'];
-    /*
-    //-- Converte int em string para mostrar o cargo do user no menu superior
-    if ($tipo == 0) $cargo = "Administrador";
-    else if ($tipo == 1) $cargo = "Aluno";
-    else $cargo = "Professor";
-     */
+    
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
     $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
     if (mysqli_num_rows($result) == 1) {
@@ -29,7 +22,6 @@ if (!isset($_SESSION['username'])) {
         $email = ($row['email']);
     }
 }
-
 
 ?>
 
@@ -79,6 +71,16 @@ if (!isset($_SESSION['username'])) {
     max-width: 400px;
     min-height: 100px;
     font-size: 26px;
+    display: grid;
+    border-color: rgb(185, 185, 185);
+    background-color: #f4f4f4;
+    border-radius: 40px;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.btn-index-page:hover {
+    background-color: rgb(185, 185, 185);
 }
 </style>
 
@@ -87,57 +89,24 @@ if (!isset($_SESSION['username'])) {
     <div id="wrapper">
 
         <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.php">Area de Utilizador</a>
-            </div>
-            <!-- /.navbar-header -->
-
-            <ul class="nav navbar-top-links navbar-right" style="padding-left:10px">
-
-                <li>
-                    <?php echo $cargo; ?>
-                </li>
-                <li><a><i class="fa fa-user fa-fw"></i>
-                        <?php echo $username; ?> </a>
-                <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
-
-            </ul>
-            <!-- /.navbar-top-links -->
-
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <?php include "sidemenu.php";?>
-                </div>
-                <!-- /.sidebar-collapse -->
-            </div>
-            <!-- /.navbar-static-side -->
-        </nav>
+        <?php include "sidemenu.php";?>
 
         <!-- Page Content -->
         <div id="page-wrapper">
             <div class="container-fluid" style="min-height:500px">
                 <div class="row" style="display: flex; flex-wrap: wrap; margin-top:30px; margin-bottom:30px;">
-                    <!-- <div class="col-lg-12">
-                        <h1 class="page-header">Página Vazia</h1>
-                    </div> -->
+
                     <div class="col-lg-12" style="width:100%;">
 
                         <div style="width:100%; text-align: center;">
                             <h1>
                                 <?php
-                            if ($cargo == "Administrador") {
-                                echo("Olá " . $cargo . "!");
-                            } else {
-                                echo("Olá " . $nome . "!");
-                            }
-                            ?>
+                                if ($cargo == "Administrador") {
+                                    echo("Olá " . $cargo . "!");
+                                } else {
+                                    echo("Olá " . $nome . "!");
+                                }
+                                ?>
                             </h1>
                         </div>
                     </div>
@@ -151,38 +120,33 @@ if (!isset($_SESSION['username'])) {
                         echo "
                         <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
                             <div style='display: flex;'>
-                                <a class='btn-index-page' href='meus-projetos.php' style=''>
-                                    <button class='btn btn-default btn-index-page' style=''>
-                                        Projetos
-                                    </button>
+                                <a class='btn btn-default btn-index-page' href='meus-projetos.php' style=''>
+                                    <i class='fa fa-th-list fa-fw' style='color: rgb(66, 66, 66); font-size: 100%; padding:10px; width: auto;'></i>
+                                    Projetos
                                 </a>
                             </div>
                         </div>
                         <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
                             <div style='display: flex;'>
-                                <a class='btn-index-page' href='gerir-docentes.php' style=''>
-                                    <button class='btn btn-default btn-index-page' style=''>
-                                        Docentes
-                                    </button>
+                                <a class='btn btn-default btn-index-page' href='gerir-docentes.php' style=''>
+                                    <i class='fa fa-group fa-fw' style='color: rgb(66, 66, 66); font-size: 100%; padding:10px; width: auto;'></i>
+                                    Docentes
                                 </a>
                             </div>
                         </div>
                         <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
                             <div style='display: flex;'>
-                                <a class='btn-index-page' href='gerir-alunos.php' style=''>
-                                    <button class='btn btn-default btn-index-page' style=''>
-                                        Alunos
-                                    </button>
+                                <a class='btn btn-default btn-index-page' href='gerir-alunos.php' style=''>
+                                    <i class='fa fa-graduation-cap fa-fw' style='color: rgb(66, 66, 66); font-size: 100%; padding:10px; width: auto;'></i>
+                                    Alunos
                                 </a>
                             </div>
                         </div>
                         <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
                             <div style='display: flex;'>
-                                <a class='btn-index-page' href='gerir-ucs.php' style=''>
-                                    <button class='btn btn-default btn-index-page'
-                                        style='overflow: hidden; word-wrap: break-word;'>
-                                        Unidades Curriculares
-                                    </button>
+                                <a class='btn btn-default btn-index-page' href='gerir-ucs.php' style=''>
+                                    <i class='fa fa-book fa-fw' style='color: rgb(66, 66, 66); font-size: 100%; padding:10px; width: auto;'></i>
+                                    Unidades Curriculares
                                 </a>
                             </div>
                         </div>
@@ -191,10 +155,9 @@ if (!isset($_SESSION['username'])) {
                         echo "
                         <div class='col-lg-12 col-md-12 col-xs-12' style='margin-top:30px'>
                             <div style='display: flex;'>
-                                <a class='btn-index-page' href='meus-projetos.php' style=''>
-                                    <button class='btn btn-default btn-index-page' style=''>
+                                <a class='btn btn-default btn-index-page' href='meus-projetos.php' style=''>
+                                    <i class='fa fa-th-list fa-fw' style='color: rgb(66, 66, 66); font-size: 100%; padding:10px; width: auto;'></i>
                                         Projetos
-                                    </button>
                                 </a>
                             </div>
                         </div>
@@ -214,29 +177,40 @@ if (!isset($_SESSION['username'])) {
                         echo "
                         <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
                             <div style='display: flex;'>
-                                <a class='btn-index-page' href='meus-projetos.php' style=''>
-                                    <button class='btn btn-default btn-index-page' style=''>
+                                <a class='btn btn-default btn-index-page' href='meus-projetos.php' style=''>
+                                        <i class='fa fa-th-list fa-fw' style='color: rgb(66, 66, 66); font-size: 100%; padding:10px; width: auto;'></i>
                                         Meus Projetos
-                                    </button>
                                 </a>
                             </div>
                         </div>
                         
                         <div class='col-lg-6 col-md-6 col-xs-12' style='margin-top:30px'>
                             <div style='display: flex;'>
-                                <a class='btn-index-page' href='gerir-ucs.php' style=''>
-                                    <button class='btn btn-default btn-index-page'
-                                        style='overflow: hidden; word-wrap: break-word;'>
-                                        Novo Projeto
-                                    </button>
+                                <a class='btn btn-default btn-index-page' href='novo-projeto.php' style=''>
+                                    <i class='fa fa-file-o fa-fw' style='color: rgb(66, 66, 66); font-size: 100%; padding:10px; width: auto;'></i>
+                                    Novo Projeto
                                 </a>
                             </div>
                         </div>
                         ";
                     }
                     ?>
-                    <!-- <div class="col-lg-3" style="margin-top:30px"></div> -->
                 </div>
+
+                <div class="row">
+                    <?php
+                    echo("
+                    <div class='col-lg-12 col-md-12 col-xs-12' style='margin-top:30px'>
+                        <div style='display: flex;'>
+                            <a class='btn btn-default btn-index-page' href='../frontoffice/index.php' style=''>
+                                <i class='fa fa-home fa-fw' style='color: rgb(66, 66, 66); font-size: 100%; padding:10px; width: auto;'></i>
+                                Página Inicial
+                            </a>
+                        </div>
+                    </div>");
+                    ?>
+                </div>
+
             </div>
             <!-- /.container-fluid -->
 

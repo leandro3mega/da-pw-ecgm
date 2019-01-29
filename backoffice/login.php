@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         }
                             
                         // Redirect user to index page
-                        header("location: index.php");
+                        header("location: ../frontoffice/index.php");
                     } else {
                         // Display an error message if password is not valid
                         $msg = "A palavra passe inserida não é valida.";

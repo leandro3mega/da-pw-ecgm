@@ -20,14 +20,42 @@ function selectUCS($connectDB, $semestre)
 {
     $rows = array();
     $conta = 0;
-    $resultUC = mysqli_query($connectDB, "SELECT idunidade_curricular, nome FROM unidade_curricular WHERE semestre='$semestre' ORDER BY nome");
+    $ano = $_GET['ano_curricular'];
+    // $resultUC = mysqli_query($connectDB, "SELECT idunidade_curricular, nome
+    //                                     FROM unidade_curricular
+    //                                     WHERE semestre='$semestre' AND ano_curricular='$ano' ORDER BY nome");
 
-    if (mysqli_num_rows($resultUC) > 0) {
-        while ($row = $resultUC->fetch_assoc()) {
-            $rows[] = $row;//$row['nome'];
-            $conta += 1;
+    // if (mysqli_num_rows($resultUC) > 0) {
+    //     while ($row = $resultUC->fetch_assoc()) {
+    //         $rows[] = $row;//$row['nome'];
+    //         $conta += 1;
+    //     }
+    //     print json_encode(($rows));
+    // }
+    
+    $sql = "SELECT idunidade_curricular, nome
+            FROM unidade_curricular
+            WHERE semestre=? 
+            AND ano_curricular=? 
+            ORDER BY nome";
+    
+
+    if ($stmt = $connectDB->prepare($sql)) {
+        $stmt->bind_param("ss", $param_semestre, $param_ano);
+        $param_semestre = $semestre;
+        $param_ano = $ano;
+        
+
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result->num_rows !== 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $rows[] = $row;//$row['nome'];
+                    $conta += 1;
+                }
+                print json_encode(($rows));
+            }
         }
-        print json_encode(($rows));
     }
 }
 

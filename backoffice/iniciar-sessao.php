@@ -4,7 +4,7 @@ session_start();
 
 // verifica se existe login/sessão
 if (isset($_SESSION['username'])) {
-    header("location:index.php");
+    header("location:../frontoffice/index.php");
     session_write_close();
 
     exit();
@@ -55,7 +55,31 @@ if (isset($_SESSION['username'])) {
     <link href="css/sb-admin.css" rel="stylesheet">
 
     <!-- estilos desenvolvidos -->
-    <link rel="stylesheet" href="css/stylesheet.css" </head> <body>
+    <link rel="stylesheet" href="css/stylesheet.css">
+</head>
+
+<style>
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px
+}
+
+.btn-success-v2 {
+    color: #333;
+    background-color: #f5f5f5;
+    border-color: #c8c8c8;
+}
+
+.btn-success-v2:hover {
+    background-color: #c8c8c8;
+}
+</style>
+
+<body>
 
     <div class="container">
         <div class="card card-login mx-auto mt-5">
@@ -83,7 +107,7 @@ if (isset($_SESSION['username'])) {
                                 <input type="checkbox" value="remember-me"> Lembrar Palavra Passe</label>
                         </div>
                     </div> -->
-                    <input type="submit" class="btn btn-lg btn-success btn-block" value="Iniciar Sessão">
+                    <input type="submit" class="btn btn-lg btn-success-v2 btn-block" value="Iniciar Sessão">
                     <!--
             <a class="btn btn-primary btn-block" href="index.html">Login</a>
             -->
@@ -96,6 +120,18 @@ if (isset($_SESSION['username'])) {
         </div>
     </div>
 
+    <footer>
+        <div class="footer">
+            <img src="images/website/logotipo_v2_transparente.png" style="max-height:50px;" alt="">
+            <a target="_blank" rel="noopener noreferrer" href="http://portal.ipvc.pt/portal/page/portal/estg">
+                <img src="images/website/logo_estg.png" style="max-height:50px; margin: 0px 30px 0px 30px;" alt="">
+            </a>
+            <a target="_blank" rel="noopener noreferrer" href="http://www.ipvc.pt/">
+                <img src="images/website/logo_ipvc.png" style="max-height:50px" alt="">
+            </a>
+        </div>
+    </footer>
+
     <!-- Bootstrap core JavaScript-->
     <script src="vendor2/jquery/jquery.min.js"></script>
     <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -103,6 +139,6 @@ if (isset($_SESSION['username'])) {
     <!-- Core plugin JavaScript-->
     <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
 
-    </body>
+</body>
 
 </html>

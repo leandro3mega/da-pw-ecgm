@@ -311,43 +311,25 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
     }
 </style> -->
 
+<style>
+.img-thumbnail-v2{
+    max-width: 100%;
+    border-radius: 4px;
+    webkit-transition: all .2s ease-in-out;
+    transition-property: all;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    transition-delay: 0s;
+}
+
+</style>
+
 <body>
 
     <div id="wrapper">
 
         <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.php">Area de Utilizador</a>
-            </div>
-            <!-- /.navbar-header -->
-
-            <ul class="nav navbar-top-links navbar-right" style="padding-left:10px">
-
-                <li>
-                    <?php echo $cargo; ?>
-                </li>
-                <li><a><i class="fa fa-user fa-fw"></i>
-                        <?php echo $username; ?> </a>
-                <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
-
-            </ul>
-            <!-- /.navbar-top-links -->
-
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <?php include "sidemenu.php"; ?>
-                </div>
-                <!-- /.sidebar-collapse -->
-            </div>
-            <!-- /.navbar-static-side -->
-        </nav>
+        <?php include "sidemenu.php"; ?> 
 
         <!-- Page Content -->
         <div id="page-wrapper">
@@ -603,7 +585,7 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                                                             
                                                             <div style='min-height:150px; display: flex; justify-content: center;'>
                                                                 <div style='display: flex; flex-direction: column; justify-content: center;'>
-                                                                    <img class='img-fluid img-thumbnail' style='max-height:150px' src='" . $diretorio . $image_nome . "' alt=''>
+                                                                    <img id='".$image_nome."' class='img-fluid img-thumbnail' onclick='parseImage(this.id)' data-toggle='modal' data-target='#modalVerImagem' style='max-height:150px' src='" . $diretorio . $image_nome . "' alt=''>
                                                                 </div>
                                                             </div>
 
@@ -1079,6 +1061,30 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
     </div>
     <!-- /.modal -> ADICIONA IMAGEM -->
 
+    <!-- Modal -> VER IMAGEM -->
+    <div class="modal fade" id="modalVerImagem" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom:5px;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class=" modal-body">
+
+                    <div style='min-height:150px; display: flex; justify-content: center;'>
+                        <div style='display: flex; flex-direction: column; justify-content: center;'>
+                            <img class='img-thumbnail-v2' name="big_image" style='width:auto; height:auto; max-height: 500px;' src='' alt=''>
+                        </div>
+                    </div>
+
+                </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -> VER IMAGEM -->
+
     <!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
 
@@ -1541,6 +1547,10 @@ function deleteImagem(nome) {
             }
         });
     }
+}
+
+function parseImage(nome){
+    $('img[name="big_image"]').attr("src","images/projetos/imagens/" + nome);
 }
 
 //##FIXME: LIXO

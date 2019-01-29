@@ -93,38 +93,7 @@ if (!isset($_SESSION['username'])) {
     <div id="wrapper">
 
         <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.php">Area de Utilizador</a>
-            </div>
-            <!-- /.navbar-header -->
-
-            <ul class="nav navbar-top-links navbar-right" style="padding-left:10px">
-
-                <li>
-                    <?php echo $cargo; ?>
-                </li>
-                <li><a><i class="fa fa-user fa-fw"></i>
-                        <?php echo $username; ?> </a>
-                <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
-
-            </ul>
-            <!-- /.navbar-top-links -->
-
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <?php include "sidemenu.php"; ?>
-                </div>
-                <!-- /.sidebar-collapse -->
-            </div>
-            <!-- /.navbar-static-side -->
-        </nav>
+        <?php include "sidemenu.php"; ?>
 
         <!-- Page Content -->
         <div id="page-wrapper">
@@ -221,11 +190,16 @@ if (!isset($_SESSION['username'])) {
                                                     "<td style='vertical-align: middle'>
                                                         <div style='height:80px; display: flex; justify-content: center;'>
                                                             <div style='display: flex; flex-direction: column; justify-content: center;'>
-                                                                <img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt='' style='width:auto; max-height:80px;' >
+                                                                <img id='".$idProjeto."' class='img-fluid img-thumbnail' onclick='viewProjeto(this.id)' src='" . $imageURL . $imageName . "' alt='' style='width:auto; max-height:80px;' >
                                                             </div>
                                                         </div>
                                                     </td>" .
-                                                    "<td style='vertical-align: middle; overflow: hidden; word-wrap: break-word;'>" . $row['titulo'] . "</td>" .
+                                                    "<td id='".$idProjeto."' style='vertical-align: middle; overflow: hidden; word-wrap: break-word;' onclick='viewProjeto(this.id)'>
+                                                        <form id='formViewProjeto_". $idProjeto ."' action='../frontoffice/indexport.php' method='GET'>
+                                                            <input type = 'hidden' value = '" . $idProjeto ."'name = 'idprojeto' >
+                                                        </form>
+                                                        " . $row['titulo'] . "
+                                                    </td>" .
                                                     "<td style='vertical-align: middle'>" . $dataProjetostr . "</td>" .
                                                     "<td style='vertical-align: middle; overflow: hidden; word-wrap: break-word;'>" . $autoresProjeto . "</td>" .
                                                     "<td style='vertical-align: middle; overflow: hidden; word-wrap: break-word;'>" . $nomeUC . "</td>" .
@@ -308,18 +282,23 @@ if (!isset($_SESSION['username'])) {
                                                     "<td style='vertical-align: middle'>
                                                         <div style='height:80px; display: flex; justify-content: center;'>
                                                             <div style='display: flex; flex-direction: column; justify-content: center;'>
-                                                                <img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt='' style='width:auto; max-height:80px;' >
+                                                                <img id='".$idProjeto."' class='img-fluid img-thumbnail' onclick='viewProjeto(this.id)' src='" . $imageURL . $imageName . "' alt='' style='width:auto; max-height:80px;' >
                                                             </div>
                                                         </div>
                                                     </td>" .
-                                                    "<td style='vertical-align: middle; overflow: hidden; word-wrap: break-word;'>" . $row['titulo'] . "</td>" .
+                                                    "<td id='".$idProjeto."' style='vertical-align: middle; overflow: hidden; word-wrap: break-word;' onclick='viewProjeto(this.id)'>
+                                                        <form id='formViewProjeto_". $idProjeto ."' action='../frontoffice/indexport.php' method='GET'>
+                                                            <input type='hidden' value='" . $idProjeto ."' name='idprojeto' >
+                                                        </form>
+                                                        " . $row['titulo'] . "
+                                                    </td>" .
                                                     "<td style='vertical-align: middle'>" . $dataProjetostr . "</td>" .
                                                     "<td style='vertical-align: middle; overflow: hidden; word-wrap: break-word;'>" . $nomeUC . "</td>" .
                                                     "<td style='vertical-align: middle'>" .
                                                     "<ul class='nav navbar-top-links' style='float: inherit; vertical-align: middle'>" .
                                                         "<div class='form-group form-inline'>" .
                                                             "<div style ='display:flex;margin-left:auto; margin-right:auto;'>" .
-                                                                "<form id='formEditProjeto[". $idProjeto ."]' action='editar-projeto.php' enctype='multipart/form-data' method='POST'>" .
+                                                                "<form id='formEditProjeto[". $idProjeto ."]' action='../frontoffice/indexport.php' enctype='multipart/form-data' method='POST'>" .
                                                                     "<input type = 'hidden' value = '" . $idProjeto ."'name = 'id_projeto' >" .
                                                                     "<li style='margin-left:auto;'>
                                                                         <button href='#' id='".$idProjeto."' onclick='editaProjeto(this.id)' style='background: Transparent no-repeat; border: none;'>
@@ -407,11 +386,16 @@ if (!isset($_SESSION['username'])) {
                                                     "<td style='vertical-align: middle'>
                                                         <div style='height:80px; display: flex; justify-content: center;'>
                                                             <div style='display: flex; flex-direction: column; justify-content: center;'>
-                                                                <img class='img-fluid img-thumbnail' src='" . $imageURL . $imageName . "' alt='' style='width:auto; max-height:80px;' >
+                                                                <img id='".$idProjeto."' class='img-fluid img-thumbnail' onclick='viewProjeto(this.id)' src='" . $imageURL . $imageName . "' alt='' style='width:auto; max-height:80px;' >
                                                             </div>
                                                         </div>
                                                     </td>" .
-                                                    "<td style='vertical-align: middle; overflow: hidden; word-wrap: break-word;'>" . $titulo_projeto . "</td>" .
+                                                    "<td id='".$idProjeto."' onclick='viewProjeto(this.id)' style='vertical-align: middle; overflow: hidden; word-wrap: break-word;'>
+                                                         <form id='formViewProjeto_". $idProjeto ."' action='../frontoffice/indexport.php' method='GET'>
+                                                            <input type = 'hidden' value = '" . $idProjeto ."'name = 'idprojeto' >
+                                                        </form>
+                                                        " . $titulo_projeto . "
+                                                    </td>" .
                                                     "<td style='vertical-align: middle'>" . $dataProjetostr . "</td>" .
                                                     "<td style='vertical-align: middle'>" . $tipoProjeto . "</td>" .
                                                     "<td style='vertical-align: middle; overflow: hidden; word-wrap: break-word;'>" . $nomeUC . "</td>" .
@@ -608,6 +592,17 @@ if (!isset($_SESSION['username'])) {
         // document.getElementById("your-id").addEventListener("click", function () {
         // form.submit();
         // });
+    }
+
+    function viewProjeto(id_projeto) {
+        console.log("ID: " + id_projeto);
+
+
+        var form = document.getElementById("formViewProjeto_" + id_projeto);
+        // document.getElementById("your-id").addEventListener("click", function() {
+        form.submit();
+        // });
+
     }
     </script>
 
