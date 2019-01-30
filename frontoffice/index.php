@@ -131,16 +131,18 @@ if (!isset($_SESSION['username'])) {
     .dropup-content {
         display: none;
         position: absolute;
-        background-color: #f1f1f1;
+        /* background-color: #f1f1f1; */
+        background-color: rgb(245, 245, 245);
         min-width: 160px;
         bottom: 30px;
         z-index: 1;
         margin-top: auto;
         margin-bottom: auto;
         border: 1px solid rgb(185, 185, 185);
+        cursor: pointer;
     }
 
-    .dropup-content a {
+    .dropup-content label {
         color: black;
         padding: 5px 5px;
         text-decoration: none;
@@ -148,11 +150,11 @@ if (!isset($_SESSION['username'])) {
         min-height: 40px;
     }
 
-    .dropup-content a p {
+    .dropup-content label p {
         font-size: 13px;
     }
 
-    .dropup-content a:hover {
+    .dropup-content label:hover {
         background-color: #ccc
     }
 
@@ -183,13 +185,19 @@ if (!isset($_SESSION['username'])) {
         overflow: hidden;
         object-fit: cover;
     }
+
+    .scale-site {}
+
+    body {
+        padding-top: 40px !important;
+    }
     </style>
 </head>
 
-<body style="padding-top:40px !important;">
+<body>
 
     <!-- Page Content -->
-    <div class="container">
+    <div class="container scale-site">
         <div class="row" style="min-height: 456px;">
 
             <div class=" col-md-11">
@@ -243,10 +251,10 @@ if (!isset($_SESSION['username'])) {
                                         if (mysqli_num_rows($result) > 0) {
                                             while ($row = $result->fetch_assoc()) { // percorre o array
                                                 echo "
-                                                <a class='custom_font'>
+                                                <label class='custom_font'>
                                                     <input style='margin:auto 0px auto 0px' type='checkbox' data-tabela='unidade_curricular' data-tipo='idunidade_curricular' data-valor='".($row['idunidade_curricular'])."'/>
                                                     <p style='padding-left: 5px; margin:auto 0px auto 0px'>".($row['nome'])."</p>
-                                                </a>";
+                                                </label>";
                                             }
                                         }
                                         ?>
@@ -272,10 +280,10 @@ if (!isset($_SESSION['username'])) {
                                                 $ano_letivo= ($row['ano']);
                             
                                                 echo "
-                                                <a class='custom_font' >
+                                                <label class='custom_font' >
                                                     <input style='margin:auto 0px auto 0px' type='checkbox' data-tabela='projeto' data-tipo='ano' data-valor='".$ano_letivo."'>
                                                     <p style='padding-left: 5px; margin:auto 0px auto 0px'>".$ano_letivo." Ano</p>
-                                                </a>";
+                                                </label>";
                                             }
                                         }
 
@@ -303,10 +311,10 @@ if (!isset($_SESSION['username'])) {
                                                 $semestre= ($row['semestre']);
                             
                                                 echo "
-                                                <a class='custom_font' data-filtro>
+                                                <label class='custom_font' data-filtro>
                                                 <input style='margin:auto 0px auto 0px' type='checkbox' data-tabela='projeto' data-tipo='semestre' data-valor='".$semestre."'/>
                                                 <p style='padding-left: 5px; margin:auto 0px auto 0px'>".$semestre." Semestre</p>
-                                                </a>
+                                                </label>
                                                 ";
                                             }
                                         }
@@ -327,16 +335,16 @@ if (!isset($_SESSION['username'])) {
 
                                     <li class="dropdown-submenu" style="display: grid;">
                                         <!-- <ul class="dropdown-menu"> -->
-                                        <a class='custom_font'>
+                                        <label class='custom_font'>
                                             <input style='margin:auto 0px auto 0px' type="checkbox"
                                                 data-tabela="projeto" data-tipo='tipo' data-valor='1' />
                                             <p style='padding-left: 5px; margin:auto 0px auto 0px'>Teórico</p>
-                                        </a>
-                                        <a class='custom_font'>
+                                        </label>
+                                        <label class='custom_font'>
                                             <input style='margin:auto 0px auto 0px' type="checkbox"
                                                 data-tabela="projeto" data-tipo='tipo' data-valor='2' />
                                             <p style='padding-left: 5px; margin:auto 0px auto 0px'>Prático</p>
-                                        </a>
+                                        </label>
                                         <!-- </ul> -->
 
                                     </li>
@@ -361,10 +369,10 @@ if (!isset($_SESSION['username'])) {
                                                 $ano = ($row['anos']);
                                         
                                                 echo "
-                                                <a class='custom_font' data-filtro>
+                                                <label class='custom_font' data-filtro>
                                                     <input style='margin:auto 0px auto 0px' type='checkbox' data-tabela='projeto' data-tipo='data' data-valor='".$ano."'/>
                                                     <p style='padding-left: 5px; margin:auto 0px auto 0px'>".$ano."</p>
-                                                </a>
+                                                </label>
                                                 ";
                                             }
                                         }
