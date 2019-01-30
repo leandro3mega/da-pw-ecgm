@@ -70,9 +70,6 @@ if (!isset($_SESSION['username'])) {
 
     <title>Design de Ambientes</title>
 
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -122,7 +119,6 @@ if (!isset($_SESSION['username'])) {
         margin: 0 0 0 5px;
     }
 
-
     .dropup {
         position: relative;
         display: inline-block;
@@ -137,19 +133,13 @@ if (!isset($_SESSION['username'])) {
         z-index: 1;
         margin-top: auto;
         margin-bottom: auto;
-        border: 1px solid rgb(185, 185, 185);
     }
 
     .dropup-content a {
         color: black;
         padding: 5px 5px;
         text-decoration: none;
-        display: inline-flex;
-        min-height: 40px;
-    }
-
-    .dropup-content a p {
-        font-size: 13px;
+        display: block;
     }
 
     .dropup-content a:hover {
@@ -167,7 +157,7 @@ if (!isset($_SESSION['username'])) {
     /* Scroll For dropup menu */
     .scrollable-menu {
         height: auto;
-        max-height: 300px;
+        max-height: 200px;
         overflow-x: hidden;
     }
 
@@ -233,23 +223,18 @@ if (!isset($_SESSION['username'])) {
                             <div class="dropup">
                                 <button class="dropbtn custom_font" style="min-width:120px">Unidade
                                     Curricular</button>
-                                <!-- <div class="dropup-content dropdown-menu scrollable-menu" -->
-                                <div class="dropup-content scrollable-menu" style="min-width:250px;">
+                                <div class="dropup-content scrollable-menu" style="margin-left:0px; width:250px;">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
+                                    <li class="dropdown-submenu" style="list-style-type:none; width:100%; margin:7px;">
                                         <?php
-                                        $result = mysqli_query($connectDB, "select unidade_curricular.* from unidade_curricular");
-                                        
-                                        if (mysqli_num_rows($result) > 0) {
-                                            while ($row = $result->fetch_assoc()) { // percorre o array
-                                                echo "
-                                                <a class='custom_font'>
-                                                    <input style='margin:auto 0px auto 0px' type='checkbox' data-tabela='unidade_curricular' data-tipo='idunidade_curricular' data-valor='".($row['idunidade_curricular'])."'/>
-                                                    <p style='padding-left: 5px; margin:auto 0px auto 0px'>".($row['nome'])."</p>
-                                                </a>";
-                                            }
+                                    $result = mysqli_query($connectDB, "select unidade_curricular.* from unidade_curricular");
+                                    
+                                    if (mysqli_num_rows($result) > 0) {
+                                        while ($row = $result->fetch_assoc()) { // percorre o array
+                                            echo "<a class='custom_font'style='width:100%;'><input style='margin:0px' type='checkbox' data-tabela='unidade_curricular' data-tipo='idunidade_curricular' data-valor='".($row['idunidade_curricular'])."'/>".($row['nome'])."</a>";
                                         }
-                                        ?>
+                                    }
+                                    ?>
 
                                     </li>
                                 </div>
@@ -260,9 +245,9 @@ if (!isset($_SESSION['username'])) {
                         <div>
                             <div class="dropup">
                                 <button class="dropbtn custom_font" style="min-width:90px">Ano Letivo</button>
-                                <div class="dropup-content scrollable-menu">
+                                <div class="dropup-content" style="margin-left:0px; width:250px;">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
+                                    <li class="dropdown-submenu" style="list-style-type:none; width:100%; margin:7px;">
                                         <?php
                                         $result = mysqli_query($connectDB, "select ano from projeto GROUP BY ano");
 
@@ -271,11 +256,7 @@ if (!isset($_SESSION['username'])) {
                                         
                                                 $ano_letivo= ($row['ano']);
                             
-                                                echo "
-                                                <a class='custom_font' >
-                                                    <input style='margin:auto 0px auto 0px' type='checkbox' data-tabela='projeto' data-tipo='ano' data-valor='".$ano_letivo."'>
-                                                    <p style='padding-left: 5px; margin:auto 0px auto 0px'>".$ano_letivo." Ano</p>
-                                                </a>";
+                                                echo "<a class='custom_font'style='width:100%;'><input type='checkbox' data-tabela='projeto' data-tipo='ano' data-valor='".$ano_letivo."'>".$ano_letivo." Ano  <br/></a>";
                                             }
                                         }
 
@@ -291,9 +272,9 @@ if (!isset($_SESSION['username'])) {
 
                             <div class="dropup">
                                 <button class="dropbtn custom_font" style="min-width:90px">Semestre</button>
-                                <div class="dropup-content scrollable-menu">
+                                <div class="dropup-content" style="margin-left:0px; width:250px;">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
+                                    <li class="dropdown-submenu" style="list-style-type:none; width:100%; margin:7px;">
                                         <?php
                                         $result = mysqli_query($connectDB, "select projeto.semestre from projeto GROUP BY semestre");
   
@@ -303,10 +284,7 @@ if (!isset($_SESSION['username'])) {
                                                 $semestre= ($row['semestre']);
                             
                                                 echo "
-                                                <a class='custom_font' data-filtro>
-                                                <input style='margin:auto 0px auto 0px' type='checkbox' data-tabela='projeto' data-tipo='semestre' data-valor='".$semestre."'/>
-                                                <p style='padding-left: 5px; margin:auto 0px auto 0px'>".$semestre." Semestre</p>
-                                                </a>
+                                                <a class='custom_font'style='width:100%;' data-filtro><input type='checkbox' data-tabela='projeto' data-tipo='semestre' data-valor='".$semestre."'/>".$semestre." Semestre  <br /> </a>
                                                 ";
                                             }
                                         }
@@ -323,19 +301,19 @@ if (!isset($_SESSION['username'])) {
 
                             <div class="dropup">
                                 <button class="dropbtn custom_font" style="min-width:70px">Tipo</button>
-                                <div class="dropup-content scrollable-menu">
+                                <div class="dropup-content" style="margin-left:0px; width:250px;">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
+                                    <li class="dropdown-submenu" style="list-style-type:none; width:100%; margin:7px;">
                                         <!-- <ul class="dropdown-menu"> -->
-                                        <a class='custom_font'>
-                                            <input style='margin:auto 0px auto 0px' type="checkbox"
-                                                data-tabela="projeto" data-tipo='tipo' data-valor='1' />
-                                            <p style='padding-left: 5px; margin:auto 0px auto 0px'>Teórico</p>
+                                        <a class='custom_font' style='width:100%;'>
+                                            <input type="checkbox" data-tabela="projeto" data-tipo='tipo'
+                                                data-valor='1' />
+                                            Teórico
                                         </a>
-                                        <a class='custom_font'>
-                                            <input style='margin:auto 0px auto 0px' type="checkbox"
-                                                data-tabela="projeto" data-tipo='tipo' data-valor='2' />
-                                            <p style='padding-left: 5px; margin:auto 0px auto 0px'>Prático</p>
+                                        <a class='custom_font' style='width:100%;'>
+                                            <input type="checkbox" data-tabela="projeto" data-tipo='tipo'
+                                                data-valor='2' />
+                                            Prático
                                         </a>
                                         <!-- </ul> -->
 
@@ -349,9 +327,9 @@ if (!isset($_SESSION['username'])) {
 
                             <div class="dropup">
                                 <button class="dropbtn custom_font" style="min-width:70px">Ano</button>
-                                <div class="dropup-content scrollable-menu">
+                                <div class="dropup-content" style="margin-left:0px; width:250px;">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
+                                    <li class="dropdown-submenu" style="list-style-type:none; width:100%; margin:7px;">
                                         <?php
                                          $result = mysqli_query($connectDB, "SELECT data, SUBSTRING(data,1,4) as anos from projeto GROUP BY anos ORDER BY anos");
                             
@@ -361,10 +339,7 @@ if (!isset($_SESSION['username'])) {
                                                 $ano = ($row['anos']);
                                         
                                                 echo "
-                                                <a class='custom_font' data-filtro>
-                                                    <input style='margin:auto 0px auto 0px' type='checkbox' data-tabela='projeto' data-tipo='data' data-valor='".$ano."'/>
-                                                    <p style='padding-left: 5px; margin:auto 0px auto 0px'>".$ano."</p>
-                                                </a>
+                                                <a class='custom_font'style='width:100%;' data-filtro><input type='checkbox' data-tabela='projeto' data-tipo='data' data-valor='".$ano."'/>".$ano."</a>
                                                 ";
                                             }
                                         }
