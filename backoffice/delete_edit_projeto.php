@@ -26,13 +26,13 @@ if ($_POST['action'] == 'delete_projeto' && isset($_POST['id_projeto'])) {
     changeTipoProjeto($connectDB);
 } elseif ($_POST['action'] == 'change_anoletivo' && isset($_POST['id_projeto'])) {
     //-- Muda o TIPO de um projeto
-    changeAnoLetivoProjeto($connectDB);
+    // changeAnoLetivoProjeto($connectDB);
 } elseif ($_POST['action'] == 'change_data' && isset($_POST['id_projeto'])) {
     //-- Muda o TIPO de um projeto
     changeDataProjeto($connectDB);
 } elseif ($_POST['action'] == 'change_semestre_uc' && isset($_POST['id_projeto'])) {
     //-- Muda o TIPO de um projeto
-    changeSemestreUCProjeto($connectDB);
+    changeAnoSemestreUCProjeto($connectDB);
 } elseif ($_POST['action'] == 'change_ficheiro' && isset($_POST['form_id_projeto'])) {
     //-- Muda o FICHEIRO de um projeto
     changeFicheiroProjeto($connectDB);
@@ -480,33 +480,33 @@ function changeTipoProjeto($connectDB)
 }
 
 //-- Altera o ANO LETIVO de um projeto
-function changeAnoLetivoProjeto($connectDB)
-{
-    if (empty($_REQUEST['anoletivo_projeto'])) {
-        return;
-    }
+// function changeAnoLetivoProjeto($connectDB)
+// {
+//     if (empty($_REQUEST['anoletivo_projeto'])) {
+//         return;
+//     }
 
-    $idprojeto = (int)$_POST['id_projeto'];
+//     $idprojeto = (int)$_POST['id_projeto'];
     
-    $sql = "UPDATE projeto SET ano=? WHERE idprojeto=?";
+//     $sql = "UPDATE projeto SET ano=? WHERE idprojeto=?";
 
-    if ($stmt = $connectDB->prepare($sql)) {
-        // Bind variables to the prepared statement as parameters
-        $stmt->bind_param("si", $param_ano, $param_idprojeto);
+//     if ($stmt = $connectDB->prepare($sql)) {
+//         // Bind variables to the prepared statement as parameters
+//         $stmt->bind_param("si", $param_ano, $param_idprojeto);
 
-        // Set parameters
-        $param_ano = $_POST['anoletivo_projeto'];
-        $param_idprojeto = $idprojeto;
+//         // Set parameters
+//         $param_ano = $_POST['anoletivo_projeto'];
+//         $param_idprojeto = $idprojeto;
 
-        // Attempt to execute the prepared statement
-        if ($stmt->execute()) {
-            echo "Tipo mudado com sucesso";
-        } else {
-            echo "</br>Something went wrong. Please try again later.";
-        }
-    }
-    $stmt->close();
-}
+//         // Attempt to execute the prepared statement
+//         if ($stmt->execute()) {
+//             echo "Tipo mudado com sucesso";
+//         } else {
+//             echo "</br>Something went wrong. Please try again later.";
+//         }
+//     }
+//     $stmt->close();
+// }
 
 //-- Altera a DATA de um projeto
 function changeDataProjeto($connectDB)
@@ -543,22 +543,24 @@ function changeDataProjeto($connectDB)
 }
 
 //-- Altera a DATA de um projeto
-function changeSemestreUCProjeto($connectDB)
+function changeAnoSemestreUCProjeto($connectDB)
 {
-    if (empty($_REQUEST['semestre_projeto']) || empty($_REQUEST['uc_projeto'])) {
+    if (empty($_REQUEST['ano_projeto']) || empty($_REQUEST['semestre_projeto']) || empty($_REQUEST['uc_projeto'])) {
         return;
     }
 
     $idprojeto = (int)$_POST['id_projeto'];
     
-    $sql = "UPDATE projeto SET semestre=? WHERE idprojeto=?";
+    $sql = "UPDATE projeto SET ano=?, semestre=? WHERE idprojeto=?";
 
     if ($stmt = $connectDB->prepare($sql)) {
         // Bind variables to the prepared statement as parameters
-        $stmt->bind_param("ii", $param_semestre, $param_idprojeto);
+        $stmt->bind_param("iii", $param_ano, $param_semestre, $param_idprojeto);
 
         // Set parameters
-        $param_semestre = $_POST['semestre_projeto'];
+        $param_ano = (int)$_POST['ano_projeto'];
+
+        $param_semestre = (int)$_POST['semestre_projeto'];
         $param_idprojeto = $idprojeto;
 
         // Attempt to execute the prepared statement

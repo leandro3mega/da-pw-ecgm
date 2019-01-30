@@ -298,7 +298,7 @@ if (!isset($_SESSION['username'])) {
                                                     "<ul class='nav navbar-top-links' style='float: inherit; vertical-align: middle'>" .
                                                         "<div class='form-group form-inline'>" .
                                                             "<div style ='display:flex;margin-left:auto; margin-right:auto;'>" .
-                                                                "<form id='formEditProjeto[". $idProjeto ."]' action='../frontoffice/indexport.php' enctype='multipart/form-data' method='POST'>" .
+                                                                "<form id='formEditProjeto[". $idProjeto ."]' action='editar-projeto.php' enctype='multipart/form-data' method='POST'>" .
                                                                     "<input type = 'hidden' value = '" . $idProjeto ."'name = 'id_projeto' >" .
                                                                     "<li style='margin-left:auto;'>
                                                                         <button href='#' id='".$idProjeto."' onclick='editaProjeto(this.id)' style='background: Transparent no-repeat; border: none;'>

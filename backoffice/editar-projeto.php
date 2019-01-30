@@ -312,7 +312,7 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
 </style> -->
 
 <style>
-.img-thumbnail-v2{
+.img-thumbnail-v2 {
     max-width: 100%;
     border-radius: 4px;
     webkit-transition: all .2s ease-in-out;
@@ -321,7 +321,6 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
     transition-timing-function: ease-in-out;
     transition-delay: 0s;
 }
-
 </style>
 
 <body>
@@ -329,7 +328,7 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
     <div id="wrapper">
 
         <!-- Navigation -->
-        <?php include "sidemenu.php"; ?> 
+        <?php include "sidemenu.php"; ?>
 
         <!-- Page Content -->
         <div id="page-wrapper">
@@ -411,10 +410,9 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                         </div>
 
                         <!-- Ano letivo -->
-                        <div class="form-group"
-                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
+                        <div style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
                             <div class="form-inline">
-                                <label style="padding-top:10px">Realizado no... </label>
+                                <label style="padding-top:10px">Desenvolvido durante o... </label>
                                 <p class="form-control-static">
                                     <?php
                                     if ($projeto_ano == 1) {
@@ -427,17 +425,16 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                                     ?>
                                 </p>
                             </div>
-                            <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
+                            <!-- <button class="btn btn-default btn-backoffice-size" data-toggle="modal"
                                 data-target="#modalAnoLetivo">
                                 Alterar
-                            </button>
+                            </button> -->
                         </div>
 
                         <!-- Semestre -->
-                        <div class="form-group"
-                            style="margin-top:30px; border-top: 1px solid rgba(46, 207, 207, 0.322);">
+                        <div>
                             <div class="form-inline">
-                                <label>Desenvolvido no... </label>
+                                <label>Do... </label>
 
                                 <p class="form-control-static">
                                     <?php
@@ -452,9 +449,9 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                         </div>
 
                         <!-- Unidade Curricular -->
-                        <div class="form-group">
+                        <div>
                             <div class="form-inline">
-                                <label>Na Unidade Curricular de... </label>
+                                <label>Na Unidade Curricular... </label>
                                 <p class="form-control-static">
                                     <?php echo($projeto_unidade_curricular); ?>
                                 </p>
@@ -728,7 +725,7 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                 </div>
                 <!-- <form id='form_titulo' action='delete_edit_projeto.php' enctype='multipart/form-data' method='POST'> -->
                 <div class="modal-body">
-                    <input type="text" class="form-control" name="titulo_projeto" maxlength="50" required
+                    <input type="text" class="form-control" name="titulo_projeto" minlength="8" maxlength="50" required
                         placeholder="Insira o título do projeto" value="<?php echo($projeto_titulo); ?>">
                     <!-- atributos hidden para enviar no submit do form -->
                     <input type='hidden' value="change_titulo" name='action'>
@@ -781,7 +778,7 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" name="autores_projeto" minlength="8" maxlength="100"
+                    <input type="text" class="form-control" name="autores_projeto" minlength="8" maxlength="120"
                         placeholder="Insira os autores do projeto (separados por ponto e vígula)"
                         value="<?php echo($projeto_autores); ?>">
                     <p class="help-block tooltip-demo">Exemplo: Luís Mota; Maria Inês Pinto
@@ -811,15 +808,28 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                 </div>
                 <div class="modal-body">
                     <div style="display: block;">
-                        <label class="radio-inline">
-                            <input type="radio" name="tipo_projeto" id="tipo1" value="1" checked>Teórico
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="tipo_projeto" id="tipo2" value="2">Prático
-                        </label>
+                        <?php
+                        if ($projeto_tipo == 1) {
+                            echo "
+                            <label class='radio-inline'>
+                                <input type='radio' name='tipo_projeto' id='tipo1' value='1' checked>Teórico
+                            </label>";
+                            echo "
+                            <label class='radio-inline'>
+                                <input type='radio' name='tipo_projeto' id='tipo2' value='2'>Prático
+                            </label>";
+                        } elseif ($projeto_tipo == 2) {
+                            echo "
+                            <label class='radio-inline'>
+                                <input type='radio' name='tipo_projeto' id='tipo1' value='1'>Teórico
+                            </label>";
+                            echo "
+                            <label class='radio-inline'>
+                                <input type='radio' name='tipo_projeto' id='tipo2' value='2' checked>Prático
+                            </label>";
+                        }
+                        ?>
                     </div>
-
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -832,7 +842,7 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
     </div>
     <!-- /.modal -> TIPO -->
 
-    <!-- Modal -> SEMESTRE & UC -->
+    <!-- Modal -> ANO & SEMESTRE & UC -->
     <div class="modal fade" id="modalSemestreUC" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -842,12 +852,33 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
+
+                    <!-- Ano Curricular -->
+                    <div class="form-group">
+                        <label>Ano Curricular</label>
+                        <div style="display: block;">
+                            <label class="radio-inline">
+                                <input type="radio" class="ano_curricular" name="ano_curricular" onChange="getUCS()"
+                                    id="ano_curricular1" value="1" checked>1º Ano
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" class="ano_curricular" name="ano_curricular" onChange="getUCS()"
+                                    id="ano_curricular2" value="2">2º Ano
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" class="ano_curricular" name="ano_curricular" onChange="getUCS()"
+                                    id="ano_curricular3" value="3">3º Ano
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- Semestre -->
                     <div class="form-group">
+                        <label>Semestre</label>
                         <div style="display: block;">
                             <label class="radio-inline">
                                 <input type="radio" class="semestre" name="semestre_projeto" onChange="getUCS()"
-                                    id="semestre1" value="1">1º Semestre
+                                    id="semestre1" value="1" checked>1º Semestre
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" class="semestre" name="semestre_projeto" onChange="getUCS()"
@@ -866,42 +897,14 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="changeSemestreUC()">Alterar</button>
+                    <button type="button" class="btn btn-primary" onclick="changeAnoSemestreUC()">Alterar</button>
                 </div>
             </div>
             <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal -> SEMESTRE & UC -->
-
-    <!-- Modal -> ANO LETIVO -->
-    <div class="modal fade" id="modalAnoLetivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header" style="padding-bottom:5px;">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <label>Projeto realizado no...</label>
-                </div>
-                <div class="modal-body">
-                    <select id="iAnoLetivo" class="form-control" name="selectAnoLetivo_projeto" required>
-                        <option value="1">1º ano</option>
-                        <option value="2">2º ano</option>
-                        <option value="3">3º ano</option>
-                    </select>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="changeAnoLetivo()">Alterar</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -> ANO LETIVO -->
+    <!-- /.modal -> ANO & SEMESTRE & UC -->
 
     <!-- Modal -> DATA -->
     <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -943,7 +946,7 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                 </div>
                 <div class="modal-body">
                     <input type="text" class="form-control" name="palavraschave_projeto"
-                        value="<?php echo($projeto_palavraschave); ?>" minlength="5" maxlength="50"
+                        value="<?php echo($projeto_palavraschave); ?>" minlength="5" maxlength="100"
                         placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
                     <p class="help-block">Exemplo: Desenho; Mockup</p>
                 </div>
@@ -979,9 +982,9 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
                     ?>
                     <input type="url" class="form-control" name="video_projeto"
                         value="<?php echo($input_video_value); ?>" minlength="10" maxlength="50"
-                        placeholder="https://www.youtube.com/watch?v=Cq54GSWDaYI" />
+                        placeholder="https://www.youtube.com/watch?v=BrK9atbrWFY" />
 
-                    <p class="help-block" id="help_video">Exemplo: https://www.youtube.com/watch?v=Cq54GSWDaYI</p>
+                    <p class="help-block" id="help_video">Exemplo: https://www.youtube.com/watch?v=BrK9atbrWFY</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -1073,15 +1076,16 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
 
                     <div style='min-height:150px; display: flex; justify-content: center;'>
                         <div style='display: flex; flex-direction: column; justify-content: center;'>
-                            <img class='img-thumbnail-v2' name="big_image" style='width:auto; height:auto; max-height: 500px;' src='' alt=''>
+                            <img class='img-thumbnail-v2' name="big_image"
+                                style='width:auto; height:auto; max-height: 500px;' src='' alt=''>
                         </div>
                     </div>
 
                 </div>
+            </div>
+            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
+        <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -> VER IMAGEM -->
 
@@ -1099,11 +1103,19 @@ function selectFicheiro($connectDB, $id_projeto, &$projeto_ficheiro)
 
 </body>
 <script>
+$(document).ready(function() {
+    getUCS();
+});
+
 //-- Semestre selecionado
 function getUCS() {
     var semestre = $('.semestre:checked').val();
+    var ano = $('.ano_curricular:checked').val();
+    // var ano_curricular = $('.iAnoLetivo').val();
 
-    //console.log("Semestre: " + semestre);
+    console.log("Semestre: " + semestre);
+    console.log("Ano: " + ano);
+    // console.log("Ano: " + ano_curricular);
     $('#iSelectUC').empty();
 
     $.ajax({
@@ -1111,16 +1123,20 @@ function getUCS() {
         url: 'fetch_ucs_users.php',
         data: {
             'action': 'get_ucs',
-            'semestre': semestre
+            'semestre': semestre,
+            'ano_curricular': ano
         },
         dataType: 'json',
         success: function(response) {
+            console.log("Funciona");
+
             $.each(response, function(index, element) {
                 console.log(element); // print json code
                 $("#iSelectUC").append("<option value='" + element.idunidade_curricular + "'>" +
                     element.nome + "</option>");
             });
-            //alert(response);
+            // alert(response);
+            console.log(response);
         }
     });
 }
@@ -1267,20 +1283,24 @@ function changeTitulo() {
     var idprojeto = $('input[name="id_projeto"]').val();
     var tituloprojeto = $('input[name="titulo_projeto"]').val();
 
-    $.ajax({
-        type: "POST",
-        url: 'delete_edit_projeto.php',
-        data: {
-            'action': 'change_titulo',
-            'id_projeto': idprojeto,
-            'titulo_projeto': tituloprojeto
-        },
-        success: function(response) {
-            // alert(response);
-            location.reload();
+    if (tituloprojeto.length > 10) {
+        $.ajax({
+            type: "POST",
+            url: 'delete_edit_projeto.php',
+            data: {
+                'action': 'change_titulo',
+                'id_projeto': idprojeto,
+                'titulo_projeto': tituloprojeto
+            },
+            success: function(response) {
+                // alert(response);
+                location.reload();
 
-        }
-    });
+            }
+        });
+    } else {
+        alert("Insira pelo menos 10 caracteres!");
+    }
 }
 
 //-- Pedido AJAX para alterar descricao do projeto
@@ -1289,21 +1309,25 @@ function changeDescricao() {
     var descricaoprojeto = $('textarea[name="descricao_projeto"]').val();
 
     // console.log("Descricao " + descricaoprojeto);
+    if (descricaoprojeto.length > 10) {
+        $.ajax({
+            type: "POST",
+            url: 'delete_edit_projeto.php',
+            data: {
+                'action': 'change_descricao',
+                'id_projeto': idprojeto,
+                'descricao_projeto': descricaoprojeto
+            },
+            success: function(response) {
+                // alert(response);
+                location.reload();
 
-    $.ajax({
-        type: "POST",
-        url: 'delete_edit_projeto.php',
-        data: {
-            'action': 'change_descricao',
-            'id_projeto': idprojeto,
-            'descricao_projeto': descricaoprojeto
-        },
-        success: function(response) {
-            // alert(response);
-            location.reload();
+            }
+        });
+    } else {
+        alert("Insira pelo menos 10 caracteres!");
 
-        }
-    });
+    }
 }
 
 //-- Pedido AJAX para alterar os autores do projeto
@@ -1313,21 +1337,25 @@ function changeAutores() {
     var autoresprojeto = $('input[name="autores_projeto"]').val();
 
     // console.log("autores: " + autoresprojeto);
+    if (autoresprojeto.length > 10){
+        $.ajax({
+            type: "POST",
+            url: 'delete_edit_projeto.php',
+            data: {
+                'action': 'change_autores',
+                'id_projeto': idprojeto,
+                'autores_projeto': autoresprojeto
+            },
+            success: function(response) {
+                alert(response);
+                location.reload();
 
-    $.ajax({
-        type: "POST",
-        url: 'delete_edit_projeto.php',
-        data: {
-            'action': 'change_autores',
-            'id_projeto': idprojeto,
-            'autores_projeto': autoresprojeto
-        },
-        success: function(response) {
-            alert(response);
-            location.reload();
+            }
+        });
+    } else {
+        alert("Insira pelo menos 10 caracteres!");
 
-        }
-    });
+    }
 }
 
 //-- Pedido AJAX para alterar as palavras-chave do projeto
@@ -1336,21 +1364,24 @@ function changePalavrasChave() {
     var palavras_chave_projeto = $('input[name="palavraschave_projeto"]').val();
 
     // console.log("Palavras-chave: " + palavras_chave_projeto);
+    if (autoresprojeto.length > 5){
+        $.ajax({
+            type: "POST",
+            url: 'delete_edit_projeto.php',
+            data: {
+                'action': 'change_palavraschave',
+                'id_projeto': idprojeto,
+                'palavraschave_projeto': palavras_chave_projeto
+            },
+            success: function(response) {
+                // alert(response);
+                location.reload();
 
-    $.ajax({
-        type: "POST",
-        url: 'delete_edit_projeto.php',
-        data: {
-            'action': 'change_palavraschave',
-            'id_projeto': idprojeto,
-            'palavraschave_projeto': palavras_chave_projeto
-        },
-        success: function(response) {
-            // alert(response);
-            location.reload();
-
-        }
-    });
+            }
+        });
+    } else {
+        alert("Insira pelo menos 5 caracteres!");
+    }
 }
 
 //-- Pedido AJAX para alterar o video do projeto
@@ -1370,7 +1401,7 @@ function changeVideo() {
         } else {
             // console.log("URL invalido");
             $('p[id="help_video"]').text("URL inválido. Exemplo: " +
-                "https://www.youtube.com/watch?v=Cq54GSWDaYI");
+                "https://www.youtube.com/watch?v=BrK9atbrWFY");
             $('p[id="help_video"]').css({
                 "color": "rgb(216, 79, 79)"
             })
@@ -1387,7 +1418,7 @@ function changeVideo() {
             'video_projeto': video_projeto
         },
         success: function(response) {
-            alert(response);
+            // alert(response);
             location.reload();
         }
     });
@@ -1409,7 +1440,7 @@ function changeTipo() {
             'tipo_projeto': tipo_projeto
         },
         success: function(response) {
-            alert(response);
+            // alert(response);
             location.reload();
         }
     });
@@ -1438,8 +1469,9 @@ function changeAnoLetivo() {
 }
 
 //-- Pedido AJAX para alterar o semestre e unidade curricular do projeto
-function changeSemestreUC() {
+function changeAnoSemestreUC() {
     var idprojeto = $('input[name="id_projeto"]').val();
+    var ano_projeto = $('input[name="ano_curricular"]:checked').val();
     var semestre_projeto = $('input[name="semestre_projeto"]:checked').val();
     var uc_projeto = $('select[name="selectUC_projeto"]').val();
 
@@ -1452,6 +1484,7 @@ function changeSemestreUC() {
         data: {
             'action': 'change_semestre_uc',
             'id_projeto': idprojeto,
+            'ano_projeto': ano_projeto,
             'semestre_projeto': semestre_projeto,
             'uc_projeto': uc_projeto
         },
@@ -1514,7 +1547,7 @@ function removeVideo() {
             'id_projeto': idprojeto,
         },
         success: function(response) {
-            alert(response);
+            // alert(response);
             location.reload();
         }
     });
@@ -1549,8 +1582,8 @@ function deleteImagem(nome) {
     }
 }
 
-function parseImage(nome){
-    $('img[name="big_image"]').attr("src","images/projetos/imagens/" + nome);
+function parseImage(nome) {
+    $('img[name="big_image"]').attr("src", "images/projetos/imagens/" + nome);
 }
 
 //##FIXME: LIXO

@@ -23,7 +23,7 @@ if (isset($_POST['titulo']) && isset($_POST['descricao']) && isset($_POST['autor
     $data = $_REQUEST['data']; //-- data no formato yyyy-mm-dd
     $data_split = explode("-", $data); //-- faz split retirando o "-" e guarda as strings em array
     $data = $data_split[0] . $data_split[1] . $data_split[2];
-    $ano = $_REQUEST['selectAnoLetivo'];
+    $ano = $_REQUEST['ano_curricular'];
     $semestre = $_REQUEST['semestre'];
     $tipo = $_REQUEST['tipo'];
     

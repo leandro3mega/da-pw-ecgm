@@ -89,8 +89,8 @@ if (!isset($_SESSION['username'])) {
                         <div class="form-group">
                             <label>Título</label>
                             <input type="text" class="form-control" name="titulo" minlength="10" maxlength="50"
-                                autofocus required placeholder="Insira o título do projeto"
-                                oninvalid="this.setCustomValidity('ERROR_TEXT')" oninput="this.setCustomValidity('')">
+                                autofocus required placeholder="Insira o título do projeto">
+                            <!-- oninvalid="this.setCustomValidity('ERROR_TEXT')" oninput="this.setCustomValidity('')" -->
                         </div>
 
                         <!-- Descrição -->
@@ -131,14 +131,6 @@ if (!isset($_SESSION['username'])) {
                                 </div>
 
                                 <!-- Ano letivo -->
-                                <!-- <div class="form-group">
-                                    <label>O projeto foi realizado no...</label>
-                                    <select id="iAnoLetivo" class="form-control" name="selectAnoLetivo" required>
-                                        <option value="1">1º ano</option>
-                                        <option value="2">2º ano</option>
-                                        <option value="3">3º ano</option>
-                                    </select>
-                                </div> -->
                                 <div class="form-group" style="margin-top:30px">
                                     <label>O projeto foi realizado no...</label>
                                     <div style="display: block;">
@@ -184,7 +176,7 @@ if (!isset($_SESSION['username'])) {
                                 <div class="form-group" style="margin-top:30px">
                                     <label>Palavras-Chave</label>
                                     <input type="text" class="form-control" name="palavras-chave" minlength="4"
-                                        maxlength="50" required
+                                        maxlength="100" required
                                         placeholder="Insira as palavras chave do projeto (separadas por ponto e vígula)">
                                     <p class="help-block">Exemplo: Desenho; Mockup</p>
                                 </div>
@@ -193,8 +185,8 @@ if (!isset($_SESSION['username'])) {
                                 <div class="form-group" style="margin-top:30px">
                                     <label>Inserir vídeo (Opcional)</label>
                                     <input type="url" class="form-control" name="video" pattern="https?://.+"
-                                        placeholder="https://www.youtube.com/watch?v=Cq54GSWDaYI">
-                                    <p class="help-block">Exemplo: https://www.youtube.com/watch?v=Cq54GSWDaYI</p>
+                                        placeholder="https://www.youtube.com/watch?v=BrK9atbrWFY">
+                                    <p class="help-block">Exemplo: https://www.youtube.com/watch?v=BrK9atbrWFY</p>
                                 </div>
                             </div>
 
@@ -207,82 +199,6 @@ if (!isset($_SESSION['username'])) {
                                     <input type="date" class="form-control" name="data" required>
                                     <p class="help-block">Exemplo: 12/03/2019</p>
                                 </div>
-
-
-
-                                <!-- Categorias -->
-                                <!--
-                                <div class="form-group" style="margin-top:30px">
-                                    <label>Categorias que pretende associar ao seu projeto</label>
-                                    <input type="text" class="form-control" name="categorias" placeholder="Insira as categorias do projeto (separadas por ponto e vígula)">
-                                    <p class="help-block">Exemplo: Desenho;Illustração</p>
-                                </div>
-                                -->
-
-                                <!-- Ferramentas -->
-                                <!--
-                                <div class="form-group" style="margin-top:30px">
-                                    <label>Ferramentas utilizadas</label>
-                                    <input type="text" class="form-control" name="ferramentas" placeholder="Insira as categorias do projeto (separadas por ponto e vígula)">
-                                    <p class="help-block">Exemplo: Adobe Illustrator;Sketch</p>
-                                </div>
-                                -->
-
-                                <!-- Ferramentas -->
-                                <!-- <div class="form-group" style="margin-top:30px">
-                                    <label>Ferramentas utilizadas</label>
-                                    <div>
-                                        <?php
-                                        //-- Script de selecionar ferramentas
-
-                                        // $resultCategoria = mysqli_query($connectDB, "SELECT idferramenta, nome, descricao, empresa FROM ferramenta ORDER BY nome");
-
-                                        // if (mysqli_num_rows($resultCategoria) > 0) {
-                                        //     while ($row = $resultCategoria->fetch_assoc()) {
-                                        //         echo("
-                                        //         <input type='checkbox' name='cb[]' value='" . $row['idferramenta'] . "'/> " . $row['nome'] . "<br/>
-                                        //         ");
-                                        //     }
-                                        // }
-                                        ?>
-                                    </div>
-                                </div> -->
-
-                                <!--
-                                <div class="form-group">
-                                    <label>Categorias que pretende associar ao seu projeto</label>
-                                    <div id="cblist" style="border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll; border-radius: 4px;">
-
-                                        <div id="cblist" class="checkbox">
-                                            <label for="cb1">
-                                                <input type="checkbox" value="1" id="cb1" />
-                                                1ª Categoria
-                                            </label>
-                                        </div>
-                                        <div id="cblist" class="checkbox">
-                                            <label for="cb2">
-                                                <input type="checkbox" value="2" id="cb2" />
-                                                2ª Categoria
-                                            </label>
-                                        </div>
-
-                                    </div>
-                                    <input type="text" id="txtNameCat" placeholder="Ou insira uma nova categoria" style="width:280px" />
-                                    <input type="button" value="ok" id="btnInsert" />
-                                </div>
-                                -->
-
-
-                                <!-- Video Embed teste -->
-                                <!--
-                                <div class="form-group">
-                                    <label>Vídeo a inserir no projeto (Opcional)</label>
-                                    <iframe width="560" height="315" src="https://www.youtube.com/embed/oNXLvzKFPOI?start=10"
-                                        frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen>
-                                    </iframe>
-                                </div>
-                                -->
 
                                 <!-- Ficheiro -->
                                 <div class="form-group" style="margin-top:30px">
@@ -318,10 +234,18 @@ if (!isset($_SESSION['username'])) {
                             </div>
 
                         </div>
-                        <div
-                            style="width: 200px; display: block; margin-left:auto; margin-right: auto; margin-top:20px; margin-bottom:80px">
-                            <input type="submit" class="btn btn-default btn-backoffice-size" style="min-width:200px"
-                                value="Submeter">
+                        <!-- <div style="width: 200px; display: block; margin-left:auto; margin-right: auto; margin-top:20px; margin-bottom:80px"> -->
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="submit" class="btn btn-default btn-backoffice-size"
+                                    style="min-width:200px; float: right;" value="Submeter">
+                            </div>
+                            <div class="col-lg-6">
+                                <a class="btn btn-default btn-backoffice-size" onclick="previewProjeto()"
+                                    style="min-width:200px; float: left;">
+                                    Pre-visualizar
+                                </a>
+                            </div>
                         </div>
                     </form>
                     <!-- /.row -->
@@ -530,6 +454,54 @@ function verificaLimitesFicheiro() {
     }
 }
 
+//-- Abre pre-visualização de um novo projeto
+function previewProjeto() {
+    var param = {
+        'preview_titulo': $('input[name="titulo"]').val(),
+        'preview_descricao': $('textarea[name="descricao"]').val(),
+        'preview_autores': $('input[name="autores"]').val(),
+        'preview_palavras': $('input[name="palavras-chave"]').val(),
+        'preview_uc': $('#iSelectUC option:selected').text()
+    };
+
+    OpenWindowWithPost(
+        "preview-projeto.php",
+        "width=1200,height=500,left=39,top=30,resizable=no,scrollbars=no",
+        "NewFile",
+        param
+    );
+}
+
+
+function OpenWindowWithPost(url, windowoption, name, params) {
+    var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", url);
+    form.setAttribute("target", name);
+
+    for (var i in params) {
+        if (params.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = params[i];
+            form.appendChild(input);
+        }
+    }
+
+    document.body.appendChild(form);
+
+    //note I am using a post.htm page since I did not want to make double request to the page 
+    //it might have some Page_Load call which might screw things up.
+    window.open("post.htm", name, windowoption);
+
+    form.submit();
+
+    document.body.removeChild(form);
+}
+
+
+
 //## NOT USED
 // GET THE IMAGE WIDTH AND HEIGHT USING fileReader() API.
 function readImageFile(file) {
@@ -561,7 +533,7 @@ $('.tooltip-demo').tooltip({
 })
 
 
-//## LIXO
+//##TODO: LIXO
 $(document).ready(function() {
 
     $('#btnInsert').click(function() {
@@ -571,7 +543,7 @@ $(document).ready(function() {
     addRemoveIMG();
 });
 
-//## LIXO
+//##TODO: LIXO
 function addCheckbox(name) {
     var container = $('#cblist');
     var inputs = container.find('input');

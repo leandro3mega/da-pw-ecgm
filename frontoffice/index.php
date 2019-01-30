@@ -24,7 +24,7 @@ if (!isset($_SESSION['username'])) {
         $sql = "SELECT nome, email, fotografia FROM docente WHERE fk_idutilizador=?";
     }
 
-    if($tipo == 1 || $tipo == 2){
+    if ($tipo == 1 || $tipo == 2) {
         if ($stmt = $connectDB->prepare($sql)) {
             // Bind variables to the prepared statement as parameters
             $stmt->bind_param("i", $param_idutilizador);
@@ -106,7 +106,7 @@ if (!isset($_SESSION['username'])) {
         text-decoration: none;
     }
 
-    .link-menu:hover{
+    .link-menu:hover {
         color: #868686;
         text-decoration: none;
 
@@ -288,13 +288,15 @@ if (!isset($_SESSION['username'])) {
                                 data-procura="procura" placeholder="Procurar por titulo"> -->
                             <!-- <button data-btn-pesquisa
                                 style='width:10%; height:100%; background: Transparent no-repeat; border: none; margin-top:auto; margin-bottom:auto'> -->
-                                <a data-btn-pesquisa style="margin-top:auto; margin-bottom:auto; width:10%; height:auto;"><i class='fa fa-search fa-fw' style="font-size: 150%;"></i></a>
+                            <a data-btn-pesquisa style="margin-top:auto; margin-bottom:auto; width:10%; height:auto;"><i
+                                    class='fa fa-search fa-fw' style="font-size: 150%;"></i></a>
                             <!-- </button> -->
                         </div>
                     </div>
                     <div class="col-md-3  custom_font " style="margin-top:0px; display:flex;">
                         <!-- Nome | <span id="myText"></span><a id="signout_button"  href="#"> logout </a> -->
-                        <div style="width:fit-content; margin-left:auto; zoom:100%; margin-top:auto; margin-bottom:auto">
+                        <div
+                            style="width:fit-content; margin-left:auto; zoom:100%; margin-top:auto; margin-bottom:auto">
                             <?php
                             if ($cargo === "Administrador") {
                                 echo("<a class='link-menu custom-font' href='../backoffice/index.php'>".$username."</a>");
@@ -302,7 +304,8 @@ if (!isset($_SESSION['username'])) {
                                 echo("<a class='link-menu custom-font'  href='../backoffice/index.php'>".$nome."</a>");
                             }
                             ?>
-                            | <span id="myText"></span><a id="signout_button" class="link-menu custom-font" href="../backoffice/logout.php"> Logout
+                            | <span id="myText"></span><a id="signout_button" class="link-menu custom-font"
+                                href="../backoffice/logout.php"> Logout
                             </a>
                         </div>
                         <div>
@@ -335,13 +338,13 @@ if (!isset($_SESSION['username'])) {
 
                     <div class="align-top" style="display: flex; height: 75%; align-items: start;">
                         <!-- <button type="button" data-pagina-baixo -->
-                            <!-- style='background: Transparent no-repeat; border: none;'> -->
-                            <a data-pagina-baixo><i class='fa fa-chevron-up fa-fw' style="font-size: 200%;"></i></a>
+                        <!-- style='background: Transparent no-repeat; border: none;'> -->
+                        <a data-pagina-baixo><i class='fa fa-chevron-up fa-fw' style="font-size: 200%;"></i></a>
                         <!-- </button> -->
                     </div>
                     <div class="align-bottom" style="display: flex; height: 25%;">
                         <!-- <button type="button" data-pagina-cima style='background: Transparent no-repeat; border: none;'> -->
-                            <a data-pagina-cima><i class='fa fa-chevron-down fa-fw' style="font-size: 200%;"></i></a>
+                        <a data-pagina-cima><i class='fa fa-chevron-down fa-fw' style="font-size: 200%;"></i></a>
                         <!-- </button> -->
                     </div>
                 </div>
