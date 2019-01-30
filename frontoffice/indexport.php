@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -25,7 +24,7 @@ if (!isset($_SESSION['username'])) {
         $sql = "SELECT nome, email, fotografia FROM docente WHERE fk_idutilizador=?";
     }
 
-    if($tipo == 1 || $tipo == 2){
+    if ($tipo == 1 || $tipo == 2) {
         if ($stmt = $connectDB->prepare($sql)) {
             // Bind variables to the prepared statement as parameters
             $stmt->bind_param("i", $param_idutilizador);
@@ -176,14 +175,14 @@ if (!isset($_SESSION['username'])) {
         animation-duration: 1.5s;
     }
 
-    
+
     .link-menu {
         color: #000;
         text-decoration: none;
-        font-size:13px;
+        font-size: 13px;
     }
 
-    .link-menu:hover{
+    .link-menu:hover {
         color: #868686;
         text-decoration: none;
 
@@ -369,7 +368,7 @@ if (!isset($_SESSION['username'])) {
 
         </div>
 
-        <div class="row" >
+        <div class="row">
             <div class="col-md-6 " style="margin-top:10px">
 
                 <form action="index.php">
@@ -377,64 +376,65 @@ if (!isset($_SESSION['username'])) {
             </div>
 
 
-            <div class="col-md-6 " style="margin-top:0px; display:flex;">
-              
+            <div class="col-md-6 custom_font " style="margin-top:0px; display:flex;">
+
                 <div style="width:fit-content; margin-left:auto; margin-top:auto; margin-bottom:auto; font-size:13px">
-                            <?php
+                    <?php
                              if ($cargo === "Administrador") {
-                                echo("<a class='link-menu custom-font' href='../backoffice/index.php'>".$username."</a>");
+                                 echo("<a class='link-menu custom-font' href='../backoffice/index.php'>".$username."</a>");
                              } else {
-                                echo("<a class='link-menu custom-font' href='../backoffice/index.php'>".$nome_utilizador."</a>");
+                                 echo("<a class='link-menu custom-font' href='../backoffice/index.php'>".$nome_utilizador."</a>");
                              }
                             ?>
-                            | <span id="myText"></span><a id="signout_button" class="link-menu custom-font" href="../backoffice/logout.php"> Logout
-                            </a>
-                </div> 
+                    | <span id="myText"></span><a id="signout_button" class="link-menu custom-font"
+                        href="../backoffice/logout.php"> Logout
+                    </a>
+                </div>
 
-            
+
+            </div>
+
+
         </div>
 
+        <script>
+        var slideIndex = 1;
+        showSlides(slideIndex);
 
-    </div>
-
-    <script>
-    var slideIndex = 1;
-    showSlides(slideIndex);
-
-    function plusSlides(n) {
-        showSlides(slideIndex += n);
-    }
-
-    function currentSlide(n) {
-        showSlides(slideIndex = n);
-    }
-
-    function showSlides(n) {
-        var i;
-        var slides = document.getElementsByClassName("mySlides");
-        var dots = document.getElementsByClassName("dot");
-        if (n > slides.length) {
-            slideIndex = 1
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
         }
-        if (n < 1) {
-            slideIndex = slides.length
-        }
-        for (i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";
-        }
-        for (i = 0; i < dots.length; i++) {
-            dots[i].className = dots[i].className.replace(" active", "");
-        }
-        // slides[slideIndex-1].style.display = "block";  
-        slides[slideIndex - 1].style.display = "contents";
-        dots[slideIndex - 1].className += " active";
-    }
-    </script>
-    <!-- /.container -->
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            var i;
+            var slides = document.getElementsByClassName("mySlides");
+            var dots = document.getElementsByClassName("dot");
+            if (n > slides.length) {
+                slideIndex = 1
+            }
+            if (n < 1) {
+                slideIndex = slides.length
+            }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            // slides[slideIndex-1].style.display = "block";  
+            slides[slideIndex - 1].style.display = "contents";
+            dots[slideIndex - 1].className += " active";
+        }
+        </script>
+        <!-- /.container -->
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

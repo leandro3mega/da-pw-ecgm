@@ -8,6 +8,21 @@ $autores =  $_POST['preview_autores'];
 $palavras =  $_POST['preview_palavras'];
 $uc =  $_POST['preview_uc'];
 $data = "25 de janeiro";
+$imagens = array();
+
+
+// if (isset($_FILES["image"]['name'])) {
+    echo("Funciona");
+    $total = count($_FILES["image"]['name']);
+    
+    for ($i=0; $i<$total; $i++) {
+        $tmpFilePath = $_FILES['image']['tmp_name'][$i];
+        echo("file: " . $tmpFilePath);
+        if ($tmpFilePath != "") {
+            $imagens[i] = $tmpFilePath;
+        }
+    }
+// }
 
 ?>
 

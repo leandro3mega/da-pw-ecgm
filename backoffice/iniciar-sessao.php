@@ -122,7 +122,9 @@ if (isset($_SESSION['username'])) {
 
     <footer>
         <div class="footer">
-            <img src="images/website/logotipo_v2_transparente.png" style="max-height:50px;" alt="">
+            <a target="_blank" rel="noopener noreferrer" href="http://cursos.estg.ipvc.pt/DA">
+                <img src="images/website/logotipo_v2_transparente.png" style="max-height:50px;" alt="">
+            </a>
             <a target="_blank" rel="noopener noreferrer" href="http://portal.ipvc.pt/portal/page/portal/estg">
                 <img src="images/website/logo_estg.png" style="max-height:50px; margin: 0px 30px 0px 30px;" alt="">
             </a>

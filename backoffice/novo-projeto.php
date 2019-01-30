@@ -332,6 +332,7 @@ function addRemoveIMG() {
         var tempimg = document.createElement("input");
         tempimg.setAttribute("type", "file");
         tempimg.name = "image[]";
+        tempimg.id = "iimage[]";
         tempimg.required = true;
         tempimg.accept = "image/jpeg, image/png";
         // tempimg.multiple = true;
@@ -456,12 +457,16 @@ function verificaLimitesFicheiro() {
 
 //-- Abre pre-visualização de um novo projeto
 function previewProjeto() {
+    var imagens = document.getElementById("iimage[]");
+
+
     var param = {
         'preview_titulo': $('input[name="titulo"]').val(),
         'preview_descricao': $('textarea[name="descricao"]').val(),
         'preview_autores': $('input[name="autores"]').val(),
         'preview_palavras': $('input[name="palavras-chave"]').val(),
-        'preview_uc': $('#iSelectUC option:selected').text()
+        'preview_uc': $('#iSelectUC option:selected').text(),
+        'preview_images': $('input[name="image[]"]').val()
     };
 
     OpenWindowWithPost(
