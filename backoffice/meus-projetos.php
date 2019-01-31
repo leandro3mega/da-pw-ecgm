@@ -12,6 +12,23 @@ if (!isset($_SESSION['username'])) {
     $tipo = $_SESSION['tipo'];
     $cargo = $_SESSION['cargo'];
 
+    //-- Decobre Ano Letivo
+    $ano_atual = date('Y');
+    // $ano_atual = "2020";
+    $mes_atual = date('m');
+    // $mes_atual = "09";
+    $ano_letivo = $ano_letivo_format = "";
+
+    if ($mes_atual <= "08") {
+        $ano_letivo_format = ($ano_atual -1) . "/" . $ano_atual;
+        $ano_letivo = ($ano_atual -1) . $ano_atual;
+    // echo "</br>é menor";
+    } else {
+        $ano_letivo_format = $ano_atual . "/" . ($ano_atual + 1);
+        $ano_letivo = $ano_atual . ($ano_atual + 1);
+        // echo "</br>é maior";
+    }
+
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
     if ($tipo == 1) {
         $sql = "SELECT nome, email, fotografia FROM aluno WHERE fk_idutilizador=?";
@@ -159,7 +176,7 @@ if (!isset($_SESSION['username'])) {
                                         } elseif ($tipo == 1) {
                                             selectProjetoAluno($connectDB, $id);
                                         } else {
-                                            selectProjetoDocente($connectDB, $id);
+                                            selectProjetoDocente($connectDB, $id, $ano_letivo);
                                         }
 
                                         //-- Seleciona todos os projetos existentes na DB
@@ -349,7 +366,7 @@ if (!isset($_SESSION['username'])) {
                                         }
 
                                         //-- Seleciona os projetos para as UC do docente na sessão
-                                        function selectProjetoDocente($connectDB, $id)
+                                        function selectProjetoDocente($connectDB, $id, $ano_letivo)
                                         {
                                             echo
                                                 "<thead>
@@ -366,7 +383,7 @@ if (!isset($_SESSION['username'])) {
 
                                             $sql = mysqli_query($connectDB, "SELECT p.idprojeto, p.titulo, p.descricao, p.data, p.ano, p.semestre, p.tipo, p.fk_iduc, uc.nome as nome_uc 
                                                                             FROM projeto p, unidade_curricular uc, docente_uc duc
-                                                                            WHERE p.fk_iduc=uc.idunidade_curricular AND p.fk_iduc=duc.fk_iduc AND duc.fk_iddocente=$id
+                                                                            WHERE p.fk_iduc=uc.idunidade_curricular AND p.fk_iduc=duc.fk_iduc AND duc.fk_iddocente=$id AND duc.ano_letivo=$ano_letivo
                                                                             GROUP BY p.idprojeto");
 
                                             while ($row = $sql->fetch_assoc()) {

@@ -34,15 +34,11 @@ if (!isset($_SESSION['username'])) {
         $_SESSION['nome'] = $nome;
     }
 
-    // $data_atual = getdate();
-    // echo date('Y-m-d');
+    //-- Decobre Ano Letivo
     $ano_atual = date('Y');
     $mes_atual = date('m');
     // $mes_atual = "09";
     $ano_letivo = $ano_letivo_format = "";
-
-    // echo($ano_atual);
-    // echo("</br>" . $mes_atual);
 
     if ($mes_atual <= "08") {
         $ano_letivo_format = ($ano_atual -1) . "/" . $ano_atual;
