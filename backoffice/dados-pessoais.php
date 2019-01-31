@@ -18,7 +18,7 @@ if (!isset($_SESSION['username'])) {
 } else {
     $id = $_SESSION['id'];
     $username = $_SESSION['username'];
-    $nome = $email = "";
+    $nome = $email = $fotografia = "";
     $tipo = $_SESSION['tipo'];
     $cargo = $_SESSION['cargo'];
 
@@ -29,35 +29,39 @@ if (!isset($_SESSION['username'])) {
         $sql = "SELECT nome, email, fotografia FROM docente WHERE fk_idutilizador=?";
     }
 
-    if ($stmt = $connectDB->prepare($sql)) {
-        // Bind variables to the prepared statement as parameters
-        $stmt->bind_param("i", $param_idutilizador);
+    if ($tipo == 1 || $tipo == 2) {
+        if ($stmt = $connectDB->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bind_param("i", $param_idutilizador);
             
-        // Set parameters
-        $param_idutilizador = $id;
+            // Set parameters
+            $param_idutilizador = $id;
             
-        // Attempt to execute the prepared statement
-        if ($stmt->execute()) {
-            // Store result
-            $stmt->store_result();
-            // Check if username exists, if yes then verify password
-            if ($stmt->num_rows == 1) {
-                // Bind result variables
-                $stmt->bind_result($r_nome, $r_email, $r_foto);
-                if ($stmt->fetch()) {
-                    //-- Atribui variaveis
-                    $nome = $r_nome;
-                    $email = $r_email;
-                    $_SESSION['nome'] = $nome;
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // Store result
+                $stmt->store_result();
+                // Check if username exists, if yes then verify password
+                if ($stmt->num_rows == 1) {
+                    // Bind result variables
+                    $stmt->bind_result($r_nome, $r_email, $r_foto);
+                    if ($stmt->fetch()) {
+                        //-- Atribui variaveis
+                        $nome = $r_nome;
+                        $email = $r_email;
+                        $fotografia = $r_foto;
+                        $_SESSION['nome'] = $nome;
+                    }
+                } else {
+                    // echo"Não foi encontrado video ";
                 }
             } else {
-                // echo"Não foi encontrado video ";
+                echo "Algo correu mal. Por favor tente de novo.";
             }
-        } else {
-            echo "Algo correu mal. Por favor tente de novo.";
         }
+        $stmt->close();
     }
-    $stmt->close();
+
 }
 ?>
 

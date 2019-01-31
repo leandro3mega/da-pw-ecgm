@@ -37,7 +37,7 @@ if (!isset($_SESSION['username'])) {
                 // Check if username exists, if yes then verify password
                 if ($stmt->num_rows == 1) {
                     // Bind result variables
-                    $stmt->bind_result($r_nome, $r_email, $r_foto);
+                    $stmt->bind_result($r_nome, $r_email);
                     if ($stmt->fetch()) {
                         //-- Atribui variaveis
                         $nome = $r_nome;

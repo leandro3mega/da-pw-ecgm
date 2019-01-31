@@ -8,22 +8,48 @@ if (!isset($_SESSION['username'])) {
 } else {
     $id = $_SESSION['id'];
     $username = $_SESSION['username'];
-    $nome;
-    $email;
+    $nome = $email = $fotografia = "";
     $tipo = $_SESSION['tipo'];
     $cargo = $_SESSION['cargo'];
-    /*
-    //-- Converte int em string para mostrar o cargo do user no menu superior
-    if ($tipo == 0) $cargo = "Administrador";
-    else if ($tipo == 1) $cargo = "Aluno";
-    else $cargo = "Professor";
-     */
+
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
-    $result = mysqli_query($connectDB, "select * from view_useralunosdocentes where idutilizador=$id");
-    if (mysqli_num_rows($result) == 1) {
-        $row = $result->fetch_assoc();
-        $nome = ($row['nome']);
-        $email = ($row['email']);
+    if ($tipo == 1) {
+        $sql = "SELECT nome, email, fotografia FROM aluno WHERE fk_idutilizador=?";
+    } elseif ($tipo == 2) {
+        $sql = "SELECT nome, email, fotografia FROM docente WHERE fk_idutilizador=?";
+    }
+
+    if ($tipo == 1 || $tipo == 2) {
+        if ($stmt = $connectDB->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bind_param("i", $param_idutilizador);
+            
+            // Set parameters
+            $param_idutilizador = $id;
+            
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // Store result
+                $stmt->store_result();
+                // Check if username exists, if yes then verify password
+                if ($stmt->num_rows == 1) {
+                    // Bind result variables
+                    $stmt->bind_result($r_nome, $r_email, $r_foto);
+                    if ($stmt->fetch()) {
+                        //-- Atribui variaveis
+                        $nome = $r_nome;
+                        $email = $r_email;
+                        $fotografia = $r_foto;
+                        $_SESSION['nome'] = $nome;
+                    }
+                } else {
+                    // echo"Não foi encontrado video ";
+                }
+            } else {
+                echo "Algo correu mal. Por favor tente de novo.";
+            }
+        }
+        $stmt->close();
     }
 }
 
