@@ -21,7 +21,7 @@
         <li>
             <a style='padding:0px 0px 0px 15px'>
                 <div style='max-width:45px; max-height:45px;'>
-                    <img class='img-fluid img-thumbnail'  style='object-fit: cover; border-radius: 50%;' src='images/utilizadores/" . $fotografia . "' alt='fotografia'>
+                    <img class='img-fluid img-circle'  style='object-fit: cover; max-height:45px; max-width:45px' src='images/utilizadores/" . $fotografia . "' alt='fotografia'>
                 </div>
             </a>
         </li>";

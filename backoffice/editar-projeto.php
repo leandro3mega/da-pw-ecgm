@@ -7,7 +7,7 @@ if (!isset($_SESSION['username'])) {
     header("location:iniciar-sessao.php");
     exit();
 } else {
-    $nome = $email = $id_projeto = "";
+    $nome = $email = $fotografia = $id_projeto = "";
     $id_user = $_SESSION['id'];
     $username = $_SESSION['username'];
     $tipo = $_SESSION['tipo'];
@@ -20,43 +20,46 @@ if (!isset($_SESSION['username'])) {
     } else {
         $id_projeto = $_SESSION['edit_projeto_id'];
     }
-    // echo("ID do projeto: " . $id_projeto);
-        
-    //--FIXME: este select penso que não seja necessário nesta pagina, pois não usamos o nome ou email do utilizador em lado nenhum
+
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
-    /*
-    if ($stmt = $connectDB->prepare("SELECT nome, email FROM view_useralunosdocentes WHERE idutilizador=?")) {
-        // Bind variables to the prepared statement as parameters
-        $stmt->bind_param("s", $param_id);
-
-        // Set parameters
-        $param_id = $id_user;
-
-        // Attempt to execute the prepared statement
-        if ($stmt->execute()) {
-            // Store result
-            $stmt->store_result();
-
-            // Check if username exists, if yes then verify password
-            if ($stmt->num_rows == 1) {
-                // Bind result variables
-                $stmt->bind_result($r_nome, $r_email);
-                if ($stmt->fetch()) {
-                    //-- Atribui variaveis
-                    $nome = $r_nome;
-                    $email = $r_email;
-                }
-            } else {
-                echo"Não foi encontrada conta ";
-            }
-        } else {
-            echo "Algo correu mal. Por favor tente de novo.";
-        }
+    if ($tipo == 1) {
+        $sql = "SELECT nome, email, fotografia FROM aluno WHERE fk_idutilizador=?";
+    } elseif ($tipo == 2) {
+        $sql = "SELECT nome, email, fotografia FROM docente WHERE fk_idutilizador=?";
     }
 
-    // Close statement
-    $stmt->close();
-    */
+    if ($tipo == 1 || $tipo == 2) {
+        if ($stmt = $connectDB->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bind_param("i", $param_idutilizador);
+            
+            // Set parameters
+            $param_idutilizador = $id_user;
+            
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // Store result
+                $stmt->store_result();
+                // Check if username exists, if yes then verify password
+                if ($stmt->num_rows == 1) {
+                    // Bind result variables
+                    $stmt->bind_result($r_nome, $r_email, $r_foto);
+                    if ($stmt->fetch()) {
+                        //-- Atribui variaveis
+                        $nome = $r_nome;
+                        $email = $r_email;
+                        $fotografia = $r_foto;
+                        $_SESSION['nome'] = $nome;
+                    }
+                } else {
+                    // echo"Não foi encontrado video ";
+                }
+            } else {
+                echo "Algo correu mal. Por favor tente de novo.";
+            }
+        }
+        $stmt->close();
+    }
     $projeto_iduc = $projeto_titulo = $projeto_descricao = $projeto_autores = $projeto_data = $projeto_ano = $projeto_semestre = $projeto_tipo = "";
     $projeto_palavraschave = $projeto_video = $projeto_unidade_curricular = $projeto_ficheiro = "";
     $ferramentas = array();

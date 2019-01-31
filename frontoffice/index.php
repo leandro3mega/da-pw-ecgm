@@ -397,7 +397,8 @@ if (!isset($_SESSION['username'])) {
                     <!-- <h6>Pesquisa</h6> -->
                     <div class="form-inline">
                         <input type="search" class="form-control" data-tabela="palavra_chave" data-tipo="palavra"
-                            data-valor="" data-procura="procura" placeholder="Pesquisar..." style="width:90%">
+                            data-valor="" data-procura="procura" placeholder="Pesquisar..."
+                            style="width:90%; font-size: 13px;">
                         <!-- <input type="search" data-tabela="projeto" data-tipo="titulo" data-valor=""
                                 data-procura="procura" placeholder="Procurar por titulo"> -->
                         <!-- <button data-btn-pesquisa
