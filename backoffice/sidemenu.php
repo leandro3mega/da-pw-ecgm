@@ -15,9 +15,23 @@
         <li>
             <?php echo $cargo; ?>
         </li>
-        <li><a><i class="fa fa-user fa-fw"></i>
-                <?php echo $username; ?> </a>
+        <?php
+        if ($cargo != "Administrador") {
+            echo "
+        <li>
+            <a style='padding:0px 0px 0px 15px'>
+                <div style='max-width:45px; max-height:45px;'>
+                    <img class='img-fluid img-thumbnail'  style='object-fit: cover; border-radius: 50%;' src='images/utilizadores/" . $fotografia . "' alt='fotografia'>
+                </div>
+            </a>
+        </li>";
+        }
+        ?>
+        <li>
+            <a style="padding-left:5px"><i class="fa fa-user fa-fw"></i> <?php echo $username; ?> </a>
+        </li>
         <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i>Sair</a>
+        </li>
 
     </ul>
     <!-- /.navbar-top-links -->

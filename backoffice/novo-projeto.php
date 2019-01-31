@@ -456,79 +456,79 @@ function verificaLimitesFicheiro() {
 }
 
 //-- Abre pre-visualização de um novo projeto
-function previewProjeto() {
-    var imagens = document.getElementById("iimage[]");
+// function previewProjeto() {
+//     var imagens = document.getElementById("iimage[]");
 
 
-    var param = {
-        'preview_titulo': $('input[name="titulo"]').val(),
-        'preview_descricao': $('textarea[name="descricao"]').val(),
-        'preview_autores': $('input[name="autores"]').val(),
-        'preview_palavras': $('input[name="palavras-chave"]').val(),
-        'preview_uc': $('#iSelectUC option:selected').text(),
-        'preview_images': $('input[name="image[]"]').val()
-    };
+//     var param = {
+//         'preview_titulo': $('input[name="titulo"]').val(),
+//         'preview_descricao': $('textarea[name="descricao"]').val(),
+//         'preview_autores': $('input[name="autores"]').val(),
+//         'preview_palavras': $('input[name="palavras-chave"]').val(),
+//         'preview_uc': $('#iSelectUC option:selected').text(),
+//         'preview_images': $('input[name="image[]"]').val()
+//     };
 
-    OpenWindowWithPost(
-        "preview-projeto.php",
-        "width=1200,height=500,left=39,top=30,resizable=no,scrollbars=no",
-        "NewFile",
-        param
-    );
-}
+//     OpenWindowWithPost(
+//         "preview-projeto.php",
+//         "width=1200,height=500,left=39,top=30,resizable=no,scrollbars=no",
+//         "NewFile",
+//         param
+//     );
+// }
 
 
-function OpenWindowWithPost(url, windowoption, name, params) {
-    var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", url);
-    form.setAttribute("target", name);
+// function OpenWindowWithPost(url, windowoption, name, params) {
+//     var form = document.createElement("form");
+//     form.setAttribute("method", "post");
+//     form.setAttribute("action", url);
+//     form.setAttribute("target", name);
 
-    for (var i in params) {
-        if (params.hasOwnProperty(i)) {
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = i;
-            input.value = params[i];
-            form.appendChild(input);
-        }
-    }
+//     for (var i in params) {
+//         if (params.hasOwnProperty(i)) {
+//             var input = document.createElement('input');
+//             input.type = 'hidden';
+//             input.name = i;
+//             input.value = params[i];
+//             form.appendChild(input);
+//         }
+//     }
 
-    document.body.appendChild(form);
+//     document.body.appendChild(form);
 
-    //note I am using a post.htm page since I did not want to make double request to the page 
-    //it might have some Page_Load call which might screw things up.
-    window.open("post.htm", name, windowoption);
+//     //note I am using a post.htm page since I did not want to make double request to the page 
+//     //it might have some Page_Load call which might screw things up.
+//     window.open("post.htm", name, windowoption);
 
-    form.submit();
+//     form.submit();
 
-    document.body.removeChild(form);
-}
+//     document.body.removeChild(form);
+// }
 
 
 
 //## NOT USED
 // GET THE IMAGE WIDTH AND HEIGHT USING fileReader() API.
-function readImageFile(file) {
-    var reader = new FileReader(); // CREATE AN NEW INSTANCE.
+// function readImageFile(file) {
+//     var reader = new FileReader(); // CREATE AN NEW INSTANCE.
 
-    reader.onload = function(e) {
-        var img = new Image();
-        img.src = e.target.result;
+//     reader.onload = function(e) {
+//         var img = new Image();
+//         img.src = e.target.result;
 
-        img.onload = function() {
-            var w = this.width;
-            var h = this.height;
+//         img.onload = function() {
+//             var w = this.width;
+//             var h = this.height;
 
-            // console.log("File Name: " + file.name);
-            // console.log("Width: " + w);
-            // console.log("Height: " + h);
-            // console.log("Size: " + Math.round((file.size / 1024)));
-            // console.log("File Type: " + file.type);
-        }
-    };
-    reader.readAsDataURL(file);
-}
+//             // console.log("File Name: " + file.name);
+//             // console.log("Width: " + w);
+//             // console.log("Height: " + h);
+//             // console.log("Size: " + Math.round((file.size / 1024)));
+//             // console.log("File Type: " + file.type);
+//         }
+//     };
+//     reader.readAsDataURL(file);
+// }
 
 
 // hint popup
@@ -538,32 +538,32 @@ $('.tooltip-demo').tooltip({
 })
 
 
-//##TODO: LIXO
-$(document).ready(function() {
+// //##TODO: LIXO
+// $(document).ready(function() {
 
-    $('#btnInsert').click(function() {
-        addCheckbox2($('#txtNameCat').val());
-    });
+//     $('#btnInsert').click(function() {
+//         addCheckbox2($('#txtNameCat').val());
+//     });
 
-    addRemoveIMG();
-});
+//     addRemoveIMG();
+// });
 
-//##TODO: LIXO
-function addCheckbox(name) {
-    var container = $('#cblist');
-    var inputs = container.find('input');
-    var id = inputs.length + 1;
+// //##TODO: LIXO
+// function addCheckbox(name) {
+//     var container = $('#cblist');
+//     var inputs = container.find('input');
+//     var id = inputs.length + 1;
 
-    $('<input />', {
-        type: 'checkbox',
-        id: 'cb' + id,
-        value: name
-    }).appendTo(container);
-    $('<label />', {
-        'for': 'cb' + id,
-        text: name
-    }).appendTo(container);
-}
+//     $('<input />', {
+//         type: 'checkbox',
+//         id: 'cb' + id,
+//         value: name
+//     }).appendTo(container);
+//     $('<label />', {
+//         'for': 'cb' + id,
+//         text: name
+//     }).appendTo(container);
+// }
 </script>
 
 </html>

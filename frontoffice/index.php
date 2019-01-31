@@ -11,48 +11,48 @@ if (!isset($_SESSION['username'])) {
 
     $id = $_SESSION['id'];
     $username = $_SESSION['username'];
-    $nome;
-    $email;
+    $nome = $email = "";
     $tipo = $_SESSION['tipo'];
     $cargo = $_SESSION['cargo'];
-    $username = $_SESSION['username'];
 
     //-- vai buscar o nome do utilizador que corresponde ao id da sessão
     if ($tipo == 1) {
-        $sql = "SELECT nome, email, fotografia FROM aluno WHERE fk_idutilizador=?";
+        $sql = "SELECT nome, email FROM aluno WHERE fk_idutilizador=?";
     } elseif ($tipo == 2) {
-        $sql = "SELECT nome, email, fotografia FROM docente WHERE fk_idutilizador=?";
+        $sql = "SELECT nome, email FROM docente WHERE fk_idutilizador=?";
     }
 
-    if ($stmt = $connectDB->prepare($sql)) {
-        // Bind variables to the prepared statement as parameters
-        $stmt->bind_param("i", $param_idutilizador);
+    if ($tipo == 1 || $tipo == 2) {
+        if ($stmt = $connectDB->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bind_param("i", $param_idutilizador);
             
-        // Set parameters
-        $param_idutilizador = $id;
+            // Set parameters
+            $param_idutilizador = $id;
             
-        // Attempt to execute the prepared statement
-        if ($stmt->execute()) {
-            // Store result
-            $stmt->store_result();
-            // Check if username exists, if yes then verify password
-            if ($stmt->num_rows == 1) {
-                // Bind result variables
-                $stmt->bind_result($r_nome, $r_email, $r_foto);
-                if ($stmt->fetch()) {
-                    //-- Atribui variaveis
-                    $nome = $r_nome;
-                    $email = $r_email;
-                    $_SESSION['nome'] = $nome;
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // Store result
+                $stmt->store_result();
+                // Check if username exists, if yes then verify password
+                if ($stmt->num_rows == 1) {
+                    // Bind result variables
+                    $stmt->bind_result($r_nome, $r_email, $r_foto);
+                    if ($stmt->fetch()) {
+                        //-- Atribui variaveis
+                        $nome = $r_nome;
+                        $email = $r_email;
+                        $_SESSION['nome'] = $nome;
+                    }
+                } else {
+                    // echo"Não foi encontrado video ";
                 }
             } else {
-                // echo"Não foi encontrado video ";
+                echo "Algo correu mal. Por favor tente de novo.";
             }
-        } else {
-            echo "Algo correu mal. Por favor tente de novo.";
         }
+        $stmt->close();
     }
-    $stmt->close();
 }
 
 ?>
@@ -205,7 +205,7 @@ if (!isset($_SESSION['username'])) {
 
 
             </div>
-            <div class="col-md-1">
+            <div class="col-md-1 col-xs-12">
                 <!-- <div class="row" style="display: inline-block; height: 100%;"> -->
 
                 <div class="align-top" style="display: flex; height: 50%; align-items: start;">
@@ -224,28 +224,31 @@ if (!isset($_SESSION['username'])) {
         </div>
 
         <!-- MENU -->
-        <div class="row">
-            <div style="display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; margin-top:10px">
-                <div class="col-md-1 col-xs-12">
-
-                    <a href="index.php"><img src="img/logo.png" alt="Italian Trulli"
-                            style="max-width: 100%; height: auto;"></a>
+        <div class="row" style="margin-top:10px">
+            <!-- <div style="display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; margin-top:10px"> -->
+            <!-- <div> -->
+            <div class="col-md-1 col-xs-12">
+                <div style="display: flex;">
+                    <a href="index.php" style="margin:auto">
+                        <img src="img/logo.png" alt="Italian Trulli" style="max-width: 100%; height: auto;">
+                    </a>
                 </div>
+            </div>
 
-                <!-- Filtros -->
-                <div class="col-md-6 col-xs-12" style="margin-top:auto; margin-bottom:auto;">
-                    <div style="display:inline-flex; flex-wrap: wrap;">
+            <!-- Filtros -->
+            <div class="col-md-6 col-xs-12" style="margin-top:auto; margin-bottom:auto;">
+                <div style="display:inline-flex; flex-wrap: wrap;">
 
-                        <!-- UC -->
-                        <div>
-                            <div class="dropup">
-                                <button class="dropbtn custom_font" style="min-width:120px">Unidade
-                                    Curricular</button>
-                                <!-- <div class="dropup-content dropdown-menu scrollable-menu" -->
-                                <div class="dropup-content scrollable-menu" style="min-width:250px;">
+                    <!-- UC -->
+                    <div>
+                        <div class="dropup">
+                            <button class="dropbtn custom_font" style="min-width:120px">Unidade
+                                Curricular</button>
+                            <!-- <div class="dropup-content dropdown-menu scrollable-menu" -->
+                            <div class="dropup-content scrollable-menu" style="min-width:250px;">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
-                                        <?php
+                                <li class="dropdown-submenu" style="display: grid;">
+                                    <?php
                                         $result = mysqli_query($connectDB, "select unidade_curricular.* from unidade_curricular");
                                         
                                         if (mysqli_num_rows($result) > 0) {
@@ -259,19 +262,19 @@ if (!isset($_SESSION['username'])) {
                                         }
                                         ?>
 
-                                    </li>
-                                </div>
+                                </li>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Ano Letivo -->
-                        <div>
-                            <div class="dropup">
-                                <button class="dropbtn custom_font" style="min-width:90px">Ano Letivo</button>
-                                <div class="dropup-content scrollable-menu">
+                    <!-- Ano Letivo -->
+                    <div>
+                        <div class="dropup">
+                            <button class="dropbtn custom_font" style="min-width:90px">Ano Letivo</button>
+                            <div class="dropup-content scrollable-menu">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
-                                        <?php
+                                <li class="dropdown-submenu" style="display: grid;">
+                                    <?php
                                         $result = mysqli_query($connectDB, "select ano from projeto GROUP BY ano");
 
                                         if (mysqli_num_rows($result) > 0) {
@@ -289,20 +292,20 @@ if (!isset($_SESSION['username'])) {
 
                                         ?>
 
-                                    </li>
-                                </div>
+                                </li>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Semestre -->
-                        <div>
+                    <!-- Semestre -->
+                    <div>
 
-                            <div class="dropup">
-                                <button class="dropbtn custom_font" style="min-width:90px">Semestre</button>
-                                <div class="dropup-content scrollable-menu">
+                        <div class="dropup">
+                            <button class="dropbtn custom_font" style="min-width:90px">Semestre</button>
+                            <div class="dropup-content scrollable-menu">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
-                                        <?php
+                                <li class="dropdown-submenu" style="display: grid;">
+                                    <?php
                                         $result = mysqli_query($connectDB, "select projeto.semestre from projeto GROUP BY semestre");
   
                                         if (mysqli_num_rows($result) > 0) {
@@ -321,46 +324,46 @@ if (!isset($_SESSION['username'])) {
 
                                         ?>
 
-                                    </li>
-                                </div>
+                                </li>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Tipo -->
-                        <div>
+                    <!-- Tipo -->
+                    <div>
 
-                            <div class="dropup">
-                                <button class="dropbtn custom_font" style="min-width:70px">Tipo</button>
-                                <div class="dropup-content scrollable-menu">
+                        <div class="dropup">
+                            <button class="dropbtn custom_font" style="min-width:70px">Tipo</button>
+                            <div class="dropup-content scrollable-menu">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
-                                        <!-- <ul class="dropdown-menu"> -->
-                                        <label class='custom_font'>
-                                            <input style='margin:auto 0px auto 0px' type="checkbox"
-                                                data-tabela="projeto" data-tipo='tipo' data-valor='1' />
-                                            <p style='padding-left: 5px; margin:auto 0px auto 0px'>Teórico</p>
-                                        </label>
-                                        <label class='custom_font'>
-                                            <input style='margin:auto 0px auto 0px' type="checkbox"
-                                                data-tabela="projeto" data-tipo='tipo' data-valor='2' />
-                                            <p style='padding-left: 5px; margin:auto 0px auto 0px'>Prático</p>
-                                        </label>
-                                        <!-- </ul> -->
+                                <li class="dropdown-submenu" style="display: grid;">
+                                    <!-- <ul class="dropdown-menu"> -->
+                                    <label class='custom_font'>
+                                        <input style='margin:auto 0px auto 0px' type="checkbox" data-tabela="projeto"
+                                            data-tipo='tipo' data-valor='1' />
+                                        <p style='padding-left: 5px; margin:auto 0px auto 0px'>Teórico</p>
+                                    </label>
+                                    <label class='custom_font'>
+                                        <input style='margin:auto 0px auto 0px' type="checkbox" data-tabela="projeto"
+                                            data-tipo='tipo' data-valor='2' />
+                                        <p style='padding-left: 5px; margin:auto 0px auto 0px'>Prático</p>
+                                    </label>
+                                    <!-- </ul> -->
 
-                                    </li>
-                                </div>
+                                </li>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Ano -->
-                        <div>
+                    <!-- Ano -->
+                    <div>
 
-                            <div class="dropup">
-                                <button class="dropbtn custom_font" style="min-width:70px">Ano</button>
-                                <div class="dropup-content scrollable-menu">
+                        <div class="dropup">
+                            <button class="dropbtn custom_font" style="min-width:70px">Ano</button>
+                            <div class="dropup-content scrollable-menu">
 
-                                    <li class="dropdown-submenu" style="display: grid;">
-                                        <?php
+                                <li class="dropdown-submenu" style="display: grid;">
+                                    <?php
                                          $result = mysqli_query($connectDB, "SELECT data, SUBSTRING(data,1,4) as anos from projeto GROUP BY anos ORDER BY anos");
                             
                                         if (mysqli_num_rows($result) > 0) {
@@ -380,48 +383,48 @@ if (!isset($_SESSION['username'])) {
 
                                         ?>
 
-                                    </li>
-                                </div>
+                                </li>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- END: Filtros -->
-                <div class="col-md-5" style="margin:0px 0px 0px 0px; display:flex;">
-                    <!-- Pesquisa -->
-                    <div class="col-md-5 col-xs-12 custom_font" style="margin:0px 0px 0px 0px; display:flex;">
-                        <!-- <h6>Pesquisa</h6> -->
-                        <div class="form-inline">
-                            <input type="search" class="form-control" data-tabela="palavra_chave" data-tipo="palavra"
-                                data-valor="" data-procura="procura" placeholder="Pesquisar..." style="width:90%">
-                            <!-- <input type="search" data-tabela="projeto" data-tipo="titulo" data-valor=""
+            <!-- END: Filtros -->
+            <div class="col-md-5 col-xs-12" style="margin:0px 0px 0px 0px; display:flex;">
+                <!-- Pesquisa -->
+                <div class="col-md-5 col-xs-12 custom_font" style="margin:0px 0px 0px 0px; display:flex;">
+                    <!-- <h6>Pesquisa</h6> -->
+                    <div class="form-inline">
+                        <input type="search" class="form-control" data-tabela="palavra_chave" data-tipo="palavra"
+                            data-valor="" data-procura="procura" placeholder="Pesquisar..." style="width:90%">
+                        <!-- <input type="search" data-tabela="projeto" data-tipo="titulo" data-valor=""
                                 data-procura="procura" placeholder="Procurar por titulo"> -->
-                            <!-- <button data-btn-pesquisa
+                        <!-- <button data-btn-pesquisa
                                 style='width:10%; height:100%; background: Transparent no-repeat; border: none; margin-top:auto; margin-bottom:auto'> -->
-                            <a data-btn-pesquisa style="margin-top:auto; margin-bottom:auto; width:10%; height:auto;"><i
-                                    class='fa fa-search fa-fw' style="font-size: 150%;"></i></a>
-                            <!-- </button> -->
-                        </div>
+                        <a data-btn-pesquisa style="margin-top:auto; margin-bottom:auto; width:10%; height:auto;"><i
+                                class='fa fa-search fa-fw' style="font-size: 150%;"></i></a>
+                        <!-- </button> -->
                     </div>
-                    <div class="col-md-7 col-xs-12  custom_font " style="margin-top:0px; display:flex;">
-                        <!-- Nome | <span id="myText"></span><a id="signout_button"  href="#"> logout </a> -->
-                        <div
-                            style="width:fit-content; margin-left:auto; zoom:100%; margin-top:auto; margin-bottom:auto; font-size:13px">
-                            <?php
+                </div>
+                <div class="col-md-7 col-xs-12  custom_font " style="margin-top:0px; display:flex;">
+                    <!-- Nome | <span id="myText"></span><a id="signout_button"  href="#"> logout </a> -->
+                    <div
+                        style="width:fit-content; margin-left:auto; zoom:100%; margin-top:auto; margin-bottom:auto; font-size:13px">
+                        <?php
                             if ($cargo === "Administrador") {
                                 echo("<a class='link-menu custom-font' href='../backoffice/index.php'>".$username."</a>");
                             } else {
                                 echo("<a class='link-menu custom-font'  href='../backoffice/index.php'>".$nome."</a>");
                             }
                             ?>
-                            | <span id="myText"></span><a id="signout_button" class="link-menu custom-font"
-                                href="../backoffice/logout.php"> Logout
-                            </a>
-                        </div>
-                        <div>
-                            <!-- <button type="button" data-pagina-baixo> Baixo</button> -->
-                            <!-- <button type="button" data-pagina-baixo
+                        | <span id="myText"></span><a id="signout_button" class="link-menu custom-font"
+                            href="../backoffice/logout.php"> Logout
+                        </a>
+                    </div>
+                    <div>
+                        <!-- <button type="button" data-pagina-baixo> Baixo</button> -->
+                        <!-- <button type="button" data-pagina-baixo
                                 style='background: Transparent no-repeat; border: none;'>
                                 <a><i class='fa fa-chevron-up fa-fw' style="font-size: 200%;"></i></a>
                             </button>
@@ -429,11 +432,11 @@ if (!isset($_SESSION['username'])) {
                                 style='background: Transparent no-repeat; border: none;'>
                                 <a><i class='fa fa-chevron-down fa-fw' style="font-size: 200%;"></i></a>
                             </button> -->
-                            <!-- Botão com icon para pesquisa -->
-                        </div>
+                        <!-- Botão com icon para pesquisa -->
                     </div>
                 </div>
             </div>
+            <!-- </div> -->
         </div>
     </div>
     <!-- /.container -->

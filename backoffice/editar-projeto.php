@@ -1309,7 +1309,7 @@ function changeDescricao() {
     var descricaoprojeto = $('textarea[name="descricao_projeto"]').val();
 
     // console.log("Descricao " + descricaoprojeto);
-    if (descricaoprojeto.length > 10) {
+    if (descricaoprojeto.length >= 10) {
         $.ajax({
             type: "POST",
             url: 'delete_edit_projeto.php',
@@ -1337,7 +1337,7 @@ function changeAutores() {
     var autoresprojeto = $('input[name="autores_projeto"]').val();
 
     // console.log("autores: " + autoresprojeto);
-    if (autoresprojeto.length > 10){
+    if (autoresprojeto.length >= 10){
         $.ajax({
             type: "POST",
             url: 'delete_edit_projeto.php',
@@ -1364,7 +1364,7 @@ function changePalavrasChave() {
     var palavras_chave_projeto = $('input[name="palavraschave_projeto"]').val();
 
     // console.log("Palavras-chave: " + palavras_chave_projeto);
-    if (autoresprojeto.length > 5){
+    if (palavras_chave_projeto.length >= 5){
         $.ajax({
             type: "POST",
             url: 'delete_edit_projeto.php',
@@ -1587,31 +1587,31 @@ function parseImage(nome) {
 }
 
 //##FIXME: LIXO
-$(document).ready(function() {
+// $(document).ready(function() {
 
-    // $('#btnInsert').click(function() {
-    //     addCheckbox2($('#txtNameCat').val());
-    // });
+//     // $('#btnInsert').click(function() {
+//     //     addCheckbox2($('#txtNameCat').val());
+//     // });
 
-});
+// });
 
 
-//##FIXME: LIXO
-function addCheckbox(name) {
-    var container = $('#cblist');
-    var inputs = container.find('input');
-    var id = inputs.length + 1;
+// //##FIXME: LIXO
+// function addCheckbox(name) {
+//     var container = $('#cblist');
+//     var inputs = container.find('input');
+//     var id = inputs.length + 1;
 
-    $('<input />', {
-        type: 'checkbox',
-        id: 'cb' + id,
-        value: name
-    }).appendTo(container);
-    $('<label />', {
-        'for': 'cb' + id,
-        text: name
-    }).appendTo(container);
-}
+//     $('<input />', {
+//         type: 'checkbox',
+//         id: 'cb' + id,
+//         value: name
+//     }).appendTo(container);
+//     $('<label />', {
+//         'for': 'cb' + id,
+//         text: name
+//     }).appendTo(container);
+// }
 </script>
 
 </html>

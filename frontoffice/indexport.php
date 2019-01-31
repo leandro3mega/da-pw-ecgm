@@ -217,6 +217,10 @@ if (!isset($_SESSION['username'])) {
             font-size: 11px
         }
     }
+
+    body {
+        padding-top: 40px !important;
+    }
     </style>
 </head>
 
@@ -225,7 +229,7 @@ if (!isset($_SESSION['username'])) {
     <div class="container">
 
         <!-- Portfolio Item Row -->
-        <div class="row" style="min-height:500px">
+        <div class="row" style="min-height: 456px;">
 
 
 
@@ -245,12 +249,12 @@ if (!isset($_SESSION['username'])) {
                   $nome= ($row['nome']);
 
                   $imagens_container .= "
-              <div class='mySlides fade form-group'>
-              <div class='form-inline'>
-                <img style='max-width:auto; max-height:380px; margin-left:auto; margin-right:auto' class='img-fluid' src='../backoffice/images/projetos/imagens/". $nome ."' style='width:100%' />  
-              </div>
-              </div>
-              ";
+                    <div class='mySlides fade form-group'>
+                    <div class='form-inline' style='height: 100%;'>
+                        <img style='max-width:auto; max-height:380px; margin-left:auto; margin-right:auto' class='img-fluid' src='../backoffice/images/projetos/imagens/". $nome ."' style='width:100%' />  
+                    </div>
+                    </div>
+                    ";
 
                   $dots_container .= "  <span class='dot' onclick='currentSlide(".$conta.")'></span>";
               
@@ -276,11 +280,16 @@ if (!isset($_SESSION['username'])) {
               while ($row = $result->fetch_assoc()) {
                   $nome= ($row['nome']);
 
+                  //       $imagens_container .= "
+                  //   <div class='mySlides fade'>
+                  //     <iframe width='560' height='315' src='https://www.youtube.com/embed/$nome' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen> </iframe>
+                  //   </div>
+                  //   ";
                   $imagens_container .= "
-              <div class='mySlides fade'>
-                <iframe width='560' height='315' src='https://www.youtube.com/embed/$nome' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen> </iframe>  
-              </div>
-              ";
+                    <div class='mySlides fade embed-responsive embed-responsive-16by9'>
+                        <iframe class='embed-responsive-item' src='https://www.youtube.com/embed/$nome' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen> </iframe>  
+                    </div>
+                    ";
 
                   $dots_container .= "  <span class='dot' onclick='currentSlide(".$conta.")'></span>";
               }
@@ -368,15 +377,16 @@ if (!isset($_SESSION['username'])) {
 
         </div>
 
-        <div class="row">
-            <div class="col-md-6 " style="margin-top:10px">
-
-                <form action="index.php">
-                    <input type="image" src="img/logo1.png" style="zoom:80%">
+        <div class="row" style="margin-top:10px; min-height:94px;">
+            <div class="col-md-6" style="display: flex;">
+                <div style="margin-top:auto; margin-bottom:auto">
+                    <form action="index.php">
+                        <input type="image" src="img/logo1.png" style="zoom:80%">
+                </div>
             </div>
 
 
-            <div class="col-md-6 custom_font " style="margin-top:0px; display:flex;">
+            <div class="col-md-6 custom_font " style="display:flex;">
 
                 <div style="width:fit-content; margin-left:auto; margin-top:auto; margin-bottom:auto; font-size:13px">
                     <?php
