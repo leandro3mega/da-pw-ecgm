@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.0.1
+-- version 4.8.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 30-Jan-2019 às 23:27
--- Versão do servidor: 10.1.32-MariaDB
--- PHP Version: 5.6.36
+-- Generation Time: 04-Fev-2019 às 18:16
+-- Versão do servidor: 10.1.31-MariaDB
+-- PHP Version: 7.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -32,17 +32,19 @@ CREATE TABLE `aluno` (
   `fk_idutilizador` int(11) NOT NULL,
   `nome` varchar(100) COLLATE utf8_bin NOT NULL,
   `email` varchar(40) COLLATE utf8_bin NOT NULL,
-  `fotografia` varchar(45) COLLATE utf8_bin NOT NULL
+  `fotografia` varchar(45) COLLATE utf8_bin NOT NULL,
+  `ativo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Extraindo dados da tabela `aluno`
 --
 
-INSERT INTO `aluno` (`fk_idutilizador`, `nome`, `email`, `fotografia`) VALUES
-(69, 'Maria Inês Vieira Vieira', 'maria@ipvc.pt', 'a5e10b16c37ec6ac0b0deb3e82b786bb.jpg'),
-(76, 'Leandro Martins Magalhães', 'leandrom@ipvc.pt', '76.jpg'),
-(93, 'Arlete Magalhães', 'arlete@hotmail.pt', 'logotipo_white.png');
+INSERT INTO `aluno` (`fk_idutilizador`, `nome`, `email`, `fotografia`, `ativo`) VALUES
+(69, 'Maria Inês Vieira Vieira', 'maria@ipvc.pt', 'a5e10b16c37ec6ac0b0deb3e82b786bb.jpg', 0),
+(76, 'Leandro Martins Magalhães', 'leandrom@ipvc.pt', '76.jpg', 1),
+(93, 'Arlete Magalhães', 'arlete@hotmail.pt', 'logotipo_white.png', 1),
+(107, 'Leandro Magalhães', 'leandro_mega@live.com.pt', 'logotipo_white.png', 1);
 
 -- --------------------------------------------------------
 
@@ -66,13 +68,14 @@ INSERT INTO `aluno_projeto` (`fk_aluno`, `fk_projeto`) VALUES
 (69, 43),
 (69, 44),
 (69, 45),
-(69, 46),
 (69, 47),
 (69, 48),
 (69, 49),
 (69, 50),
 (69, 51),
-(69, 52);
+(69, 52),
+(76, 53),
+(76, 54);
 
 -- --------------------------------------------------------
 
@@ -130,7 +133,8 @@ INSERT INTO `docente_uc` (`fk_iddocente`, `fk_iduc`, `ano_letivo`) VALUES
 (80, 10, 20182019),
 (80, 2, 20182019),
 (90, 1, 20182019),
-(97, 3, 20182019);
+(97, 3, 20182019),
+(101, 13, 20182019);
 
 -- --------------------------------------------------------
 
@@ -216,7 +220,6 @@ CREATE TABLE `imagem` (
 INSERT INTO `imagem` (`idimagem`, `fk_idprojeto`, `nome`, `descricao`) VALUES
 (18, 44, '44_a82cb774195ab9ce02b870f64b75d0b90.jpg', NULL),
 (19, 45, '45_02fc99b597cdd0e9aa14dd8361072f670.jpg', NULL),
-(20, 46, '46_911a0e111a0a5052d85e7380addbe9240.jpg', NULL),
 (21, 47, '47_40956b77912a443c2f899618537d6a450.jpg', NULL),
 (22, 48, '48_3ebddc37217dbe91a9b0591c5af7e3350.jpg', NULL),
 (23, 49, '49_783caea9721fa3821b0a010acfac15370.jpg', NULL),
@@ -232,7 +235,10 @@ INSERT INTO `imagem` (`idimagem`, `fk_idprojeto`, `nome`, `descricao`) VALUES
 (34, 25, '25_2a8575f7d9634e7b4675a37297c049a0.jpg', NULL),
 (35, 25, '25_863325860bca66ad199d9b08af136f19.jpg', NULL),
 (36, 25, '25_887e45c1d3a2c3d522ec4f25a4030ed6.jpg', NULL),
-(37, 52, '52_4d3011b410414a20449fc82742582f030.png', NULL);
+(37, 52, '52_4d3011b410414a20449fc82742582f030.png', NULL),
+(38, 53, '53_d30116a92fc4cefca962720433c1e47f0.jpg', NULL),
+(39, 53, '53_5c9149fa371e1336ce0d3f432058fdbe1.jpg', NULL),
+(40, 54, '54_e9e73e6af5d5a13c4e74bdeaf38de863.jpg', NULL);
 
 -- --------------------------------------------------------
 
@@ -256,13 +262,14 @@ INSERT INTO `palavra_chave` (`fk_idprojeto`, `palavra`) VALUES
 (43, 'Cadeira; sketch.'),
 (44, 'Desenho.'),
 (45, 'bonecos; '),
-(46, 'interior; desenho; '),
 (47, 'design; logo; '),
 (48, 'cadeira; '),
 (49, 'borboletas; '),
 (50, 'sofa; cores; '),
 (51, 'design; quadrados; '),
-(52, 'texto; livro; ');
+(52, 'texto; livro; '),
+(53, 'Desenho; Mockup.'),
+(54, 'Desenho; Mockup.');
 
 -- --------------------------------------------------------
 
@@ -288,18 +295,19 @@ CREATE TABLE `projeto` (
 
 INSERT INTO `projeto` (`idprojeto`, `fk_iduc`, `titulo`, `descricao`, `autores`, `data`, `ano`, `semestre`, `tipo`) VALUES
 (25, 6, 'Projeto Pintura', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'João Almeida; Ana.', 20190103, 1, 2, 1),
-(39, 1, 'Projeto Cores', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit \namet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et do', 'Leandro Magalhães; Pedro Cunha.', 20181108, 3, 1, 2),
+(39, 17, 'Projeto Cores', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit \namet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et do', 'Leandro Magalhães; Pedro Cunha.', 20181108, 3, 1, 2),
 (42, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 'Maria Inês Pinto; Luís Mota.', 20190109, 2, 2, 2),
 (43, 3, 'Logótipo de uma Marca', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'Maria Inês Pinto; Leandro Magalhães.', 20190126, 2, 2, 2),
 (44, 6, 'Projeto de Arquitetura', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'Leandro; João.', 20190126, 3, 2, 2),
 (45, 7, 'Projeto de Design de Ambientes', 'Este projeto foi feito para o curso de DA.', 'Leandro Magalhães; Maria Pinto.', 20190128, 2, 2, 2),
-(46, 1, 'Projeto de interiores', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'Miguel Morais; Inês Machado.', 20180414, 3, 1, 1),
 (47, 3, 'Projeto Logótipo', 'Projeto criado para um logótipo do curso de Design de Ambientes.', 'Maria Pinto.', 20100925, 2, 2, 2),
 (48, 8, 'Projeto Cadeira', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'Leandro Magalhães; Inês Vieira.', 20170402, 1, 1, 1),
 (49, 3, 'Projeto Estilista', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'Luís Mota; João Costa.', 20090517, 2, 2, 2),
 (50, 6, 'Projeto Sofás', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'Maria Pinto; Tiago Cunha; Leonor Almeida.', 20111010, 3, 2, 1),
 (51, 3, 'Projeto Papel de Parede', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'Leandro Magalhães; Beatriz Salvado.', 20140506, 2, 2, 2),
-(52, 7, 'Projeto Teórico sobre Design', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'Maria Pinto.', 20060505, 1, 2, 1);
+(52, 7, 'Projeto Teórico sobre Design', 'O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro. Este texto não só sobreviveu 5 séculos, mas também o salto para a tipografia electrónica, mantendo-se essencialmente inalterada. Foi popularizada nos anos 60 com a disponibilização das folhas de Letraset, que continham passagens com Lorem Ipsum, e mais recentemente com os programas de publicação como o Aldus PageMaker que incluem versões do Lorem Ipsum.', 'Maria Pinto.', 20060505, 1, 2, 1),
+(53, 20, 'Lorem ipsum dolor sit amet, consectetur adipiscing', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Luís Mota; João Almeida.', 20180920, 3, 2, 1),
+(54, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Leandro Magalhães; Arlete Magalhães.', 20190208, 2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -329,7 +337,16 @@ INSERT INTO `unidade_curricular` (`idunidade_curricular`, `nome`, `ano_curricula
 (7, 'Estudos de Antropologia e do Património', 1, 2, ''),
 (8, 'Introdução ao Projeto II', 1, 1, ''),
 (10, 'Multimédia Interativa', 1, 1, ''),
-(11, 'Técnicas de Comunicação e Relações Interpessoais', 1, 1, '');
+(11, 'Técnicas de Comunicação e Relações Interpessoais', 1, 1, ''),
+(12, 'Desenho Técnico', 2, 1, ''),
+(13, 'Arte dos Jardins', 2, 2, ''),
+(14, 'Ecologia e Ambientes', 2, 1, ''),
+(15, 'Desenho Técnico Avançado', 2, 2, ''),
+(16, 'História do Equipamento Ambiental', 2, 2, ''),
+(17, 'Modelação 3D', 3, 1, ''),
+(18, 'Políticas e Instrumentos de Gestão do Território', 3, 1, ''),
+(19, 'Sistemas Cartográficos', 3, 2, ''),
+(20, 'Espaços Verdes Urbanos', 3, 2, '');
 
 -- --------------------------------------------------------
 
@@ -367,7 +384,8 @@ INSERT INTO `utilizador` (`idutilizador`, `username`, `password`, `tipo`) VALUES
 (103, 'alexandre', '$2y$10$K.9D0asa7DmenB.YXh0kEuKW4Mf8qKsPuzrSiLATJsFJ9svPilfLi', 2),
 (104, 'martim', '$2y$10$LKTigDkAoSFphGRkLWWj5eYnVAA7YQ3xOVyQ9fWDm0CjVunIMTZWi', 2),
 (105, 'mauricio', '$2y$10$x.Azr4GR1JwL9gKvStb43.5aMuKcEy7CaRebJk7uO/HFRE49Pg7ey', 2),
-(106, 'marta', '$2y$10$5yvI/laVZc68r35jIY0bnOv1bNHvQirLMrEirNTtWs2mrw80sEdga', 2);
+(106, 'marta', '$2y$10$5yvI/laVZc68r35jIY0bnOv1bNHvQirLMrEirNTtWs2mrw80sEdga', 2),
+(107, 'leandromagalhaes', '$2y$10$71L.RnF5tQ4WMYHIixoGPONZTs0VSXI9jh7vDzZKySCjNCSjIO1Ui', 1);
 
 -- --------------------------------------------------------
 
@@ -389,7 +407,8 @@ CREATE TABLE `video` (
 INSERT INTO `video` (`idvideo`, `fk_idprojeto`, `nome`, `descricao`) VALUES
 (9, 39, '1PH30jnvaJo', ''),
 (10, 25, 'AXSKj68uhZ4', ''),
-(11, 46, 'Ek-km4vPSto', '');
+(11, 53, 'BrK9atbrWFY', ''),
+(12, 54, 'BrK9atbrWFY', '');
 
 -- --------------------------------------------------------
 
@@ -548,31 +567,31 @@ ALTER TABLE `ficheiro`
 -- AUTO_INCREMENT for table `imagem`
 --
 ALTER TABLE `imagem`
-  MODIFY `idimagem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `idimagem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `projeto`
 --
 ALTER TABLE `projeto`
-  MODIFY `idprojeto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `idprojeto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `unidade_curricular`
 --
 ALTER TABLE `unidade_curricular`
-  MODIFY `idunidade_curricular` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idunidade_curricular` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `utilizador`
 --
 ALTER TABLE `utilizador`
-  MODIFY `idutilizador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `idutilizador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
 -- AUTO_INCREMENT for table `video`
 --
 ALTER TABLE `video`
-  MODIFY `idvideo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idvideo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables

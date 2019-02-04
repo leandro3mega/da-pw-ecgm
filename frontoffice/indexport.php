@@ -42,9 +42,14 @@ if (!isset($_SESSION['username'])) {
                     $stmt->bind_result($r_nome, $r_email, $r_foto);
                     if ($stmt->fetch()) {
                         //-- Atribui variaveis
-                        $nome_utilizador = $r_nome;
+                        if (strlen($r_nome) > 25) {
+                            $nome_utilizador = (substr($r_nome, 0, 25)) . "...";
+                        } else {
+                            $nome_utilizador = $r_nome;
+                        }
+
                         $email = $r_email;
-                        $_SESSION['nome'] = $nome_utilizador;
+                        $_SESSION['nome'] = $r_nome;
                     }
                 } else {
                     // echo"Não foi encontrado video ";
